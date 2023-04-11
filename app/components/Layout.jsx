@@ -1,0 +1,137 @@
+import {useIsHomePath} from '~/lib/utils';
+import {
+  Drawer,
+  useDrawer,
+  Text,
+  // Input,
+  // IconAccount,
+  // IconBag,
+  // IconSearch,
+  // Heading,
+  // IconMenu,
+  // IconCaret,
+  // Section,
+  // CountrySelector,
+  Cart,
+  CartLoading,
+  Link,
+} from '~/components';
+import {Await, useMatches} from '@remix-run/react';
+import {Suspense, useEffect} from 'react';
+import {useCartFetchers} from '~/hooks/useCartFetchers';
+
+export function Layout({children, layout}) {
+  return (
+    <>
+      <div className="flex flex-col min-h-screen">
+        {/* <div className="">
+          <a href="#mainContent" className="sr-only">
+            Skip to content
+          </a>
+        </div> */}
+        <Header
+          title={layout?.shop.name ?? 'Hydrogen'}
+          menu={layout?.headerMenu}
+        />
+        <main role="main" id="mainContent" className="flex-grow">
+          {children}
+        </main>
+      </div>
+      {/* <Footer menu={layout?.footerMenu} /> */}
+    </>
+  );
+}
+
+function Header({title, menu}) {
+  const isHome = useIsHomePath();
+
+  const {
+    isOpen: isCartOpen,
+    openDrawer: openCart,
+    closeDrawer: closeCart,
+  } = useDrawer();
+
+  const {
+    isOpen: isMenuOpen,
+    openDrawer: openMenu,
+    closeDrawer: closeMenu,
+  } = useDrawer();
+
+  const addToCartFetchers = useCartFetchers('ADD_TO_CART');
+
+  // toggle cart drawer when adding to cart
+  useEffect(() => {
+    if (isCartOpen || !addToCartFetchers.length) return;
+    openCart();
+  }, [addToCartFetchers, isCartOpen, openCart]);
+
+  return (
+    <>
+      <CartDrawer isOpen={isCartOpen} onClose={closeCart} />
+      {menu && (
+        <MenuDrawer isOpen={isMenuOpen} onClose={closeMenu} menu={menu} />
+      )}
+      {/* <DesktopHeader
+        isHome={isHome}
+        title={title}
+        menu={menu}
+        openCart={openCart}
+      /> */}
+      {/* <MobileHeader
+        isHome={isHome}
+        title={title}
+        openCart={openCart}
+        openMenu={openMenu}
+      /> */}
+    </>
+  );
+}
+
+function CartDrawer({isOpen, onClose}) {
+  const [root] = useMatches();
+
+  return (
+    <Drawer open={isOpen} onClose={onClose} heading="Cart" openFrom="right">
+      <div className="grid">
+        <Suspense fallback={<CartLoading />}>
+          <Await resolve={root.data?.cart}>
+            {(cart) => <Cart layout="drawer" onClose={onClose} cart={cart} />}
+          </Await>
+        </Suspense>
+      </div>
+    </Drawer>
+  );
+}
+
+export function MenuDrawer({isOpen, onClose, menu}) {
+  return (
+    <Drawer open={isOpen} onClose={onClose} openFrom="left" heading="Menu">
+      <div className="grid">
+        <MenuMobileNav menu={menu} onClose={onClose} />
+      </div>
+    </Drawer>
+  );
+}
+
+function MenuMobileNav({menu, onClose}) {
+  return (
+    <nav className="grid gap-4 p-6 sm:gap-6 sm:px-12 sm:py-8">
+      {(menu?.items || []).map((item) => (
+        <span key={item.id} className="block">
+          <Link
+            to={item.to}
+            target={item.target}
+            onClick={onClose}
+            className={({isActive}) =>
+              isActive ? 'pb-1 border-b -mb-px' : 'pb-1'
+            }
+          >
+            <Text as="span" size="copy">
+              {item.title}
+            </Text>
+          </Link>
+        </span>
+      ))}
+    </nav>
+  );
+}
