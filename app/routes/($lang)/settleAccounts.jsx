@@ -2,8 +2,8 @@
 import { useRef, useMemo, useEffect, useState } from 'react';
 import { Money } from '@shopify/hydrogen';
 import { Text } from '~/components';
-import addressList from '../../components/address';
-import fetch from '../../fetch/axios';
+import addressList from '~/components/address';
+import fetch from '~/fetch/axios';
 
 export default function settleAccounts() {
   const [hasMounted, setHasMounted] = useState(false);

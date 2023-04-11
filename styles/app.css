@@ -170,10 +170,10 @@ shop-pay-button {
     @media (min-width: 48em) {
       padding: 2rem 5rem;
       display:flex;
-      {}
+      
       .left_product{
         max-width: 38%;
-        {}
+        
         section{
           max-width: none;
         }
@@ -189,7 +189,7 @@ shop-pay-button {
           align-items: center;
           width: 40%;
           max-width: 495px;
-          {}
+          
           .master_map{
             /* width:28rem */
           }
@@ -197,7 +197,7 @@ shop-pay-button {
             display:flex;
             align-items:center;
             margin-top: 15px;
-            {}
+            
             .list_img{
               width: 115px;
               height: 115px;
@@ -218,7 +218,7 @@ shop-pay-button {
     background: #fff;
     padding-bottom: 4rem;
     @media (min-width: 48em) {
-      {}
+      
       .in_list_title{
         width: 15% !important;
         font-size: 14px !important;
@@ -348,7 +348,7 @@ shop-pay-button {
     color: #545454;
     @media (min-width: 48em) {
       font-size: 14px !important;
-      {}
+      
       .order_list_title{
         font-size: 18px !important;
       }

@@ -1140,11 +1140,11 @@ select{
       padding: 2rem 5rem;
       display:flex
   }
-      {}
+      
       .product_details .left_product{
         max-width: 38%;
       }
-        {}
+        
         .product_details .left_product section{
           max-width: none;
         }
@@ -1160,7 +1160,7 @@ select{
           width: 40%;
           max-width: 495px
       }
-          {}
+          
           .product_details .sticky_img .master_map{
             /* width:28rem */
           }
@@ -1169,7 +1169,7 @@ select{
             align-items:center;
             margin-top: 15px;
           }
-            {}
+            
             .product_details .sticky_img .swimlane .list_img{
               width: 115px;
               height: 115px;
@@ -1187,7 +1187,7 @@ select{
     padding-bottom: 4rem;
   }
 @media (min-width: 48em) {
-      {}
+      
       .settle_accounts .in_list_title{
         width: 15% !important;
         font-size: 14px !important;
@@ -1319,7 +1319,7 @@ select{
   .settle_accounts .order_box{
       font-size: 14px !important
   }
-      {}
+      
       .settle_accounts .order_box .order_list_title{
         font-size: 18px !important;
       }

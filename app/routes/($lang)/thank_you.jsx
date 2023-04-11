@@ -1,7 +1,7 @@
 // 结账页
 import { useEffect, useState } from 'react';
 import { Text } from '~/components';
-import fetch from '../../fetch/axios';
+import fetch from '~/fetch/axios';
 
 export default function thank_you() {
   const [hasMounted, setHasMounted] = useState(false);
