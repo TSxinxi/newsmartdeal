@@ -55,10 +55,6 @@ export async function loader({ params, request, context }) {
   const { productHandle } = params;
   invariant(productHandle, 'Missing productHandle param, check route filename');
 
-  var canUseDOM = !!(typeof window !== "undefined" && typeof window.document !== "undefined" && typeof window.localStorage !== "undefined");
-  if (canUseDOM) {
-    alert('111')
-  }
   const searchParams = new URL(request.url).searchParams;
 
   const selectedOptions = [];
@@ -105,18 +101,68 @@ export async function loader({ params, request, context }) {
   });
 }
 
-function GetJudge(product_id) {
+function GetJudge(product_id, page) {
   let params = {
-    url: 'uniquehzts.myshopify.com',
-    shop_domain: 'uniquehzts.myshopify.com',
+    url: 'newsmartdeal.myshopify.com',
+    shop_domain: 'newsmartdeal.myshopify.com',
     platform: 'shopify',
     per_page: 5,
-    product_id: product_id
+    product_id: product_id,
+    page: page
   }
-  return (fetch.get(`https://judge.me/reviews/reviews_for_widget`,{params})
+  return (fetch.get(`https://judge.me/reviews/reviews_for_widget`, { params })
     .then(res => {
-      if (res && res.data) {
-        return res.data
+      if (res && res.data && res.data.html) {
+        var html_data = document.createElement('div')
+        html_data.innerHTML = res.data.html
+
+        if (html_data) {
+          let commentRev = html_data.getElementsByClassName('jdgm-rev')
+          // 分页
+          let commentPaginate = html_data.getElementsByClassName('jdgm-paginate')[0]
+          if (commentPaginate) {
+            let numPage = html_data.getElementsByClassName('jdgm-paginate__page')
+            Array.from(numPage).forEach(item => {
+              item.innerHTML = item.className.indexOf('next') > -1 ? '下一页' : item.className.indexOf('last') > -1 ? '最后一页' : item.className.indexOf('first') > -1 ? '首页' : item.className.indexOf('prev') > -1 ? '上一页' : item.innerHTML
+            })
+          }
+          // 评论列表
+          if (commentRev && commentRev.length > 0) {
+            Array.from(commentRev).forEach(item => {
+              let commentImg = item.getElementsByClassName('jdgm-rev__pic-img')
+              let commentTime = item.getElementsByClassName('jdgm-rev__timestamp')[0]
+              let commentStar = item.getElementsByClassName('jdgm-star')
+              let commentIcon = item.getElementsByClassName('jdgm-rev__author-wrapper')[0]
+
+              if (commentImg && commentImg.length > 0) {
+                Array.from(commentImg).forEach(val => {
+                  if (val && val.getAttribute("data-src")) {
+                    val.src = val.getAttribute("data-src")
+                  }
+                })
+              }
+              if (commentTime && commentTime.getAttribute("data-content")) {
+                commentTime.innerHTML = new Date(commentTime.getAttribute("data-content")).toLocaleDateString()
+              }
+              if (commentIcon) {
+                let img = '<img src="https://platform.antdiy.vip/static/image/userIcon.svg" alt="">'
+                commentIcon.innerHTML = commentIcon.innerHTML.indexOf(img) > -1 ? commentIcon.innerHTML : commentIcon.innerHTML + img;
+                commentIcon.className = 'flex_center'
+              }
+              if (commentStar && commentStar.length > 0) {
+                Array.from(commentStar).forEach(val => {
+                  if (val.className.indexOf('jdgm--on') > -1) {
+                    val.innerHTML = '★'
+                  }
+                  if (val.className.indexOf('jdgm--off') > -1) {
+                    val.innerHTML = '☆'
+                  }
+                })
+              }
+            })
+          }
+          return html_data.innerHTML
+        }
       }
     })
     .catch(function (error) {
@@ -124,23 +170,62 @@ function GetJudge(product_id) {
     }))
 }
 
+// 分页
+function changePage(e, product_id, setComment) {
+  if (e.target.className.indexOf('jdgm-paginate__page') > -1 && e.target.className.indexOf('jdgm-curt') === -1) {
+    GetJudge(product_id, e.target.getAttribute("data-page")).then(res => {
+      if (res) {
+        setComment(res)
+      }
+    })
+  }
+}
+// 显示添加评论模块
+function addComment(e, showWriteReview, setWriteReview) {
+  if (e.target.className.indexOf('addComment') > -1) {
+    setWriteReview(!showWriteReview)
+  }
+}
+// 添加图片
+function changeImg(e, imgList, setImgList) {
+  let files = e.target.files
+  if (files.length + imgList.length > 5) {
+    console.log('最多5张') // 最多只能选5张，当前选中的和已显示之和不能大于5
+    return
+  }
+  if (files[0]) {
+    for (var i = 0; i < files.length; i++) {
+      console.log(files[i])
+      // var img = window.URL.createObjectURL(files[i]) // 将文件生成url
+      // imgList.push(img)
+    }
+    // setImgList(imgList)
+  }
+}
+// 提交评论
+function submitReview(params) {
+  params['picture_keys[0]'] = 'https://platform.antdiy.vip/static/image/userIcon.svg'
+  console.log(params)
+  fetch.post(`https://judge.me/api/v1/reviews`, params)
+    .then(res => {
+    })
+}
+
 export default function Product() {
   const { product, shop, recommended } = useLoaderData();
   const { media, title, vendor, descriptionHtml } = product;
   const { shippingPolicy, refundPolicy } = shop;
   const strProductId = product.id.lastIndexOf("/");
-  let product_id = '';
+  let product_id = strProductId ? product.id.slice(strProductId + 1) : '';
 
-  const [comment_html, setComment] = useState('');
-  if (strProductId) {
-    product_id = product.id.slice(strProductId + 1);
-    // 评论
-    // GetJudge(product_id).then(res => {
-    //   if (res && res.html) {
-    //     setComment(res.html)
-    //   }
-    // })
-  }
+  const [commentHtml, setComment] = useState('');
+  const [commentHeader, setCommentHeader] = useState('');
+  const [showWriteReview, setWriteReview] = useState(false);
+  const [reviewTitle, setReviewTitle] = useState('');
+  const [review, setReview] = useState('');
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [imgList, setImgList] = useState([]);
   var canUseDOM = !!(typeof window !== "undefined" && typeof window.document !== "undefined" && typeof window.localStorage !== "undefined");
   if (canUseDOM) {
     let result = new URLSearchParams(window.location.search);
@@ -149,6 +234,53 @@ export default function Product() {
       window.localStorage.setItem('sourceName', param)
       window.localStorage.setItem('sourceProductId', product.id)
     }
+    useEffect(() => {
+      if (product_id) {
+        // 评论
+        GetJudge(product_id, 1).then(res => {
+          if (res) {
+            setComment(res)
+          }
+        })
+      }
+      fetch.get(`https://newsmartdeal.myshopify.com${window.location.pathname}`)
+        .then(res => {
+          if (res && res.data) {
+            var urlDiv = document.createElement("div");
+            urlDiv.innerHTML = res.data;
+            // var urlDivHead = urlDiv
+            var urlDivHead = urlDiv.getElementsByClassName('jdgm-rev-widg__header')[0]
+            if (urlDivHead) {
+              console.log(urlDivHead)
+              let averageStar = urlDivHead.getElementsByClassName('jdgm-star')
+              let averageFrequency = urlDivHead.getElementsByClassName('jdgm-histogram__frequency')
+              let averageNumStr = urlDivHead.getElementsByClassName('jdgm-rev-widg__summary-stars')[0]
+              let averageWrapper = urlDivHead.getElementsByClassName('jdgm-rev-widg__sort-wrapper')[0]
+
+              if (averageWrapper) {
+                averageWrapper.innerHTML = `<button class='addComment'>إلغاء التقييم</button>`
+              }
+              if (averageNumStr) {
+                let averageNum = averageNumStr.getAttribute("aria-label").match(/\d+(\.\d+)?/g)[0]
+                if (averageNum) {
+                  averageNumStr.innerHTML = averageNumStr.innerHTML + `<span>${averageNum} out of 5</span>`
+                }
+              }
+              if (averageStar && averageStar.length > 0) {
+                Array.from(averageStar).forEach(item => {
+                  item.innerHTML = item.className.indexOf('jdgm--on') > -1 ? '★' : item.className.indexOf('jdgm--off') > -1 ? '☆' : item.className.indexOf('jdgm--half') > -1 ? '✪' : ''
+                })
+              }
+              if (averageFrequency && averageFrequency.length > 0) {
+                Array.from(averageFrequency).forEach(item => {
+                  item.innerHTML = item.innerHTML.replace('(', '').replace(')', '')
+                })
+              }
+              setCommentHeader(urlDivHead.innerHTML)
+            }
+          }
+        })
+    }, []);
   }
   productData = product
 
@@ -163,7 +295,7 @@ export default function Product() {
             className="w-screen md:w-full lg:col-span-2"
           />
           <div className="left_product sticky md:-mb-nav md:top-nav md:-translate-y-nav md:pt-nav hiddenScroll">
-            <section className="flex flex-col w-full max-w-xl gap-8 md:mx-auto md:max-w-sm md:px-0">
+            <section className="flex flex-col w-full max-w-xl gap-8 md:mx-auto md:max-w-sm md:px-0" style={{ color: '#141414E6' }}>
               <div className="grid gap-2">
                 <Heading as="h1" className="whitespace-normal">
                   {title}
@@ -205,10 +337,70 @@ export default function Product() {
             </section>
           </div>
         </div>
-        {comment_html && (
+        {commentHeader && (
+          <div className='comment_box'>
+            <div className='comment_box_title'>تقييمات العملاء</div>
+            <div
+              className="dark:prose-invert comment_box_content"
+              dangerouslySetInnerHTML={{ __html: commentHeader }}
+              onClick={(e) => { addComment(e, showWriteReview, setWriteReview) }}
+            />
+            <div className={showWriteReview ? 'write_review' : 'review_none'}>
+              <div className='write_review_title'>إضافة تقييم</div>
+              <div className='write_review_li'>
+                <div className="write_review_name">علامة التقييم</div>
+                <div className='write_review_cont'></div>
+              </div>
+              <div className='write_review_li'>
+                <div className="write_review_name" value={reviewTitle} onChange={(e) => { setReviewTitle(e.target.value) }}>عنوان التقييم</div>
+                <input type="text" placeholder='كتابة عنوان لتقييمك' />
+              </div>
+              <div className='write_review_li'>
+                <div className="write_review_name">مراجعة</div>
+                <textarea type="text" placeholder='كتابة تعليقك هنا' value={review} onChange={(e) => { setReview(e.target.value) }} />
+              </div>
+              <div className='write_review_li'>
+                <div className="write_review_name">صورة / فيديو (اختياري)</div>
+                <div className='write_review_cont'>
+                  <span className='write_review_cont_icon'>选择</span>
+                  <input type="file" name="media" multiple="" accept="image/gif,image/jpeg,image/jpg,image/png,image/webp" onChange={(e) => { changeImg(e, imgList, setImgList) }} />
+                </div>
+              </div>
+              <div className='write_review_li'>
+                <div className="write_review_name">الإسم (معروضة بشكل عام مثل John Smith)</div>
+                <input type="text" placeholder='(ادخال الإسم (عام' value={name} onChange={(e) => { setName(e.target.value) }} />
+              </div>
+              <div className='write_review_li'>
+                <div className="write_review_name">الإيميل</div>
+                <input type="text" placeholder='إدخال إيميلك (خاص)' value={email} onChange={(e) => { setEmail(e.target.value) }} />
+              </div>
+              <div className="write_review_btn">
+                <button className='cancel' onClick={() => { setWriteReview(!showWriteReview) }}>إلغاء التقييم</button>
+                <button className='submit' onClick={() => {
+                  submitReview(
+                    {
+                      url: 'newsmartdeal.myshopify.com',
+                      shop_domain: 'newsmartdeal.myshopify.com',
+                      platform: 'shopify',
+                      reviewer_name_format: 'last_initial',
+                      name: name,
+                      email: email,
+                      rating: 5,
+                      title: reviewTitle,
+                      body: review,
+                      id: product_id,
+                    }
+                  )
+                }}>إرسال التقييم</button>
+              </div>
+            </div>
+          </div>
+        )}
+        {commentHtml && (
           <div
-            className="prose dark:prose-invert"
-            dangerouslySetInnerHTML={{ __html: comment_html }}
+            className="prose dark:prose-invert comment_box"
+            onClick={(e) => { changePage(e, product_id, setComment) }}
+            dangerouslySetInnerHTML={{ __html: commentHtml }}
           />
         )}
       </Section>
