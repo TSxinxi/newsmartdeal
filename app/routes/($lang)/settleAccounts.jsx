@@ -1082,7 +1082,7 @@ export function PaymentMethod() {
           </div>
           <img src="https://oss.giikin.cn/uploads/c83291dfc3c559d226dd403daba4d3d3.png" />
         </div>
-        <div className='description'>خفض رسوم المعاملة 30 ريال للدفع عبر الإنترنت.</div>
+        {/* <div className='description'>خفض رسوم المعاملة 30 ريال للدفع عبر الإنترنت.</div> */}
       </div>
     </div>
   )
