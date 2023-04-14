@@ -105,8 +105,8 @@ export async function loader({ params, request, context }) {
 //评论列表
 function GetJudge(product_id, page, sortBy, rating) {
   let params = {
-    url: 'uniquehzts.myshopify.com',
-    shop_domain: 'uniquehzts.myshopify.com',
+    url: 'newsmartdeal.myshopify.com',
+    shop_domain: 'newsmartdeal.myshopify.com',
     platform: 'shopify',
     per_page: 5,
     product_id: product_id,
@@ -186,7 +186,7 @@ function GetJudge(product_id, page, sortBy, rating) {
 }
 //评论头部
 function GetCommentHeader() {
-  return (fetch.get(`https://uniquehzts.myshopify.com${window.location.pathname}`)
+  return (fetch.get(`https://newsmartdeal.myshopify.com${window.location.pathname}`)
     .then(res => {
       if (res && res.data) {
         var urlDiv = document.createElement("div");
@@ -297,7 +297,7 @@ function changeImg(e, imgList, setImgList, imgKey, setImgKey) {
         setImgList([...imgList])
       })
     } else {
-      fetch.get(`https://judge.me/api/v1/pictures/presigned_data?url=uniquehzts.myshopify.com&shop_domain=uniquehzts.myshopify.com&platform=shopify`)
+      fetch.get(`https://judge.me/api/v1/pictures/presigned_data?url=newsmartdeal.myshopify.com&shop_domain=newsmartdeal.myshopify.com&platform=shopify`)
         .then(res => {
           if (res && res.data && res.data.fields) {
             setImgKey(res.data)
@@ -594,8 +594,8 @@ export default function Product() {
                     <button className='submit' onClick={() => {
                       submitReview(
                         {
-                          url: 'uniquehzts.myshopify.com',
-                          shop_domain: 'uniquehzts.myshopify.com',
+                          url: 'newsmartdeal.myshopify.com',
+                          shop_domain: 'newsmartdeal.myshopify.com',
                           platform: 'shopify',
                           reviewer_name_format: reviewer_name_format,
                           name: name,
