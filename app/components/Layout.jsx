@@ -19,6 +19,7 @@ import {
 import {Await, useMatches} from '@remix-run/react';
 import {Suspense, useEffect} from 'react';
 import {useCartFetchers} from '~/hooks/useCartFetchers';
+import { openWhatsApp } from '~/lib/P_Variable';
 
 export function Layout({children, layout}) {
   return (
@@ -36,9 +37,9 @@ export function Layout({children, layout}) {
         <main role="main" id="mainContent" className="flex-grow">
           {children}
         </main>
-        <div className="stick_service">
+        { openWhatsApp() ? <div className="stick_service">
           <img src="https://platform.antdiy.vip/static/image/hydrogen_icon_whatsapp.svg" alt="" onClick={() => { goWhatsApp() }} />
-        </div>
+        </div> : null }
       </div>
       {/* <Footer menu={layout?.footerMenu} /> */}
     </>

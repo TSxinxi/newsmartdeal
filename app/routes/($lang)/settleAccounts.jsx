@@ -3,6 +3,7 @@ import { useRef, useMemo, useEffect, useState } from 'react';
 import { Money } from '@shopify/hydrogen';
 import { Text } from '~/components';
 import fetch from '~/fetch/axios';
+import { getShopAddress } from '~/lib/P_Variable';
 const addressList = [
   {
     name: '（المحافظة）إختر',
@@ -1115,7 +1116,7 @@ function SettleAccounts(product, params, setErrorText) {
   }]
   params.line_items = line_items
   params.count = 1
-  params.shop = "newsmartdeal.myshopify.com"
+  params.shop = getShopAddress()
 
   fetch.post(`https://gateway.antdiy.vip/account-service/media_orders/create/pass`, params).then(res => {
     if (res && res.data) {

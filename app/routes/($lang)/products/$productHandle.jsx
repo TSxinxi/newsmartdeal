@@ -3,6 +3,7 @@ import { useRef, useMemo, useEffect, useState } from 'react';
 import { Listbox } from '@headlessui/react';
 import { defer } from '@shopify/remix-oxygen';
 import fetch from '../../../fetch/axios';
+import { getShopAddress, openComment, getLanguage } from '~/lib/P_Variable';
 import $ from 'jquery'
 import {
   useLoaderData,
@@ -105,8 +106,8 @@ export async function loader({ params, request, context }) {
 //评论列表
 function GetJudge(product_id, page, sortBy, rating) {
   let params = {
-    url: 'newsmartdeal.myshopify.com',
-    shop_domain: 'newsmartdeal.myshopify.com',
+    url: getShopAddress(),
+    shop_domain: getShopAddress(),
     platform: 'shopify',
     per_page: 5,
     product_id: product_id,
@@ -190,7 +191,7 @@ function GetJudge(product_id, page, sortBy, rating) {
 }
 //评论头部
 function GetCommentHeader() {
-  return (fetch.get(`https://newsmartdeal.myshopify.com${window.location.pathname}`)
+  return (fetch.get(`https://${getShopAddress()}${window.location.pathname}`)
     .then(res => {
       if (res && res.data) {
         var urlDiv = document.createElement("div");
@@ -201,15 +202,22 @@ function GetCommentHeader() {
           let averageStar = urlDivHead.getElementsByClassName('jdgm-star')
           let averageRow = urlDivHead.getElementsByClassName('jdgm-histogram__row')
           let averageNumStr = urlDivHead.getElementsByClassName('jdgm-rev-widg__summary-stars')[0]
+          let averageText = urlDivHead.getElementsByClassName('jdgm-rev-widg__summary-text')[0]
           let averageWrapper = urlDivHead.getElementsByClassName('jdgm-rev-widg__sort-wrapper')[0]
 
           if (averageWrapper) {
             averageWrapper.innerHTML = `<button class='add_comment'>إلغاء التقييم</button>`
           }
+          if (averageText) {
+            let summaryNum = averageText.innerHTML.match(/\d+(\.\d+)?/g)[0]
+            if (summaryNum) {
+              averageText.innerHTML = `بناءً على ${summaryNum} تقييمات`
+            }
+          }
           if (averageNumStr) {
             let averageNum = averageNumStr.getAttribute("aria-label").match(/\d+(\.\d+)?/g)[0]
             if (averageNum) {
-              averageNumStr.innerHTML = averageNumStr.innerHTML + `<span>${averageNum} out of 5</span>`
+              averageNumStr.innerHTML = averageNum + averageNumStr.innerHTML + ` من 5`
             }
           }
           if (averageRow && averageRow.length > 0) {
@@ -303,7 +311,7 @@ function changeImg(e, imgList, setImgList, imgKey, setImgKey) {
         setImgList([...imgList])
       })
     } else {
-      fetch.get(`https://judge.me/api/v1/pictures/presigned_data?url=newsmartdeal.myshopify.com&shop_domain=newsmartdeal.myshopify.com&platform=shopify`)
+      fetch.get(`https://judge.me/api/v1/pictures/presigned_data?url=${getShopAddress()}&shop_domain=${getShopAddress()}&platform=shopify`)
         .then(res => {
           if (res && res.data && res.data.fields) {
             setImgKey(res.data)
@@ -449,7 +457,7 @@ export default function Product() {
       window.localStorage.setItem('sourceProductId', product.id)
     }
     useEffect(() => {
-      if (product_id) {
+      if (product_id && openComment()) {
         // 评论
         GetJudge(product_id, 1, sortBy).then(res => {
           if (res) {
@@ -523,7 +531,7 @@ export default function Product() {
         <div>
           {commentHeader && (
             <div className='comment_box'>
-              <div className='comment_box_title'>تقييمات العملاء</div>
+              <div className='comment_box_title'>{getLanguage().comTit}</div>
               <div
                 className="dark:prose-invert comment_box_content"
                 dangerouslySetInnerHTML={{ __html: commentHeader }}
@@ -605,8 +613,8 @@ export default function Product() {
                     <button className='submit' onClick={() => {
                       submitReview(
                         {
-                          url: 'newsmartdeal.myshopify.com',
-                          shop_domain: 'newsmartdeal.myshopify.com',
+                          url: getShopAddress(),
+                          shop_domain: getShopAddress(),
                           platform: 'shopify',
                           reviewer_name_format: reviewer_name_format,
                           name: name,
@@ -657,15 +665,14 @@ export default function Product() {
           <div className="grid items-stretch gap-4 sticky_bottom">
             <button className={`inline-block rounded font-medium text-center w-full ${isOutOfStock ? 'border border-primary/10 bg-contrast text-primary' : 'bg-primary text-contrast'}`}>
               {isOutOfStock ? (
-                <Text className='py-3 px-6'>تم البيع</Text>//卖完了
+                <Text className='py-3 px-6'>{getLanguage().sold}</Text>//卖完了
               ) : (
-                <Text
+                <Text //立即购买
                   as="span"
                   className="flex items-center justify-center gap-2 py-3 px-6"
                   onClick={() => { goSettleAccounts() }}
                 >
-                  {/* 立即购买 */}
-                  <span>اشتر الآن</span>
+                  <span>{getLanguage().buy}</span>
                 </Text>
               )}
             </button>

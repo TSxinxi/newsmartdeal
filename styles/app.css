@@ -282,6 +282,7 @@ shop-pay-button {
   .comment_box .jdgm-rev .jdgm-rev__pics{
     white-space: nowrap;
     overflow: auto;
+    margin-top: 10px;
   }
   .comment_box .jdgm-rev .jdgm-rev__pics .jdgm-rev__pic-link{
     position: relative;

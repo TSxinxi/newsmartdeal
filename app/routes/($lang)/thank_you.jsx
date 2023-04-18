@@ -2,11 +2,12 @@
 import { useEffect, useState } from 'react';
 import { Text } from '~/components';
 import fetch from '~/fetch/axios';
+import { getShopAddress } from '~/lib/P_Variable';
 
 export default function thank_you() {
   const [hasMounted, setHasMounted] = useState(false);
   const [orderData, setOrderData] = useState('');
-  let shop = 'newsmartdeal.myshopify.com'
+  let shop = getShopAddress()
   useEffect(() => {
     setHasMounted(true);
     var canUseDOM = !!(typeof window !== "undefined" && typeof window.document !== "undefined" && typeof window.location !== "undefined");
@@ -119,7 +120,7 @@ export function OrderBox({ orderData }) {
             </div>
           </div>
         </div>
-        <button className='inline-block rounded font-medium text-center w-full bg-primary text-contrast' style={{ marginTop: '20px' }} onClick={() => { window.open('http://newsmartdeal.myshopify.com', '_self') }}>
+        <button className='inline-block rounded font-medium text-center w-full bg-primary text-contrast' style={{ marginTop: '20px' }} onClick={() => { window.open(getShopAddress(), '_self') }}>
           <Text
             as="span"
             className="flex items-center justify-center gap-2 py-3 px-6"

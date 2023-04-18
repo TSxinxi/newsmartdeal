@@ -44,7 +44,7 @@ export const links = () => {
       rel: 'preconnect',
       href: 'https://shop.app',
     },
-    {rel: 'icon', type: 'image/svg+xml', href: favicon},
+    {rel: 'icon', href: '//cdn.shopify.com/s/files/1/0617/7793/6534/files/logo.png?crop=center&height=32&v=1676515760&width=32'},
   ];
 };
 
