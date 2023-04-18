@@ -134,7 +134,11 @@ shop-pay-button {
   .prodect_section{
     display: flex !important;
     flex-direction: column;
-    padding-bottom: 20px;
+    max-width: 640px;
+    width: 100%;
+    margin: 0 auto;
+    background: #fff;
+    padding: 0 0 4rem 0 !important;
   }
   .sticky_img .swimlane{
     width: 100%;
@@ -142,13 +146,35 @@ shop-pay-button {
     grid-gap: .5rem;
     gap: .5rem;
     flex-wrap: wrap;
+    @media (min-width: 48em) {
+      display: flex;
+    }
   }
   .sticky_img .swimlane .list_img{
-    width: 7rem;
+    width: 7.4rem;
     border: 1px solid rgba(0,0,0,0);
   }
   .sticky_img .swimlane .active{
     border-color: #0e1b4d;
+  }
+  .stick_service{
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 170px;
+    height: 1px;
+    max-width: 640px;
+    width: 100%;
+    margin: 0 auto;
+    z-index: 10;
+  }
+  .stick_service img{
+    float: left;
+    margin-left: 10px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    cursor: pointer;
   }
   .fixed_img{
     position: fixed;
@@ -169,18 +195,19 @@ shop-pay-button {
   .product_details{
     justify-content: center;
     @media (min-width: 48em) {
-      padding: 2rem 5rem;
-      display:flex;
       
       .left_product{
-        max-width: 38%;
+        /* max-width: 38%; */
         
         section{
           max-width: none;
         }
       }
       .sticky_img{
-        @media (min-width: 48em) {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        /* @media (min-width: 48em) {
           position: sticky;
           top: 2rem;
           right: 10rem;
@@ -190,10 +217,6 @@ shop-pay-button {
           align-items: center;
           width: 40%;
           max-width: 495px;
-          
-          .master_map{
-            /* width:28rem */
-          }
           .swimlane {
             display:flex;
             align-items:center;
@@ -205,7 +228,7 @@ shop-pay-button {
               cursor: pointer;
             }
           }
-        }
+        } */
       }
     }
   }
@@ -214,13 +237,7 @@ shop-pay-button {
     display: flex;
     align-items: center;
     flex-direction: column;
-    @media (min-width: 48em) {
-      padding: 0 5rem;
-      max-width: 80%;
-      margin: 0 auto;
-      width: 80%;
-    }
-    @media (min-width: 70em) {
+    /* @media (min-width: 70em) {
       .comment_box_content{
         align-items: stretch !important;
         flex-direction: initial !important;
@@ -232,7 +249,7 @@ shop-pay-button {
       .comment_box_content .jdgm-histogram{
         width: 40% !important;
       }
-    }
+    } */
   }
   .comment_box .jdgm-rev-widg__reviews,
   .comment_box .jdgm-paginate,
@@ -251,8 +268,16 @@ shop-pay-button {
     width: 36px;
     height: 36px;
   }
+  .comment_box .jdgm-rev__rating{
+    display: inline-flex;
+    align-items: center;
+  }
+  .comment_box .jdgm-rev__rating .jdgm-star img{
+    display: inline;
+    padding-bottom: 5px;
+  }
   .comment_box .jdgm-rev{
-    padding: 10px 0;
+    padding: 10px;
   }
   .comment_box .jdgm-rev .jdgm-rev__pics{
     white-space: nowrap;
@@ -283,9 +308,18 @@ shop-pay-button {
   }
   .jdgm-paginate{
     margin-top: 20px;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
   }
   .jdgm-paginate .jdgm-paginate__page{
-    margin: 0 10px;
+    margin: 0 5px;
+    width: 18px;
+    height: 18px;
+    line-height: 18px;
+    text-align: center;
+    background-repeat: no-repeat;
+    background-size: cover;
     text-decoration: initial;
   }
   .jdgm-paginate .jdgm-curt{
@@ -300,6 +334,11 @@ shop-pay-button {
   .comment_box .jdgm-rev-widg__title,
   .review_none{
     display: none !important;
+  }
+  .sticky_bottom{
+    position: sticky;
+    bottom: 0;
+    z-index: 10;
   }
   .jq_slow {
     display: none;
@@ -339,7 +378,7 @@ shop-pay-button {
   }
   .comment_box_content .jdgm-rev-widg__sort-wrapper button{
     width: 100%;
-    max-width: 240px;
+    max-width: 325px;
     color: white;
     background-color: #339999;
     border: 2px solid #339999;
@@ -356,12 +395,25 @@ shop-pay-button {
     display: flex;
     align-items: center;
   }
+  .comment_box .jdgm-histogram .jdgm-histogram__row .jdgm-histogram__star,
+  .jdgm-rev-widg__summary .jdgm-rev-widg__summary-stars{
+    display: inline-flex;
+    align-items: center;
+  }
+  .jdgm-rev-widg__summary .jdgm-rev-widg__summary-stars img{
+    width: 18px;
+    height: 18px;
+  }
+  .comment_box .jdgm-histogram .jdgm-histogram__row .jdgm-histogram__star img{
+    width: 15px;
+    height: 15px;
+  }
   .comment_box .jdgm-histogram .jdgm-histogram__frequency{
     width: 24px;
     text-align: left;
   }
   .comment_box .jdgm-histogram .jdgm-histogram__bar{
-    width: 140px;
+    width: 200px;
     height: 100%;
     background: rgba(224,224,224,0.5);
     margin: 0 15px;
@@ -371,7 +423,7 @@ shop-pay-button {
     background: #399;
   }
   .write_review{
-    padding: 10px 0;
+    padding: 10px;
   }
   .write_review,
   .write_review .write_review_li{
@@ -419,12 +471,15 @@ shop-pay-button {
   .write_review .star_score{
     display: flex;
     align-items: center;
-    font-size: 45px;
     direction: ltr;
   }
   .write_review .star_score .star_li{
     margin: 0 2px;
     cursor: pointer;
+  }
+  .write_review .star_score .star_li img{
+    width: 26px;
+    height: 26px;
   }
   .write_review_img{
     display: flex;
@@ -443,6 +498,10 @@ shop-pay-button {
     justify-content: center;
     margin-right: 10px;
     margin-bottom: 10px;
+  }
+  .write_review_cont .write_review_cont_icon{
+    width: 48px;
+    height: 48px;
   }
   .write_review_cont input{
     position: absolute;
@@ -472,6 +531,8 @@ shop-pay-button {
     box-shadow: 0px 2px 2px rgba(0,0,0,0.2);
     overflow: hidden;
     cursor: pointer;
+    width: 30px;
+    height: 30px;
   }
   .write_review_cont .delete:hover{
     background: #399;
@@ -746,6 +807,22 @@ shop-pay-button {
   .payment_method{
     padding: 0 10px;
   }
+  .settle_accounts .order_tips{
+    padding: 0 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 14px;
+    margin-top: 20px;
+  }
+  .settle_accounts .order_tips span{
+    color: #212529;
+  }
+  .settle_accounts .order_tips p{
+    color: #333333;
+    margin-top: 10px;
+    font-weight: 600;
+  }
   .payment_method_check{
     display: flex;
     align-items: center;
@@ -760,8 +837,7 @@ shop-pay-button {
     margin-right: 10px;
   }
   .payment_method_check img{
-    width: 40px;
-    height: 40px;
+    width: 50px;
   }
   .description{
     color: #999;
@@ -779,7 +855,7 @@ shop-pay-button {
     border-color: #14141480 !important;
   }
   .text-contrast{
-    background-color: #141414 !important; 
+    background-color: #FF0000 !important; 
     color: #f3f3f2 !important;
   }
 

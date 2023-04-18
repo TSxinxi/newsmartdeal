@@ -138,7 +138,11 @@ function GetJudge(product_id, page, sortBy, rating) {
           if (commentPaginate) {
             let numPage = html_data.getElementsByClassName('jdgm-paginate__page')
             Array.from(numPage).forEach(item => {
-              item.innerHTML = item.className.indexOf('next') > -1 ? '下一页' : item.className.indexOf('last') > -1 ? '最后一页' : item.className.indexOf('first') > -1 ? '首页' : item.className.indexOf('prev') > -1 ? '上一页' : item.innerHTML
+              item.style.backgroundImage = item.className.indexOf('next') > -1 ? 'url("https://platform.antdiy.vip/static/image/hydrogen_icon_Next.svg")' :
+                item.className.indexOf('last') > -1 ? 'url("https://platform.antdiy.vip/static/image/hydrogen_icon_Last.svg")' :
+                  item.className.indexOf('first') > -1 ? 'url("https://platform.antdiy.vip/static/image/hydrogen_icon_First.svg")' :
+                    item.className.indexOf('prev') > -1 ? 'url("https://platform.antdiy.vip/static/image/hydrogen_icon_Previous.svg")' :
+                      item.innerHTML
             })
           }
           // 评论列表
@@ -160,17 +164,17 @@ function GetJudge(product_id, page, sortBy, rating) {
                 commentTime.innerHTML = new Date(commentTime.getAttribute("data-content")).toLocaleDateString()
               }
               if (commentIcon) {
-                let img = '<img src="https://platform.antdiy.vip/static/image/userIcon.svg" alt="">'
+                let img = '<img src="https://platform.antdiy.vip/static/image/userIcon.svg" alt="" />'
                 commentIcon.innerHTML = commentIcon.innerHTML.indexOf(img) > -1 ? commentIcon.innerHTML : commentIcon.innerHTML + img;
                 commentIcon.className = 'flex_center'
               }
               if (commentStar && commentStar.length > 0) {
                 Array.from(commentStar).forEach(val => {
                   if (val.className.indexOf('jdgm--on') > -1) {
-                    val.innerHTML = '★'
+                    val.innerHTML = '<img src="https://platform.antdiy.vip/static/image/hydrogen_icon_star_quan.svg" />'
                   }
                   if (val.className.indexOf('jdgm--off') > -1) {
-                    val.innerHTML = '☆'
+                    val.innerHTML = '<img src="https://platform.antdiy.vip/static/image/hydrogen_icon_star_kongg.svg" />'
                   }
                 })
               }
@@ -219,7 +223,9 @@ function GetCommentHeader() {
           }
           if (averageStar && averageStar.length > 0) {
             Array.from(averageStar).forEach(item => {
-              item.innerHTML = item.className.indexOf('jdgm--on') > -1 ? '★' : item.className.indexOf('jdgm--off') > -1 ? '☆' : item.className.indexOf('jdgm--half') > -1 ? '✪' : ''
+              item.innerHTML = item.className.indexOf('jdgm--on') > -1 ? '<img src="https://platform.antdiy.vip/static/image/hydrogen_icon_star_quan.svg" />' :
+                item.className.indexOf('jdgm--off') > -1 ? '<img src="https://platform.antdiy.vip/static/image/hydrogen_icon_star_kongg.svg" />' :
+                  item.className.indexOf('jdgm--half') > -1 ? '<img src="https://platform.antdiy.vip/static/image/hydrogen_icon_star_bann.svg" />' : ''
             })
           }
           return urlDivHead.innerHTML
@@ -237,9 +243,9 @@ function setScreen(e, product_id, setComment, setSortBy, filtRat) {
   })
 }
 // 分页
-function changePage(e, product_id, setComment, sortBy,filtRat) {
+function changePage(e, product_id, setComment, sortBy, filtRat) {
   if (e.target.className.indexOf('jdgm-paginate__page') > -1 && e.target.className.indexOf('jdgm-curt') === -1) {
-    GetJudge(product_id, e.target.getAttribute("data-page"), sortBy,filtRat).then(res => {
+    GetJudge(product_id, e.target.getAttribute("data-page"), sortBy, filtRat).then(res => {
       if (res) {
         setComment(res)
       }
@@ -412,6 +418,9 @@ export default function Product() {
   const { product, shop, recommended } = useLoaderData();
   const { media, title, vendor, descriptionHtml } = product;
   const { shippingPolicy, refundPolicy } = shop;
+  const firstVariant = product.variants.nodes[0];
+  const selectedVariant = product.selectedVariant ?? firstVariant;
+  const isOutOfStock = !selectedVariant?.availableForSale;
   const strProductId = product.id.lastIndexOf("/");
   let product_id = strProductId ? product.id.slice(strProductId + 1) : '';
 
@@ -469,7 +478,7 @@ export default function Product() {
             className="w-screen md:w-full lg:col-span-2"
           />
           <div className="left_product sticky md:-mb-nav md:top-nav md:-translate-y-nav md:pt-nav hiddenScroll">
-            <section className="flex flex-col w-full max-w-xl gap-8 md:mx-auto md:max-w-sm md:px-0" style={{ color: '#141414E6' }}>
+            <section className="flex flex-col w-full max-w-xl gap-8 md:mx-auto md:max-w-sm md:px-0" style={{ color: '#141414E6', padding: '0 10px' }}>
               <div className="grid gap-2">
                 <Heading as="h1" className="whitespace-normal">
                   {title}
@@ -533,7 +542,7 @@ export default function Product() {
                             onMouseEnter={() => { setHhoverStar(index + 1) }}
                             onMouseLeave={() => { setHhoverStar(starScore) }}
                             onClick={() => { setStarScore(index + 1) }}
-                          >{hoverStar > index ? '★' : '☆'}</div>
+                          ><img src={`https://platform.antdiy.vip/static/image/${hoverStar > index ? 'hydrogen_icon_star_quan' : 'hydrogen_icon_star_kongg'}.svg`} /> </div>
                         })
                       }
                     </div>
@@ -553,13 +562,15 @@ export default function Product() {
                     <div className="write_review_name">صورة / فيديو (اختياري)</div>
                     <div className="write_review_img">
                       <div className='write_review_cont'>
-                        <span className='write_review_cont_icon'>选择</span>
+                        <span className='write_review_cont_icon'>
+                          <img src="https://platform.antdiy.vip/static/image/hydrogen_icon_upload.svg" />
+                        </span>
                         <input type="file" name="media" multiple accept="image/gif,image/jpeg,image/jpg,image/png,image/webp" onChange={(e) => { changeImg(e, imgList, setImgList, imgKey, setImgKey) }} />
                       </div>
                       {
                         imgList.map((item, index) => {
                           return <div className='write_review_cont' key={index}>
-                            <div className='delete' onClick={() => { imgList.splice(index, 1); setImgList([...imgList]) }}>❌</div>
+                            <img className='delete' onClick={() => { imgList.splice(index, 1); setImgList([...imgList]) }} src="https://platform.antdiy.vip/static/image/hydrogen_icon_delete.svg" />
                             <img src={item.url} alt="" />
                           </div>
                         })
@@ -636,12 +647,30 @@ export default function Product() {
               </div>
               <div
                 className="dark:prose-invert comment_list"
-                onClick={(e) => { changePage(e, product_id, setComment, sortBy,filtRat) }}
+                onClick={(e) => { changePage(e, product_id, setComment, sortBy, filtRat) }}
                 dangerouslySetInnerHTML={{ __html: commentHtml }}
               />
             </div>
           )}
         </div>
+        {selectedVariant && (
+          <div className="grid items-stretch gap-4 sticky_bottom">
+            <button className={`inline-block rounded font-medium text-center w-full ${isOutOfStock ? 'border border-primary/10 bg-contrast text-primary' : 'bg-primary text-contrast'}`}>
+              {isOutOfStock ? (
+                <Text className='py-3 px-6'>تم البيع</Text>//卖完了
+              ) : (
+                <Text
+                  as="span"
+                  className="flex items-center justify-center gap-2 py-3 px-6"
+                  onClick={() => { goSettleAccounts() }}
+                >
+                  {/* 立即购买 */}
+                  <span>اشتر الآن</span>
+                </Text>
+              )}
+            </button>
+          </div>
+        )}
       </Section>
     </>
   );
@@ -735,7 +764,7 @@ export function ProductForm() {
           options={product.options}
           searchParamsWithDefaults={searchParamsWithDefaults}
         />
-        {selectedVariant && (
+        {/* {selectedVariant && (
           <div className="grid items-stretch gap-4">
             <button className={`inline-block rounded font-medium text-center w-full ${isOutOfStock ? 'border border-primary/10 bg-contrast text-primary' : 'bg-primary text-contrast'}`}>
               {isOutOfStock ? (
@@ -746,13 +775,12 @@ export function ProductForm() {
                   className="flex items-center justify-center gap-2 py-3 px-6"
                   onClick={() => { goSettleAccounts() }}
                 >
-                  {/* 立即购买 */}
                   <span>اشتر الآن</span>
                 </Text>
               )}
             </button>
 
-            {/* <AddToCartButton
+            <AddToCartButton
               lines={[
                 {
                   merchandiseId: selectedVariant.id,
@@ -776,12 +804,12 @@ export function ProductForm() {
                   <span>أضف إلى السلة</span> <span>·</span>{' '}
                 </Text>
               )}
-            </AddToCartButton> */}
-            {/* {!isOutOfStock && (
+            </AddToCartButton>
+            {!isOutOfStock && (
               <ShopPayButton variantIds={[selectedVariant?.id]} />
-            )} */}
+            )}
           </div>
-        )}
+        )} */}
       </div>
     </div>
   );

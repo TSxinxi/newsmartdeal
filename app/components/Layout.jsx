@@ -36,10 +36,18 @@ export function Layout({children, layout}) {
         <main role="main" id="mainContent" className="flex-grow">
           {children}
         </main>
+        <div className="stick_service">
+          <img src="https://platform.antdiy.vip/static/image/hydrogen_icon_whatsapp.svg" alt="" onClick={() => { goWhatsApp() }} />
+        </div>
       </div>
       {/* <Footer menu={layout?.footerMenu} /> */}
     </>
   );
+}
+
+function goWhatsApp() {
+  var whatsapp_url = "https://wa.me/8613429685162?text= يرجى نقر الإرسال مباشرة، لا تحذف الرابط أدناه، ستحصل على  الإجابات الأكثر دقة من خدمة العملاء";
+  window.open(whatsapp_url + window.location.href);
 }
 
 function Header({title, menu}) {
