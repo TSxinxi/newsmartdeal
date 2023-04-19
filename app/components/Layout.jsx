@@ -37,7 +37,7 @@ export function Layout({children, layout}) {
         <main role="main" id="mainContent" className="flex-grow">
           {children}
         </main>
-        { openWhatsApp() ? <div className="stick_service">
+        { openWhatsApp().isOpen ? <div className="stick_service">
           <img src="https://platform.antdiy.vip/static/image/hydrogen_icon_whatsapp.svg" alt="" onClick={() => { goWhatsApp() }} />
         </div> : null }
       </div>
@@ -47,7 +47,7 @@ export function Layout({children, layout}) {
 }
 
 function goWhatsApp() {
-  var whatsapp_url = "https://wa.me/8613429685162?text= يرجى نقر الإرسال مباشرة، لا تحذف الرابط أدناه، ستحصل على  الإجابات الأكثر دقة من خدمة العملاء";
+  var whatsapp_url = `https://wa.me/${openWhatsApp().phone}?text= يرجى نقر الإرسال مباشرة، لا تحذف الرابط أدناه، ستحصل على  الإجابات الأكثر دقة من خدمة العملاء`;
   window.open(whatsapp_url + window.location.href);
 }
 

@@ -1,10 +1,14 @@
 export function getShopAddress() {
-  // return 'uniquehzts.myshopify.com';
-  return 'newsmartdeal.myshopify.com';
+  return 'uniquehzts.myshopify.com';
+  // return 'newsmartdeal.myshopify.com';
 }
 
 export function openWhatsApp() {
-  return true;
+  const whatsApp = {
+    phone: '8613429685162',
+    isOpen: true,
+  }
+  return whatsApp;
 }
 
 export function openComment() {

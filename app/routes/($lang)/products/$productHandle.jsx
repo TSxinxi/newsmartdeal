@@ -486,7 +486,7 @@ export default function Product() {
             className="w-screen md:w-full lg:col-span-2"
           />
           <div className="left_product sticky md:-mb-nav md:top-nav md:-translate-y-nav md:pt-nav hiddenScroll">
-            <section className="flex flex-col w-full max-w-xl gap-8 md:mx-auto md:max-w-sm md:px-0" style={{ color: '#141414E6', padding: '0 10px' }}>
+            <section className="flex flex-col w-full max-w-xl gap-8 md:mx-auto md:max-w-sm md:px-0" style={{ color: '#141414E6' }}>
               <div className="grid gap-2">
                 <Heading as="h1" className="whitespace-normal">
                   {title}
@@ -836,7 +836,7 @@ function ProductOptions({ options, searchParamsWithDefaults }) {
             <Heading as="legend" size="lead" className="min-w-[4rem]">
               {option.name}
             </Heading>
-            <div className="flex flex-wrap items-baseline gap-4">
+            <div className="flex flex-wrap items-baseline gap-2">
               {/**
                * First, we render a bunch of <Link> elements for each option value.
                * When the user clicks one of these buttons, it will hit the loader
@@ -919,8 +919,8 @@ function ProductOptions({ options, searchParamsWithDefaults }) {
                           optionValue={value}
                           searchParams={searchParamsWithDefaults}
                           className={clsx(
-                            'leading-none py-1 border-b-[1.5px] cursor-pointer transition-all duration-200',
-                            checked ? 'border-primary/50' : 'border-primary/0',
+                            'leading-none py-1 border-b-[1.5px] cursor-pointer transition-all duration-200 bord_sku',
+                            checked ? 'active_sku' : '',
                           )}
                         />
                       </Text>
