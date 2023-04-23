@@ -1,3 +1,4 @@
+import '@babel/polyfill';
 import {defer} from '@shopify/remix-oxygen';
 import {
   Links,
