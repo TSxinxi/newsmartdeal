@@ -210,9 +210,13 @@ function GetCommentHeader() {
             averageWrapper.innerHTML = `<button class='add_comment'>إلغاء التقييم</button>`
           }
           if (averageText) {
-            let summaryNum = averageText.innerHTML.match(/\d+(\.\d+)?/g)[0]
-            if (summaryNum) {
-              averageText.innerHTML = `بناءً على ${summaryNum} تقييمات`
+            if (averageText.innerHTML === 'Be the first to write a review') {
+              averageText.innerHTML = 'لا يوجد تقييمات بعد'
+            } else {
+              let summaryNum = averageText.innerHTML.match(/\d+(\.\d+)?/g)[0]
+              if (summaryNum) {
+                averageText.innerHTML = `بناءً على ${summaryNum} تقييمات`
+              }
             }
           }
           if (averageNumStr) {
@@ -979,7 +983,7 @@ function getVariantId(query, checkOpt) {
       arr[i] = arr[i].split("=");
       obj[arr[i][0]] = arr[i][1];
       if (checkOpt.join(',').indexOf(arr[i][0]) > -1) {
-        stringurl.push(arr[i][1])
+        stringurl.push(new URLSearchParams(query).get(arr[i][0]))
       }
     };
     delete obj['variant'];
@@ -1013,7 +1017,7 @@ function ProductOptionLink({
   const clonedSearchParams = new URLSearchParams(searchParams);
   clonedSearchParams.set(optionName, optionValue);
   if (checkOpt && checkOpt.length > 0) {
-    let newparam = getVariantId(clonedSearchParams.toString(), checkOpt)
+    let newparam = getVariantId(decodeURIComponent(clonedSearchParams.toString()), checkOpt)
     if (newparam) {
       clonedSearchParams.set('variant', newparam);
     }
