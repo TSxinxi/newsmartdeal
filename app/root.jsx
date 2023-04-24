@@ -1,4 +1,3 @@
-import '@babel/polyfill';
 import {defer} from '@shopify/remix-oxygen';
 import {
   Links,
@@ -78,6 +77,12 @@ export default function App() {
 
   useAnalytics(hasUserConsent, locale);
 
+  var canUseDOM = !!(typeof window !== "undefined" && typeof window.document !== "undefined" && typeof window.localStorage !== "undefined");
+  if (canUseDOM) {
+    if(getReferer() && getReferer().split('.com')[0].indexOf(window.location.host.split('.com')[0]) === -1 && (!localStorage.getItem('refererName') || (localStorage.getItem('refererName') && localStorage.getItem('refererName') !== getReferer()))){
+      localStorage.setItem('refererName', getReferer())
+    }
+  }
   return (
     <html lang={locale.language}>
       <head>
@@ -97,6 +102,14 @@ export default function App() {
       </body>
     </html>
   );
+}
+
+function getReferer() {
+  if (document.referrer) {
+    return document.referrer;
+  } else {
+    return false;
+  }
 }
 
 export function CatchBoundary() {

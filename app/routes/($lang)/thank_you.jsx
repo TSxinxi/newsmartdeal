@@ -19,10 +19,12 @@ export default function thank_you() {
           setOrderData(odata)
 
           let source_name = window.localStorage.getItem('sourceName')
+          let referer_name = window.localStorage.getItem('refererName')
           let source_product_id = window.localStorage.getItem('sourceProductId')
           if (source_name) {
             let params = {
-              source: source_name,
+              source: source_name ? source_name : null,
+              referer: referer_name ? referer_name : null,
               product_id: setSplit(source_product_id),
               shop: shop,
               total_price: odata.totalOutstandingSet.presentmentMoney.amount,

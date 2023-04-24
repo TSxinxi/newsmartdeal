@@ -48,6 +48,7 @@ const seo = ({ data }) => {
   };
 };
 let productData = ''
+let productVariants = []
 
 export const handle = {
   seo,
@@ -424,6 +425,14 @@ function submitReview(params, imgList, setErrorText, setIsSuccess) {
 
 export default function Product() {
   const { product, shop, recommended } = useLoaderData();
+  var canUseDOM = !!(typeof window !== "undefined" && typeof window.document !== "undefined" && typeof window.localStorage !== "undefined");
+  if (canUseDOM && productVariants && productVariants.length > 0) {
+    let result = new URLSearchParams(window.location.search);
+    let param = result.get('variant');
+    if (param) {
+      product.selectedVariant = productVariants.filter(i => i.id.indexOf(param) > -1)[0]
+    }
+  }
   const { media, title, vendor, descriptionHtml } = product;
   const { shippingPolicy, refundPolicy } = shop;
   const firstVariant = product.variants.nodes[0];
@@ -452,6 +461,9 @@ export default function Product() {
   if (canUseDOM) {
     let result = new URLSearchParams(window.location.search);
     let param = result.get('source');
+    if (localStorage.getItem('refererName')) {
+      localStorage.setItem('sourceProductId', product.id)
+    }
     if (param) {
       window.localStorage.setItem('sourceName', param)
       window.localStorage.setItem('sourceProductId', product.id)
@@ -474,6 +486,7 @@ export default function Product() {
     }, []);
   }
   productData = product
+  productVariants = product.variants.nodes
 
   return (
     <>
@@ -823,6 +836,7 @@ export function ProductForm() {
 }
 
 function ProductOptions({ options, searchParamsWithDefaults }) {
+  const checkOpt = options.map(i => { return i.name })
   const closeRef = useRef(null);
   return (
     <>
@@ -884,6 +898,7 @@ function ProductOptions({ options, searchParamsWithDefaults }) {
                                     active && 'bg-primary/10',
                                   )}
                                   searchParams={searchParamsWithDefaults}
+                                  checkOpt={checkOpt}
                                   onClick={() => {
                                     if (!closeRef?.current) return;
                                     closeRef.current.click();
@@ -918,6 +933,7 @@ function ProductOptions({ options, searchParamsWithDefaults }) {
                           optionName={option.name}
                           optionValue={value}
                           searchParams={searchParamsWithDefaults}
+                          checkOpt={checkOpt}
                           className={clsx(
                             'leading-none py-1 border-b-[1.5px] cursor-pointer transition-all duration-200 bord_sku',
                             checked ? 'active_sku' : '',
@@ -954,10 +970,36 @@ function funcUrlDel(name) {
   };
 }
 
+function getVariantId(query, checkOpt) {
+  if (query) {
+    var obj = {}
+    var stringurl = []
+    var arr = query.split("&");
+    for (var i = 0; i < arr.length; i++) {
+      arr[i] = arr[i].split("=");
+      obj[arr[i][0]] = arr[i][1];
+      if (checkOpt.join(',').indexOf(arr[i][0]) > -1) {
+        stringurl.push(arr[i][1])
+      }
+    };
+    delete obj['variant'];
+    if (stringurl && stringurl.length > 0 && productVariants && productVariants.length > 0) {
+      let variantId = productVariants.filter(i => i.title === stringurl.join(' / '))[0]
+      if (variantId) {
+        obj.variant = setSplit(variantId.id)
+        return setSplit(variantId.id)
+        // var url = JSON.stringify(obj).replace(/[\"\{\}]/g, "").replace(/\:/g, "=").replace(/\,/g, "&").replace(/\?/g, "=");
+        // return url
+      }
+    }
+  }
+}
+
 function ProductOptionLink({
   optionName,
   optionValue,
   searchParams,
+  checkOpt,
   children,
   ...props
 }) {
@@ -970,15 +1012,13 @@ function ProductOptionLink({
 
   const clonedSearchParams = new URLSearchParams(searchParams);
   clonedSearchParams.set(optionName, optionValue);
-  let splicParam = clonedSearchParams.toString()
-  var canUseDOM = !!(typeof window !== "undefined" && typeof window.document !== "undefined" && typeof window.location !== "undefined");
-  if (canUseDOM && window.location.search && window.location.search.indexOf('source') > -1) {
-    // window.open(`${window.location.pathname}?${funcUrlDel('source')}`, '_self')
-    // console.log(window.location)
-    // splicParam = funcUrlDel('source')
+  if (checkOpt && checkOpt.length > 0) {
+    let newparam = getVariantId(clonedSearchParams.toString(), checkOpt)
+    if (newparam) {
+      clonedSearchParams.set('variant', newparam);
+    }
   }
-  // console.log(splicParam)
-  // console.log(clonedSearchParams.toString())
+  let splicParam = clonedSearchParams.toString()
 
   return (
     <Link
@@ -1058,7 +1098,7 @@ const PRODUCT_QUERY = `#graphql
           ...Media
         }
       }
-      variants(first: 1) {
+      variants(first: 250) {
         nodes {
           ...ProductVariantFragment
         }
@@ -1122,4 +1162,13 @@ async function getRecommendedProducts(storefront, productId) {
   mergedProducts.splice(originalProduct, 1);
 
   return mergedProducts;
+}
+
+function setSplit(data) {
+  if (data.indexOf('/') > -1) {
+    let arr = data.split('/')
+    return arr[arr.length - 1]
+  } else {
+    return data
+  }
 }

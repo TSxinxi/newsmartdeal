@@ -18,7 +18,7 @@ export function ProductGallery({ media, product, className }) {
     } else {
       setImgUrl(media && media.length > 0 ? media[0].image : '')
     }
-  }, [product])
+  }, [product.selectedVariant])
 
 
   return (
