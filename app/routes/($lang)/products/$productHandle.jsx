@@ -932,7 +932,7 @@ function ProductOptions({ options, searchParamsWithDefaults }) {
                     const id = `option-${option.name}-${value}`;
 
                     return (
-                      <Text key={id}>
+                      <Text key={id} style={{ marginBottom: '10px' }}>
                         <ProductOptionLink
                           optionName={option.name}
                           optionValue={value}
@@ -976,6 +976,9 @@ function funcUrlDel(name) {
 
 function getVariantId(query, checkOpt) {
   if (query) {
+    // let aaa = Object.fromEntries(new URLSearchParams(query).entries())
+    // console.log(JSON.stringify(aaa).replace(/[\"\{\}]/g, "").replace(/\:/g, "=").replace(/\,/g, "&").replace(/\?/g, "="))
+    query = query.replace(/\+/g, ' ')
     var obj = {}
     var stringurl = []
     var arr = query.split("&");
