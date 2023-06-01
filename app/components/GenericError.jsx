@@ -32,9 +32,9 @@ export function GenericError({error}) {
             }}
           />
         )}
-        <Button width="auto" variant="secondary" to={'/'}>
+        {/* <Button width="auto" variant="secondary" to={'/'}>
           Take me to the home page
-        </Button>
+        </Button> */}
       </PageHeader>
     </>
   );

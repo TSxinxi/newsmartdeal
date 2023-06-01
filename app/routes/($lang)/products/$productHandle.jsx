@@ -29,6 +29,7 @@ import {
 import invariant from 'tiny-invariant';
 import clsx from 'clsx';
 import { MEDIA_FRAGMENT, PRODUCT_CARD_FRAGMENT } from '~/data/fragments';
+const LText = getLanguage()
 
 const seo = ({ data }) => {
   const media = flattenConnection(data.product.media).find(
@@ -207,7 +208,7 @@ function GetCommentHeader() {
           let averageWrapper = urlDivHead.getElementsByClassName('jdgm-rev-widg__sort-wrapper')[0]
 
           if (averageWrapper) {
-            averageWrapper.innerHTML = `<button class='add_comment'>إلغاء التقييم</button>`
+            averageWrapper.innerHTML = `<button class='add_comment'>${LText.addComment}</button>`
           }
           if (averageText) {
             if (averageText.innerHTML === 'Be the first to write a review') {
@@ -379,13 +380,13 @@ function randomString() {
 // 提交评论
 function submitReview(params, imgList, setErrorText, setIsSuccess) {
   if (!params.body) {
-    return setErrorText({ type: 1, content: 'هذه الخانة مطلوبه.' })
+    return setErrorText({ type: 1, content: LText.error })
   }
   if (!params.name) {
-    return setErrorText({ type: 2, content: 'هذه الخانة مطلوبه.' })
+    return setErrorText({ type: 2, content: LText.error })
   }
   if (!params.email) {
-    return setErrorText({ type: 3, content: 'هذه الخانة مطلوبه.' })
+    return setErrorText({ type: 3, content: LText.error })
   }
   var emailRegExp = /^[a-zA-Z0-9]+([-_.][A-Za-zd]+)*@([a-zA-Z0-9]+[-.])+[A-Za-zd]{2,5}$/;
   if (!emailRegExp.test(params.email)) {
@@ -548,7 +549,7 @@ export default function Product() {
         <div>
           {commentHeader && (
             <div className='comment_box'>
-              <div className='comment_box_title'>{getLanguage().comTit}</div>
+              <div className='comment_box_title'>{LText.comTit}</div>
               <div
                 className="dark:prose-invert comment_box_content"
                 dangerouslySetInnerHTML={{ __html: commentHeader }}
@@ -556,9 +557,9 @@ export default function Product() {
               />
               <div className='jq_slow'>
                 <div className='write_review'>
-                  <div className='write_review_title'>إضافة تقييم</div>
+                  <div className='write_review_title'>{LText.addComment}</div>
                   <div className='write_review_li'>
-                    <div className="write_review_name">علامة التقييم</div>
+                    <div className="write_review_name">{LText.rating}</div>
                     <div className='star_score'>
                       {
                         ['', '', '', '', ''].map((item, index) => {
@@ -573,18 +574,18 @@ export default function Product() {
                     </div>
                   </div>
                   <div className='write_review_li'>
-                    <div className="write_review_name">عنوان التقييم</div>
-                    <input type="text" placeholder='كتابة عنوان لتقييمك' value={reviewTitle} onChange={(e) => { setReviewTitle(e.target.value) }} />
+                    <div className="write_review_name">{LText.reviewTitle}</div>
+                    <input type="text" placeholder={LText.reviewTiPle} value={reviewTitle} onChange={(e) => { setReviewTitle(e.target.value) }} />
                   </div>
                   <div className='write_review_li'>
-                    <div className="write_review_name">مراجعة</div>
-                    <textarea type="text" placeholder='كتابة تعليقك هنا' value={review} onChange={(e) => { setErrorText({ type: 1, content: e.target.value ? '' : 'هذه الخانة مطلوبه.' }), setReview(e.target.value) }} />
+                    <div className="write_review_name">{LText.review}</div>
+                    <textarea type="text" placeholder={LText.reviewPle} value={review} onChange={(e) => { setErrorText({ type: 1, content: e.target.value ? '' : LText.error }), setReview(e.target.value) }} />
                     {
                       errorText.type === 1 && errorText.content ? <div className='error_text'>{errorText.content}</div> : null
                     }
                   </div>
                   <div className='write_review_li'>
-                    <div className="write_review_name">صورة / فيديو (اختياري)</div>
+                    <div className="write_review_name">{LText.picture}</div>
                     <div className="write_review_img">
                       <div className='write_review_cont'>
                         <span className='write_review_cont_icon'>
@@ -604,7 +605,7 @@ export default function Product() {
                   </div>
                   <div className='write_review_li'>
                     <div className="write_review_name">
-                      <span>الإسم (معروضة بشكل عام مثل </span>
+                      <span>{LText.selectName}</span>
                       <select className="write_review_select" value={reviewer_name_format} onChange={(e) => { setFrmat(e.target.value) }} >
                         <option value="">John Smith</option>
                         <option value="last_initial">John S.</option>
@@ -613,20 +614,20 @@ export default function Product() {
                       </select>
                       <span> )</span>
                     </div>
-                    <input type="text" placeholder='(ادخال الإسم (عام' value={name} onChange={(e) => { setErrorText({ type: 2, content: e.target.value ? '' : 'هذه الخانة مطلوبه.' }), setName(e.target.value) }} />
+                    <input type="text" placeholder={LText.namePle} value={name} onChange={(e) => { setErrorText({ type: 2, content: e.target.value ? '' : LText.error }), setName(e.target.value) }} />
                     {
                       errorText.type === 2 && errorText.content ? <div className='error_text'>{errorText.content}</div> : null
                     }
                   </div>
                   <div className='write_review_li'>
-                    <div className="write_review_name">الإيميل</div>
-                    <input name="email" type="text" placeholder='إدخال إيميلك (خاص)' value={email} onChange={(e) => { setErrorText({ type: 3, content: e.target.value ? '' : 'هذه الخانة مطلوبه.' }), setEmail(e.target.value) }} />
+                    <div className="write_review_name">{LText.emailN}</div>
+                    <input name="email" type="text" placeholder={LText.emailPle} value={email} onChange={(e) => { setErrorText({ type: 3, content: e.target.value ? '' : LText.error }), setEmail(e.target.value) }} />
                     {
                       errorText.type === 3 && errorText.content ? <div className='error_text'>{errorText.content}</div> : null
                     }
                   </div>
                   <div className="write_review_btn">
-                    <button className='cancel' onClick={() => { WriteReview() }}>إلغاء التقييم</button>
+                    <button className='cancel' onClick={() => { WriteReview() }}>{LText.cancelRe}</button>
                     <button className='submit' onClick={() => {
                       submitReview(
                         {
@@ -645,14 +646,14 @@ export default function Product() {
                         setErrorText,
                         setIsSuccess
                       )
-                    }}>إرسال التقييم</button>
+                    }}>{LText.submitRe}</button>
                   </div>
                 </div>
               </div>
               {
                 isSuccess ? <div className='review_submit'>
-                  <div className="review_submit_tit">Review Submitted!</div>
-                  <div className="review_submit_content">Thank you! Please refresh the page in a few moments to see your review.</div>
+                  <div className="review_submit_tit">{LText.subReview}</div>
+                  <div className="review_submit_content">{LText.subComtent}</div>
                 </div> : null
               }
             </div>
@@ -661,13 +662,13 @@ export default function Product() {
             <div className='comment_box'>
               <div className='comment_screen'>
                 <select value={sortBy} onChange={(e) => { setScreen(e.target.value, product_id, setComment, setSortBy, filtRat) }} >
-                  <option value="created_at">الأحدث أولاً</option>
-                  <option value="desc">الأعلى تقييماً</option>
-                  <option value="asc">الأدنى تقييماً</option>
-                  <option value="with_pictures">صور فقط</option>
-                  <option value="pictures_first">الصور أولاً</option>
-                  <option value="videos_first">مقاطع الفيديو أولاً</option>
-                  <option value="most_helpful">الأكثر فائدة</option>
+                  <option value="created_at">{LText.screenCreate}</option>
+                  <option value="desc">{LText.screenDesc}</option>
+                  <option value="asc">{LText.screenAsc}</option>
+                  <option value="with_pictures">{LText.screenWith}</option>
+                  <option value="pictures_first">{LText.screenPic}</option>
+                  <option value="videos_first">{LText.screenVideo}</option>
+                  <option value="most_helpful">{LText.screenMost}</option>
                 </select>
               </div>
               <div
@@ -682,14 +683,14 @@ export default function Product() {
           <div className="grid items-stretch gap-4 sticky_bottom">
             <button className={`inline-block rounded font-medium text-center w-full ${isOutOfStock ? 'border border-primary/10 bg-contrast text-primary' : 'bg-primary text-contrast'}`}>
               {isOutOfStock ? (
-                <Text className='py-3 px-6'>{getLanguage().sold}</Text>//卖完了
+                <Text className='py-3 px-6'>{LText.sold}</Text>//卖完了
               ) : (
                 <Text //立即购买
                   as="span"
                   className="flex items-center justify-center gap-2 py-3 px-6"
                   onClick={() => { goSettleAccounts() }}
                 >
-                  <span>{getLanguage().buy}</span>
+                  <span>{LText.buy}</span>
                 </Text>
               )}
             </button>
