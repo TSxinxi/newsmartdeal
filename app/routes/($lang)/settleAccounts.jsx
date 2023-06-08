@@ -3,7 +3,8 @@ import { useRef, useMemo, useEffect, useState } from 'react';
 import { Money } from '@shopify/hydrogen';
 import { Text } from '~/components';
 import fetch from '~/fetch/axios';
-import { getShopAddress } from '~/lib/P_Variable';
+import { getShopAddress, getLanguage } from '~/lib/P_Variable';
+const LText = getLanguage()
 const addressList = [
   {
     name: '（المحافظة）إختر',
@@ -826,27 +827,30 @@ const addressList = [
     ],
   },
 ]
+let productData = ''
 
 export default function settleAccounts() {
   const [hasMounted, setHasMounted] = useState(false);
+  const [selectedVar, setSelectVar] = useState('');
   useEffect(() => {
     setHasMounted(true);
-  }, []);
-  if (!hasMounted) {
-    return null;
-  }
+    var canUseDOM = !!(typeof window !== "undefined" && typeof window.document !== "undefined" && typeof window.localStorage !== "undefined");
+    if (canUseDOM && window.localStorage.getItem('productVariant')) {
+      productData = JSON.parse(window.localStorage.getItem('productVariant'))
+      const firstVariant = productData.variants.nodes[0];
+      setSelectVar(productData.selectedVariant ?? firstVariant)
 
-
-  var canUseDOM = !!(typeof window !== "undefined" && typeof window.document !== "undefined" && typeof window.localStorage !== "undefined");
-  let product = '';
-  if (canUseDOM && window.localStorage.getItem('selectedVariant')) {
-    product = JSON.parse(window.localStorage.getItem('selectedVariant'))
-    product.product_id = new URLSearchParams(window.location.search).get('id');
-    if (!product.availableForSale) {
-      window.open(`/products/${product.product.handle}`, '_self')
+      // selectedVar = JSON.parse(window.localStorage.getItem('selectedVariant'))
+      // selectedVar.product_id = new URLSearchParams(window.location.search).get('id');
+      // if (!selectedVar.availableForSale) {
+      //   window.open(`/products/${selectedVar.product.handle}`, '_self')
+      // }
+    } else {
+      window.history.back()
     }
-  } else {
-    window.history.back()
+  }, []);
+  if (!hasMounted || !selectedVar) {
+    return null;
   }
 
   return (
@@ -858,36 +862,39 @@ export default function settleAccounts() {
           <i></i>
         </div>
       </div>
-      <ProductBox product={product} />
-      <Information product={product} />
-      <PaymentMethod />
+      <ProductBox selectedVar={selectedVar} />
+      <div className='order_content'>
+        <Variant selectedVar={selectedVar} setSelectVar={setSelectVar} />
+        <Information selectedVar={selectedVar} />
+        <PaymentMethod />
+      </div>
     </div>
   )
 }
 
-export function ProductBox({ product }) {
+export function ProductBox({ selectedVar }) {
   return (
     <div className='product_box shadow_box' >
-      <img src={product.image.url} />
+      <img src={selectedVar.image.url} />
       <div className='product_title'>
-        <span>{product.product.title}</span>
-        <span>{product.title}</span>
+        <span>{selectedVar.product.title}</span>
+        <span>{selectedVar.title}</span>
         <Text
           as="span"
           className="flex items-center gap-2"
         >
           {/* {
-            product.compareAtPrice ? 
+            selectedVar.compareAtPrice ? 
             <Money
               withoutTrailingZeros
-              data={product.compareAtPrice}
+              data={selectedVar.compareAtPrice}
               as="span"
               className="opacity-50 strike"
             /> : null
           } */}
           <Money
             withoutTrailingZeros
-            data={product.price}
+            data={selectedVar.price}
             as="span"
           />
         </Text>
@@ -896,8 +903,100 @@ export function ProductBox({ product }) {
   );
 }
 
+export function Variant({ selectedVar, setSelectVar }) {
+  const [options, setOptions] = useState([]);
+  useEffect(() => {
+    let newoptions = productData.options.map(item => {
+      item.values = item.values.map(val => {
+        let obj = {
+          value: val,
+          active: false
+        }
+        selectedVar.selectedOptions.forEach(pop => {
+          if (pop.name === item.name && val === pop.value) {
+            obj.active = true
+          }
+        })
+        return obj
+      })
+      return item
+    })
+    setOptions(newoptions || [])
+  }, []);
 
-export function Information({ product }) {
+  return (
+    <div className='variant_box'>
+      {options
+        .filter((option) => option.values.length > 1)
+        .map((option) => (
+          <div key={option.name} className='variant_li'>
+            <div className='title'>{option.name}</div>
+            {option.values.length > 7 ? (
+              <select value={option.values.filter(i => i.active)[0].value} onChange={(e) => { changeVariant(setSelectVar, setOptions, options, e.target.value, option.name) }} >
+                {
+                  option.values.map((item, index) => {
+                    return (
+                      <option value={item.value} key={index}>{item.value}</option>
+                    )
+                  })
+                }
+              </select>
+            ) : (
+              <div className='flex_center'>{option.values.map((item, index) => {
+                return (
+                  <div className={item.active ? 'active_sku bord_sku' : 'bord_sku'} key={index} onClick={() => { changeVariant(setSelectVar, setOptions, options, item.value, option.name) }}>{item.value}</div>
+                )
+              })}</div>
+            )}
+          </div>
+        ))}
+    </div >
+  );
+}
+function changeVariant(setSelectVar, setOptions, options, value, option) {
+  let copyOpt = [...options]
+  let variantsList = productData.variants.nodes || []
+  copyOpt.forEach(item => {
+    if (item.name === option) {
+      item.values.forEach(val => {
+        val.active = false
+        if (val.value === value) {
+          val.active = true
+        }
+      })
+    }
+  })
+
+  // let joinOpt = copyOpt.map(item => { return item.values.filter(i => i.active)[0].value }).join(' / ')
+  let filterOpt = copyOpt.map(item => {
+    return {
+      name: item.name,
+      value: item.values.filter(i => i.active)[0].value
+    }
+  })
+
+  if (variantsList && variantsList.length > 0) {
+    variantsList.forEach(varItem => {
+      varItem._list = [];
+      varItem.selectedOptions.forEach(item => {
+        const _item = filterOpt.find(i => i.value == item.value);
+        if (_item && _item.name == item.name) {
+          varItem._list.push(_item)
+        }
+      })
+      // if (item.title === joinOpt) {
+      //   setSelectVar(item)
+      // }
+    })
+    let selectOpt = variantsList.filter(i => i._list && i._list.length === filterOpt.length)[0]
+    if (selectOpt) {
+      setSelectVar(selectOpt)
+      setOptions(copyOpt)
+    }
+  }
+}
+
+export function Information({ selectedVar }) {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [whatsapp, setWhatsapp] = useState('');
@@ -1020,37 +1119,39 @@ export function Information({ product }) {
           >
             <Money
               withoutTrailingZeros
-              data={product.price}
+              data={selectedVar.price}
               as="span"
             />
           </Text>
-          <button className='inline-block rounded font-medium text-center w-full bg-primary text-contrast' onClick={() => {
-            SettleAccounts(
-              product,
-              {
-                name: name,
-                email: email,
-                phone: phone,
-                whatsapp: whatsapp,
-                country: 'Saudi Arabia',
-                state: state,
-                city: city,
-                area: area,
-                building: building,
-                street: street,
-                nearest_land_mark: nearest,
-                message: message,
-              },
-              setErrorText
-            )
-          }}>
-            <Text
-              as="span"
-              className="flex items-center justify-center gap-2 py-3 px-6"
-            >
-              <span>التحقق وتقديم الطلب</span>
-            </Text>
-          </button>
+          {
+            selectedVar.availableForSale ? <button className='inline-block rounded font-medium text-center w-full bg-primary text-contrast' onClick={() => {
+              SettleAccounts(
+                selectedVar,
+                {
+                  name: name,
+                  email: email,
+                  phone: phone,
+                  whatsapp: whatsapp,
+                  country: 'Saudi Arabia',
+                  state: state,
+                  city: city,
+                  area: area,
+                  building: building,
+                  street: street,
+                  nearest_land_mark: nearest,
+                  message: message,
+                },
+                setErrorText
+              )
+            }}>
+              <Text
+                as="span"
+                className="flex items-center justify-center gap-2 py-3 px-6"
+              >
+                <span>التحقق وتقديم الطلب</span>
+              </Text>
+            </button> : <button className='inline-block rounded font-medium text-center w-full border border-primary/10 bg-contrast text-primary'>{LText.sold}</button>
+          }
         </div>
       </div>
       {errorText ? <div className='error_box'>
@@ -1095,7 +1196,7 @@ export function PaymentMethod() {
   )
 }
 
-function SettleAccounts(product, params, setErrorText) {
+function SettleAccounts(selectedVar, params, setErrorText) {
   if (!params.name || !params.phone || !params.whatsapp || !params.state || !params.city || !params.area || !params.building || !params.street || !params.nearest_land_mark || !params.email) {
     return setErrorText('الحقول لا يمكن أن تكون فارغة')
   }
@@ -1110,9 +1211,9 @@ function SettleAccounts(product, params, setErrorText) {
     return setErrorText('أدخل رقم هاتف صالح')
   }
   let line_items = [{
-    product_id: setSplit(product.product_id),
+    product_id: setSplit(productData.id),
     quantity: 1,
-    variant_id: setSplit(product.id),
+    variant_id: setSplit(selectedVar.id),
   }]
   params.line_items = line_items
   params.count = 1

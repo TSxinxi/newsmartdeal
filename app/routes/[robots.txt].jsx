@@ -25,6 +25,7 @@ Disallow: /carts
 Disallow: /account
 Disallow: /settleAccounts
 Disallow: /thank_you
+Disallow: /articleNav
 ${sitemapUrl ? `Sitemap: ${sitemapUrl}` : ''}
 
 # Google adsbot ignores robots.txt unless specifically named!
@@ -35,6 +36,7 @@ Disallow: /carts
 Disallow: /settleAccounts
 Disallow: /orders
 Disallow: /thank_you
+Disallow: /articleNav
 
 User-agent: Pinterest
 Crawl-delay: 1

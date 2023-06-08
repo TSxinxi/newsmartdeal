@@ -1,4 +1,4 @@
-import {useIsHomePath} from '~/lib/utils';
+import { useIsHomePath } from '~/lib/utils';
 import {
   Drawer,
   useDrawer,
@@ -16,15 +16,15 @@ import {
   CartLoading,
   Link,
 } from '~/components';
-import {Await, useMatches} from '@remix-run/react';
-import {Suspense, useEffect} from 'react';
-import {useCartFetchers} from '~/hooks/useCartFetchers';
+import { Await, useMatches } from '@remix-run/react';
+import { Suspense, useEffect } from 'react';
+import { useCartFetchers } from '~/hooks/useCartFetchers';
 import { openWhatsApp } from '~/lib/P_Variable';
 
-export function Layout({children, layout}) {
+export function Layout({ children, layout }) {
   return (
     <>
-      <div className="flex flex-col min-h-screen">
+      <div className="flex flex-col min-h-screen" style={{ color: '#141414E6' }}>
         {/* <div className="">
           <a href="#mainContent" className="sr-only">
             Skip to content
@@ -37,9 +37,9 @@ export function Layout({children, layout}) {
         <main role="main" id="mainContent" className="flex-grow">
           {children}
         </main>
-        { openWhatsApp().isOpen ? <div className="stick_service">
+        {openWhatsApp().isOpen ? <div className="stick_service">
           <img src="https://platform.antdiy.vip/static/image/hydrogen_icon_whatsapp.svg" alt="" onClick={() => { goWhatsApp() }} />
-        </div> : null }
+        </div> : null}
       </div>
       {/* <Footer menu={layout?.footerMenu} /> */}
     </>
@@ -51,7 +51,7 @@ function goWhatsApp() {
   window.open(whatsapp_url + window.location.href);
 }
 
-function Header({title, menu}) {
+function Header({ title, menu }) {
   const isHome = useIsHomePath();
 
   const {
@@ -96,7 +96,7 @@ function Header({title, menu}) {
   );
 }
 
-function CartDrawer({isOpen, onClose}) {
+function CartDrawer({ isOpen, onClose }) {
   const [root] = useMatches();
 
   return (
@@ -112,7 +112,7 @@ function CartDrawer({isOpen, onClose}) {
   );
 }
 
-export function MenuDrawer({isOpen, onClose, menu}) {
+export function MenuDrawer({ isOpen, onClose, menu }) {
   return (
     <Drawer open={isOpen} onClose={onClose} openFrom="left" heading="Menu">
       <div className="grid">
@@ -122,7 +122,7 @@ export function MenuDrawer({isOpen, onClose, menu}) {
   );
 }
 
-function MenuMobileNav({menu, onClose}) {
+function MenuMobileNav({ menu, onClose }) {
   return (
     <nav className="grid gap-4 p-6 sm:gap-6 sm:px-12 sm:py-8">
       {(menu?.items || []).map((item) => (
@@ -131,7 +131,7 @@ function MenuMobileNav({menu, onClose}) {
             to={item.to}
             target={item.target}
             onClick={onClose}
-            className={({isActive}) =>
+            className={({ isActive }) =>
               isActive ? 'pb-1 border-b -mb-px' : 'pb-1'
             }
           >

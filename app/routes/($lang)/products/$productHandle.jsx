@@ -28,6 +28,7 @@ import {
 } from '~/components';
 import invariant from 'tiny-invariant';
 import clsx from 'clsx';
+import { allCurrency } from "../../../lib/currencyList";
 import { MEDIA_FRAGMENT, PRODUCT_CARD_FRAGMENT } from '~/data/fragments';
 const LText = getLanguage()
 
@@ -212,18 +213,23 @@ function GetCommentHeader() {
           }
           if (averageText) {
             if (averageText.innerHTML === 'Be the first to write a review') {
-              averageText.innerHTML = 'لا يوجد تقييمات بعد'
+              averageText.innerHTML = LText.commentResult
             } else {
               let summaryNum = averageText.innerHTML.match(/\d+(\.\d+)?/g)[0]
               if (summaryNum) {
-                averageText.innerHTML = `بناءً على ${summaryNum} تقييمات`
+                averageText.innerHTML = LText.based1 + summaryNum + LText.based2
               }
             }
           }
           if (averageNumStr) {
             let averageNum = averageNumStr.getAttribute("aria-label").match(/\d+(\.\d+)?/g)[0]
             if (averageNum) {
-              averageNumStr.innerHTML = averageNum + averageNumStr.innerHTML + ` من 5`
+              if (LText.type === 'SA') {
+                averageNumStr.innerHTML = averageNum + averageNumStr.innerHTML + ` من 5`
+              } else {
+                averageNumStr.style.direction = 'initial'
+                averageNumStr.innerHTML = `${averageNum} out of 5`
+              }
             }
           }
           if (averageRow && averageRow.length > 0) {
@@ -290,7 +296,7 @@ function clickComment(e, setFiltRat, product_id, sortBy, setComment) {
     GetJudge(product_id, 1, sortBy, rating).then(res => {
       if (res) {
         setComment(res)
-        $('.jdgm-histogram__clear-filter')[0].innerHTML = 'مشاهدة جميع التقييمات'
+        $('.jdgm-histogram__clear-filter')[0].innerHTML = LText.seeAll
       }
     })
   }
@@ -302,7 +308,7 @@ function WriteReview() {
 function changeImg(e, imgList, setImgList, imgKey, setImgKey) {
   let files = e.target.files
   if (files.length + imgList.length > 5) {
-    alert('معذرةً ، لا يمكننا قبول سوى 5 images لمراجعة واحدة.')
+    alert(LText.image5)
     return
   }
 
@@ -390,7 +396,7 @@ function submitReview(params, imgList, setErrorText, setIsSuccess) {
   }
   var emailRegExp = /^[a-zA-Z0-9]+([-_.][A-Za-zd]+)*@([a-zA-Z0-9]+[-.])+[A-Za-zd]{2,5}$/;
   if (!emailRegExp.test(params.email)) {
-    return setErrorText({ type: 3, content: 'الرجاء ادخال إيميل صحيح' })
+    return setErrorText({ type: 3, content: LText.rightEmail })
   }
 
   let requestConfig = {
@@ -442,9 +448,15 @@ export default function Product() {
   const { shippingPolicy, refundPolicy } = shop;
   const firstVariant = product.variants.nodes[0];
   const selectedVariant = product.selectedVariant ?? firstVariant;
+  const isOnSale =
+    selectedVariant?.price?.amount &&
+    selectedVariant?.compareAtPrice?.amount &&
+    selectedVariant?.price?.amount < selectedVariant?.compareAtPrice?.amount;
   const isOutOfStock = !selectedVariant?.availableForSale;
   const strProductId = product.id.lastIndexOf("/");
   let product_id = strProductId ? product.id.slice(strProductId + 1) : '';
+  let currencyCode = selectedVariant?.price?.currencyCode
+  const siteObj = currencyCode && allCurrency[currencyCode] ? allCurrency[currencyCode] : null
 
   const [commentHtml, setComment] = useState('');
   const [commentHeader, setCommentHeader] = useState('');
@@ -488,6 +500,7 @@ export default function Product() {
           }
         })
       }
+      toTop()
     }, []);
   }
   productData = product
@@ -496,6 +509,27 @@ export default function Product() {
   return (
     <>
       <Section padding="x" className="px-0 prodect_section">
+        <div className='top_height'>
+          <div className='product_top top_height'>
+            {
+              siteObj ? <div className='site'>
+                <div style={{
+                  backgroundImage: 'url(https://app-resources.v2diy.com/pro/currency/img/currency-flags.png)',
+                  backgroundRepeat: 'no-repeat',
+                  float: 'left',
+                  width: '30px',
+                  height: '20px',
+                  borderRadius: '3px',
+                  backgroundPosition: siteObj.left + " " + siteObj.top,
+                  transform: 'scale(0.7)',
+                }}></div>
+                <span>{siteObj.value}</span>
+              </div> : <div></div>
+            }
+            <img src='https://platform.antdiy.vip/static/image/HULTOO_icon.png' />
+            <p onClick={() => { window.open('https://' + getShopAddress()) }}><img src='https://platform.antdiy.vip/static/image/hultoo_home.svg' /></p>
+          </div>
+        </div>
         <div className="product_details items-start md:gap-6 md:grid-cols-2">
           {/* 详情页右侧 */}
           <ProductGallery
@@ -505,7 +539,7 @@ export default function Product() {
           />
           <div className="left_product sticky md:-mb-nav md:top-nav md:-translate-y-nav md:pt-nav hiddenScroll">
             <section className="flex flex-col w-full max-w-xl gap-8 md:mx-auto md:max-w-sm md:px-0" style={{ color: '#141414E6' }}>
-              <div className="grid gap-2">
+              <div className="grid gap-2 padding_12">
                 <Heading as="h1" className="whitespace-normal">
                   {title}
                 </Heading>
@@ -515,11 +549,13 @@ export default function Product() {
               </div>
               <ProductForm />
               {descriptionHtml && (
-                <div
-                  className="prose dark:prose-invert"
-                  style={{ overflow: 'hidden' }}
-                  dangerouslySetInnerHTML={{ __html: descriptionHtml }}
-                />
+                <div className='padding_12 borderf5'>
+                  <div
+                    className="prose dark:prose-invert info_color"
+                    style={{ overflow: 'hidden', margin: 'auto' }}
+                    dangerouslySetInnerHTML={{ __html: descriptionHtml }}
+                  />
+                </div>
               )}
               {/* <div className="grid gap-4 py-4">
                 {descriptionHtml && (
@@ -546,7 +582,7 @@ export default function Product() {
             </section>
           </div>
         </div>
-        <div>
+        <div className='borderf5 comment_content'>
           {commentHeader && (
             <div className='comment_box'>
               <div className='comment_box_title'>{LText.comTit}</div>
@@ -610,7 +646,7 @@ export default function Product() {
                         <option value="">John Smith</option>
                         <option value="last_initial">John S.</option>
                         <option value="all_initials">J.S.</option>
-                        <option value="anonymous">مجهول</option>
+                        <option value="anonymous">{LText.unknown}</option>
                       </select>
                       <span> )</span>
                     </div>
@@ -679,34 +715,97 @@ export default function Product() {
             </div>
           )}
         </div>
+        <div className="article_nav">
+          {
+            LText.acticleList.map((item, index) => {
+              return <a href={`/articleNav?id=${index}&name=${item}`} key={index}>{item}</a>
+            })
+          }
+        </div>
         {selectedVariant && (
-          <div className="grid items-stretch gap-4 sticky_bottom">
-            <button className={`inline-block rounded font-medium text-center w-full ${isOutOfStock ? 'border border-primary/10 bg-contrast text-primary' : 'bg-primary text-contrast'}`}>
-              {isOutOfStock ? (
+          // <div className="grid items-stretch gap-4 sticky_bottom">
+          //   <button className={`inline-block rounded font-medium text-center w-full ${isOutOfStock ? 'border border-primary/10 bg-contrast text-primary' : 'bg-primary text-contrast'}`}>
+          //     {isOutOfStock ? (
+          //       <Text className='py-3 px-6'>{LText.sold}</Text>//卖完了
+          //     ) : (
+          //       <Text //立即购买
+          //         as="span"
+          //         className="flex items-center justify-center gap-2 py-3 px-6"
+          //         onClick={() => { goSettleAccounts() }}
+          //       >
+          //         <span>{LText.buy}</span>
+          //       </Text>
+          //     )}
+          //   </button>
+          // </div>
+          <div className='buy_button sticky_bottom'>
+            <button className='buy_btn_style'>
+              {/* {isOutOfStock ? (
                 <Text className='py-3 px-6'>{LText.sold}</Text>//卖完了
-              ) : (
-                <Text //立即购买
-                  as="span"
-                  className="flex items-center justify-center gap-2 py-3 px-6"
-                  onClick={() => { goSettleAccounts() }}
-                >
-                  <span>{LText.buy}</span>
-                </Text>
-              )}
+              ) : ( */}
+              <Text //立即购买
+                as="span"
+                className="flex items-center justify-center gap-2 py-3 px-6"
+                onClick={() => { goSettleAccounts() }}
+              >
+                <span>{LText.buy}</span>
+              </Text>
+              {/* )} */}
             </button>
+            <div className='buy_btn_price'>
+              {isOnSale && (
+                <Money
+                  withoutTrailingZeros
+                  data={selectedVariant?.compareAtPrice}
+                  as="span"
+                  className="btn_price_old"
+                />
+              )}
+              <Money
+                withoutTrailingZeros
+                data={selectedVariant?.price}
+                as="span"
+                className='btn_price_new'
+              />
+            </div>
           </div>
         )}
+        <div className='back'><span></span></div>
       </Section>
     </>
   );
 }
 
+function toTop() {
+  $(function () {
+    $(window).scroll(function () {
+      //检测滚走的高度
+      var scrollT = $(document).scrollTop();
+      var offsetT = $(".prodect_section").offset().top;
+      if (scrollT >= offsetT) {
+        $(".back").show()
+      } else {
+        $(".back").hide()
+      }
+    })
+
+    $(".back").click(function () {
+      $("html,body").animate({
+        scrollTop: 0
+      }, 200)
+    })
+  })
+}
+
 function goSettleAccounts() {
-  const firstVariant = productData.variants.nodes[0];
-  const selectedVariant = productData.selectedVariant ?? firstVariant;
-  localStorage.removeItem('selectedVariant')
-  localStorage.setItem('selectedVariant', JSON.stringify(selectedVariant))
-  window.open(`/settleAccounts?id=${productData.id}`, '_self')
+  // const firstVariant = productData.variants.nodes[0];
+  // const selectedVariant = productData.selectedVariant ?? firstVariant;
+  // localStorage.removeItem('selectedVariant')
+  // localStorage.setItem('selectedVariant', JSON.stringify(selectedVariant))
+
+  localStorage.removeItem('productVariant')
+  localStorage.setItem('productVariant', JSON.stringify(productData))
+  window.open(`/settleAccounts`, '_self')
 }
 
 export function ProductForm() {
@@ -765,30 +864,56 @@ export function ProductForm() {
   };
 
   return (
-    <div className="grid gap-10">
+    <div className="grid gap-10 padding_12">
       <div className="grid gap-4">
         <Text
           as="span"
-          className="flex items-center gap-2"
+          className="flex items-baseline gap-2"
         >
+          <Money
+            withoutTrailingZeros
+            data={selectedVariant?.price}
+            as="span"
+            className='new_price'
+          />
           {isOnSale && (
             <Money
               withoutTrailingZeros
               data={selectedVariant?.compareAtPrice}
               as="span"
-              className="opacity-50 strike"
+              className="opacity-50 strike pricing"
             />
           )}
-          <Money
-            withoutTrailingZeros
-            data={selectedVariant?.price}
-            as="span"
-          />
         </Text>
-        <ProductOptions
+        <div className='discount_box'>
+          <span>{LText.discountZone}</span>
+          <div className='label'>
+            <p>80%</p>
+            <p>OFF</p>
+          </div>
+        </div>
+        <div className='trust_box'>
+          <div>
+            <p>
+              <img src="https://platform.antdiy.vip/static/image/hultoo_tag1.svg" />
+              <span>{LText.free7}</span>
+            </p>
+          </div>
+          <div>
+            <p>
+              <img src="https://platform.antdiy.vip/static/image/hultoo_tag2.svg" />
+              <span>{LText.paying}</span>
+            </p>
+            <p>
+              <img src="https://platform.antdiy.vip/static/image/hultoo_tag3.svg" />
+              <span>{LText.deliver}</span>
+            </p>
+          </div>
+        </div>
+        {/* <ProductOptions
           options={product.options}
           searchParamsWithDefaults={searchParamsWithDefaults}
-        />
+        /> */}
         {/* {selectedVariant && (
           <div className="grid items-stretch gap-4">
             <button className={`inline-block rounded font-medium text-center w-full ${isOutOfStock ? 'border border-primary/10 bg-contrast text-primary' : 'bg-primary text-contrast'}`}>
