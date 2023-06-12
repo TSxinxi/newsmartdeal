@@ -104,7 +104,7 @@ export function Variant({ selectedVar, setSelectVar }) {
   }, []);
 
   return (
-    <div className='variant_box'>
+    <div className='variant_box padding_12'>
       {options
         .filter((option) => option.values.length > 1)
         .map((option) => (
@@ -194,8 +194,8 @@ export function Information({ selectedVar }) {
   }
   return (
     <div className='information_in'>
-      <div className='information_in_title'>{LText.recipientInfo}</div>
-      <div className='information_in_list'>
+      <div className='information_in_title padding_12'>{LText.recipientInfo}</div>
+      <div className='information_in_list padding_12'>
         <div className='in_list'>
           <div className='in_list_title'>
             <span>{LText.yourName} <i>*</i></span>
@@ -360,7 +360,7 @@ function timer(setErrorText) {
 
 export function PaymentMethod() {
   return (
-    <div>
+    <div className='padding_12'>
       <div className='payment_method'>
         <div className='information_in_title'>{LText.method}</div>
         <div>

@@ -2315,7 +2315,7 @@ select{
     width: 100%;
     max-width: 640px;
     display: flex;
-    padding: 10px;
+    padding: 10px 12px;
     margin-top: 50px;
     position: fixed;
     top: 0;
@@ -2348,10 +2348,6 @@ select{
   }
 .order_content{
     margin-top: 167px;
-    padding: 0 10px;
-  }
-.variant_box{
-    padding: 10px 0;
   }
 .flex_center{
     display: flex;
@@ -2494,10 +2490,6 @@ select{
     height: 40px;
     margin: 10px 0;
     line-height: 40px;
-    padding: 0 10px;
-  }
-.information_in_list{
-    padding: 0 10px;
   }
 .information_in .in_list{
     display: flex;
@@ -2545,12 +2537,12 @@ select{
     border-radius: 0.25rem;
     transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
     font-size: 16px;
-  }
-.payment_method{
-    padding: 0 10px;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 .settle_accounts .order_tips{
-    padding: 0 10px;
     display: flex;
     flex-direction: column;
     align-items: center;
