@@ -18,6 +18,7 @@ import styles from './styles/app.css';
 import favicon from '../public/favicon.svg';
 
 import {DEFAULT_LOCALE, parseMenu} from './lib/utils';
+import { getDirection } from '~/lib/P_Variable';
 import invariant from 'tiny-invariant';
 import {useAnalytics} from './hooks/useAnalytics';
 
@@ -84,7 +85,7 @@ export default function App() {
     }
   }
   return (
-    <html lang={locale.language}>
+    <html lang={locale.language} style={{ direction: getDirection() }}>
       <head>
         <Seo />
         <Meta />

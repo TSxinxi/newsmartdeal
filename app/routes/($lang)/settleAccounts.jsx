@@ -3,830 +3,9 @@ import { useRef, useMemo, useEffect, useState } from 'react';
 import { Money } from '@shopify/hydrogen';
 import { Text } from '~/components';
 import fetch from '~/fetch/axios';
-import { getShopAddress, getLanguage } from '~/lib/P_Variable';
+import { getShopAddress, getLanguage, getDirection } from '~/lib/P_Variable';
 const LText = getLanguage()
-const addressList = [
-  {
-    name: '（المحافظة）إختر',
-    value: '',
-    children: [
-      {
-        name: '（المدينة）إختر',
-        value: '',
-      },
-    ],
-  },
-  {
-    name: 'الباحة',
-    value: 'Al Baha Province',
-    children: [
-      {
-        name: '（المدينة）إختر',
-        value: '',
-      },
-      {
-        name: 'أدهم',
-        value: 'Adham',
-      },
-      {
-        name: 'العقيق',
-        value: 'Al Aqiq',
-      },
-      {
-        name: 'اللأطاولة',
-        value: 'Atawleh',
-      },
-      {
-        name: 'الباحة',
-        value: 'Al baha',
-      },
-      {
-        name: 'بلجرشي',
-        value: 'Baljurashi',
-      },
-      {
-        name: 'قلوة',
-        value: 'Qilwah',
-      },
-      {
-        name: 'المندق',
-        value: 'Al Mandaq',
-      },
-      {
-        name: 'مخواه',
-        value: 'Almakhwah',
-      },
-      {
-        name: 'المظيلف',
-        value: 'Almuzaylif',
-      },
-    ],
-  },
-  {
-    name: 'المدينة المنورة',
-    value: 'Madinah Province',
-    children: [
-      {
-        name: '（المدينة）إختر',
-        value: '',
-      },
-      {
-        name: 'بدر',
-        value: 'Badr',
-      },
-      {
-        name: 'الحناكية',
-        value: 'Al Henakiyah',
-      },
-      {
-        name: 'خيبر',
-        value: 'Khaybar',
-      },
-      {
-        name: 'المدينة',
-        value: 'Madinah',
-      },
-      {
-        name: 'مهد الدهب',
-        value: 'Mahd adh Dhahab',
-      },
-      {
-        name: 'العلا',
-        value: 'Al Ula',
-      },
-      {
-        name: 'ينبع',
-        value: 'Yanbu',
-      },
-    ],
-  },
-  {
-    name: 'الرياض',
-    value: 'Riyadh Province',
-    children: [
-      {
-        name: '（المدينة）إختر',
-        value: '',
-      },
-      {
-        name: 'عفيف',
-        value: 'Afif',
-      },
-      {
-        name: 'الأفلاج',
-        value: 'AlAflaj',
-      },
-      {
-        name: 'الغاط',
-        value: 'Al Ghat',
-      },
-      {
-        name: 'المزاحمية',
-        value: 'Al Muzahimiyah',
-      },
-      {
-        name: 'الأرطاوية',
-        value: 'Al Artawiyah',
-      },
-      {
-        name: 'الدوادمي',
-        value: 'Dawadmi',
-      },
-      {
-        name: 'الدرعية',
-        value: 'Ad Diriyah',
-      },
-      {
-        name: 'ضرما',
-        value: 'Dhurma',
-      },
-      {
-        name: 'الدلم',
-        value: 'Ad Dilam',
-      },
-      {
-        name: 'الحريق',
-        value: 'Al Hariq',
-      },
-      {
-        name: 'حوطة بني تميم',
-        value: 'Howtat Bani Tamim',
-      },
-      {
-        name: 'حريملاء',
-        value: 'Huraymila',
-      },
-      {
-        name: 'حوطة سدير',
-        value: 'Hautat Sudair',
-      },
-      {
-        name: 'جلاجل',
-        value: 'Jalajil',
-      },
-      {
-        name: 'الخرج',
-        value: 'Kharj',
-      },
-      {
-        name: 'المجمعة',
-        value: 'Al Majmaah',
-      },
-      {
-        name: 'مرات',
-        value: 'Marat',
-      },
-      {
-        name: 'العيينة',
-        value: 'Al Uyaynah',
-      },
-      {
-        name: 'القصب',
-        value: 'Al Qasab',
-      },
-      {
-        name: 'القويعية',
-        value: 'Al Quwaiiyah',
-      },
-      {
-        name: 'رماح',
-        value: 'Rumah',
-      },
-      {
-        name: 'الرياض',
-        value: 'Riyadh',
-      },
-      {
-        name: 'روضة سدير',
-        value: 'Raudat Sudair',
-      },
-      {
-        name: 'ساجر',
-        value: 'Sajir',
-      },
-      {
-        name: 'صلبوخ',
-        value: 'Salbukh',
-      },
-      {
-        name: 'شقراء',
-        value: 'Shaqra',
-      },
-      {
-        name: 'السليل',
-        value: 'As Sulayyil',
-      },
-      {
-        name: 'ثادق',
-        value: 'Thadiq',
-      },
-      {
-        name: 'تمير',
-        value: 'Tumair',
-      },
-      {
-        name: 'وادي الدواسر',
-        value: 'Wadi adDawasir',
-      },
-      {
-        name: 'الزلفي',
-        value: 'Az Zulfi',
-      },
-    ],
-  },
-  {
-    name: 'الشرقية',
-    value: 'Eastern Province',
-    children: [
-      {
-        name: '（المدينة）إختر',
-        value: '',
-      },
-      {
-        name: 'بقيق',
-        value: 'Buqayq',
-      },
-      {
-        name: 'عين دار',
-        value: 'New Ain Dar',
-      },
-      {
-        name: 'الأحساء',
-        value: 'Hassa',
-      },
-      {
-        name: 'عنك',
-        value: 'Anak',
-      },
-      {
-        name: 'بطحاء',
-        value: 'Al Batha',
-      },
-      {
-        name: 'الدمام',
-        value: 'Dammam',
-      },
-      {
-        name: 'الظهران',
-        value: 'Dhahran',
-      },
-      {
-        name: 'حفر الباطن',
-        value: 'Hafar Al Batin',
-      },
-      {
-        name: 'حرض',
-        value: 'Haradh',
-      },
-      {
-        name: 'الحوية',
-        value: 'Hawiyah',
-      },
-      {
-        name: 'الهفوف',
-        value: 'Hofuf',
-      },
-      {
-        name: 'الجبيل',
-        value: 'Jubail',
-      },
-      {
-        name: 'الخفجي',
-        value: 'Khafji',
-      },
-      {
-        name: 'الخبر',
-        value: 'Khobar',
-      },
-      {
-        name: 'المبرز',
-        value: 'Al Mubarraz',
-      },
-      {
-        name: 'مليجة',
-        value: 'Mulayjah',
-      },
-      {
-        name: 'النعيرية',
-        value: 'Nairyah',
-      },
-      {
-        name: 'العثمانية',
-        value: 'Uthmaniyah',
-      },
-      {
-        name: 'القارة',
-        value: 'Al Qarah',
-      },
-      {
-        name: 'قرية العليا',
-        value: 'Qaryat Al Ulya',
-      },
-      {
-        name: 'القطيف',
-        value: 'Qatif',
-      },
-      {
-        name: 'القيصومة',
-        value: 'Al Qaisumah',
-      },
-      {
-        name: 'رأس الخير',
-        value: 'Ras Al Khair',
-      },
-      {
-        name: 'رأس تنورة',
-        value: 'Ras Tanura',
-      },
-      {
-        name: 'السفانية',
-        value: 'As Saffaniyah',
-      },
-      {
-        name: 'صفوى',
-        value: 'Safwa',
-      },
-      {
-        name: 'سلوى',
-        value: 'Salwa',
-      },
-      {
-        name: 'الصرّار',
-        value: 'As Sarrar',
-      },
-      {
-        name: 'سيهات',
-        value: 'Saihat',
-      },
-      {
-        name: 'تاروت',
-        value: 'Tarout',
-      },
-      {
-        name: 'العضيلية',
-        value: 'Udhailiyah',
-      },
-      {
-        name: 'العيون',
-        value: 'Al Uyun',
-      },
-    ],
-  },
-  {
-    name: 'حائل',
-    value: 'Hail Province',
-    children: [
-      {
-        name: '（المدينة）إختر',
-        value: '',
-      },
-      {
-        name: 'الحائط',
-        value: 'Al Hait',
-      },
-      {
-        name: 'الشملي',
-        value: 'Ash Shamli',
-      },
-      {
-        name: 'بقعاء',
-        value: 'Baqaa',
-      },
-      {
-        name: 'حائل',
-        value: 'Hail',
-      },
-    ],
-  },
-  {
-    name: 'مكة المكرمة',
-    value: 'Makkah Province',
-    children: [
-      {
-        name: '（المدينة）إختر',
-        value: '',
-      },
-      {
-        name: 'الهدا',
-        value: 'Alhada',
-      },
-      {
-        name: 'عمق',
-        value: 'Amaq',
-      },
-      {
-        name: 'عسفان',
-        value: 'Asfan',
-      },
-      {
-        name: 'بحره',
-        value: 'Bahrah',
-      },
-      {
-        name: 'البرك',
-        value: 'Al Birk',
-      },
-      {
-        name: 'ذهبان',
-        value: 'Dahaban',
-      },
-      {
-        name: 'جعرانة',
-        value: "Al Ju'ranah",
-      },
-      {
-        name: 'جدة',
-        value: 'Jeddah',
-      },
-      {
-        name: 'الجموم',
-        value: 'Al Jumum',
-      },
-      {
-        name: 'خليص',
-        value: 'Khulais',
-      },
-      {
-        name: 'الخرمة',
-        value: 'Al Khurma',
-      },
-      {
-        name: 'الليث',
-        value: 'Al Lith',
-      },
-      {
-        name: 'مكه',
-        value: 'Makkah',
-      },
-      {
-        name: 'مستورة',
-        value: 'Mastorah',
-      },
-      {
-        name: 'نمران',
-        value: 'Nimran',
-      },
-      {
-        name: 'القنفذة',
-        value: 'Al Qunfudhah',
-      },
-      {
-        name: 'رابغ',
-        value: 'Rabigh',
-      },
-      {
-        name: 'رنية',
-        value: 'Ranyah',
-      },
-      {
-        name: 'الطائف',
-        value: 'Taif',
-      },
-      {
-        name: 'ثول',
-        value: 'Thuwal',
-      },
-      {
-        name: 'تربة',
-        value: 'Turbah',
-      },
-      {
-        name: 'النوارية',
-        value: 'An Nawwariyyah',
-      },
-    ],
-  },
-  {
-    name: 'القصيم',
-    value: 'Al Qassim Province',
-    children: [
-      {
-        name: '（المدينة）إختر',
-        value: '',
-      },
-      {
-        name: 'الدليمية',
-        value: 'Al Dulaymiyah',
-      },
-      {
-        name: 'الرس',
-        value: 'Ar Rass',
-      },
-      {
-        name: 'عين ابن فهيد',
-        value: 'Ayn Ibn Fuhayd',
-      },
-      {
-        name: 'البدائع',
-        value: 'Al Badayea',
-      },
-      {
-        name: 'البكيرية',
-        value: 'Al Bukayriyah',
-      },
-      {
-        name: 'بريدة',
-        value: 'Buraydah',
-      },
-      {
-        name: 'ضرية',
-        value: 'Dariyah',
-      },
-      {
-        name: 'مذنب',
-        value: 'Al Mithnab',
-      },
-      {
-        name: 'عنيزة',
-        value: 'Unayzah',
-      },
-      {
-        name: 'رياض الخبراء',
-        value: 'Riyadh Al Khabra',
-      },
-      {
-        name: 'التنومه',
-        value: 'Tanumah',
-      },
-      {
-        name: 'عقلة الصقور',
-        value: 'Uglat Asugour',
-      },
-    ],
-  },
-  {
-    name: 'الجوف',
-    value: 'Al Jouf Province',
-    children: [
-      {
-        name: '（المدينة）إختر',
-        value: '',
-      },
-      {
-        name: 'أبو عجرم',
-        value: 'Abu Ajram',
-      },
-      {
-        name: 'الجوف',
-        value: 'Al Jouf',
-      },
-      {
-        name: 'دومة الجندل',
-        value: 'Dumah Al Jandal',
-      },
-      {
-        name: 'الحديثة',
-        value: 'Al Hadithah',
-      },
-      {
-        name: 'حالة عمار',
-        value: 'Halat Ammar',
-      },
-      {
-        name: 'القريات',
-        value: 'Al Qurayyat',
-      },
-      {
-        name: 'سكاكا',
-        value: 'Sakaka',
-      },
-      {
-        name: 'طبرجل',
-        value: 'Tabarjal',
-      },
-    ],
-  },
-  {
-    name: 'عسير',
-    value: 'Asir Province',
-    children: [
-      {
-        name: '（المدينة）إختر',
-        value: '',
-      },
-      {
-        name: 'ابها',
-        value: 'Abha',
-      },
-      {
-        name: 'أحد رفيدة',
-        value: 'Ahad Rafidah',
-      },
-      {
-        name: 'بللسمر',
-        value: 'Billasmar',
-      },
-      {
-        name: 'بارق',
-        value: 'Bariq',
-      },
-      {
-        name: 'بيشة',
-        value: 'Bisha',
-      },
-      {
-        name: 'ظهران الجنوب',
-        value: 'Dhahran Al Janub',
-      },
-      {
-        name: 'الحرجة',
-        value: 'Harajah',
-      },
-      {
-        name: 'خميس مشيط',
-        value: 'Khamis Mushait',
-      },
-      {
-        name: 'المجاردة',
-        value: 'Almajaridah',
-      },
-      {
-        name: 'محايل عسير',
-        value: 'Muhayil',
-      },
-      {
-        name: 'النماص',
-        value: 'Al Namas',
-      },
-      {
-        name: 'رجال ألمع',
-        value: 'Ragal Almaa',
-      },
-      {
-        name: 'سبت العلايا',
-        value: 'Sabt Al Alayah',
-      },
-      {
-        name: 'سراة عبيدة',
-        value: 'Sarat Abidah',
-      },
-      {
-        name: 'تنومة',
-        value: 'Tanomah',
-      },
-      {
-        name: 'تثليث',
-        value: 'Tathleeth',
-      },
-      {
-        name: 'الواديين',
-        value: 'Al Wadeen',
-      },
-      {
-        name: 'وادي ابن هشبل',
-        value: 'Wadi Ibn Hashbal',
-      },
-    ],
-  },
-  {
-    name: 'جازان',
-    value: 'Jizan Province',
-    children: [
-      {
-        name: '（المدينة）إختر',
-        value: '',
-      },
-      {
-        name: 'أبو عريش',
-        value: 'Abu Arish',
-      },
-      {
-        name: 'الداير',
-        value: 'Addayer',
-      },
-      {
-        name: 'أحد المسارحة',
-        value: 'Ahad Al Masarihah',
-      },
-      {
-        name: 'العارضة',
-        value: 'Al Aridhah',
-      },
-      {
-        name: 'بيش',
-        value: 'Baish',
-      },
-      {
-        name: 'ضمد',
-        value: 'Damad',
-      },
-      {
-        name: 'الدرب',
-        value: 'Ad Darb',
-      },
-      {
-        name: 'فرسان',
-        value: 'Farasan',
-      },
-      {
-        name: 'جيزان',
-        value: 'Jizan',
-      },
-      {
-        name: 'الكربوس',
-        value: 'Al Karbus',
-      },
-      {
-        name: 'صبيا',
-        value: 'Sabya',
-      },
-      {
-        name: 'صامطة',
-        value: 'Samtah',
-      },
-    ],
-  },
-  {
-    name: 'نجران',
-    value: 'Najran Province',
-    children: [
-      {
-        name: '（المدينة）إختر',
-        value: '',
-      },
-      {
-        name: 'نجران',
-        value: 'Najran',
-      },
-      {
-        name: 'شرورة',
-        value: 'Sharorah',
-      },
-      {
-        name: 'حبونا',
-        value: 'Hubuna',
-      },
-      {
-        name: 'ثار',
-        value: 'Thar',
-      },
-      {
-        name: 'يدمة',
-        value: 'Yadamah',
-      },
-    ],
-  },
-  {
-    name: 'الحدود الشمالية',
-    value: 'Northern Borders Province',
-    children: [
-      {
-        name: '（المدينة）إختر',
-        value: '',
-      },
-      {
-        name: 'عرعر',
-        value: 'Arar',
-      },
-      {
-        name: 'رفحاء',
-        value: 'Rafha',
-      },
-      {
-        name: 'طريف',
-        value: 'Turaif',
-      },
-    ],
-  },
-  {
-    name: 'تبوك',
-    value: 'Tabuk Province',
-    children: [
-      {
-        name: '（المدينة）إختر',
-        value: '',
-      },
-      {
-        name: 'البدع',
-        value: 'Al Bad',
-      },
-      {
-        name: 'ضبا',
-        value: 'Duba',
-      },
-      {
-        name: 'حقل',
-        value: 'Haql',
-      },
-      {
-        name: 'تبوك',
-        value: 'Tabuk',
-      },
-      {
-        name: 'تيماء',
-        value: 'Tayma',
-      },
-      {
-        name: 'أملج',
-        value: 'Umluj',
-      },
-      {
-        name: 'الوجه',
-        value: 'Al Wajh',
-      },
-    ],
-  },
-]
+const addressList = LText.addressList
 let productData = ''
 
 export default function settleAccounts() {
@@ -857,8 +36,8 @@ export default function settleAccounts() {
     <div className='settle_accounts'>
       <div className='settle_accounts_title shadow_box'>
         <div>
-          <span onClick={() => { window.history.back() }} className='prev'>{'〈'}</span>
-          <span>تأكيد الطلب</span>
+          <span onClick={() => { window.history.back() }} className='prev'><img src="https://platform.antdiy.vip/static/image/xiangzuo.svg" /></span>
+          <span>{LText.confirRequest}</span>
           <i></i>
         </div>
       </div>
@@ -1009,47 +188,48 @@ export function Information({ selectedVar }) {
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
   const [errorText, setErrorText] = useState('');
+  const [isSubmit, setIsSubmit] = useState(false);
   if (errorText) {
     timer(setErrorText)
   }
   return (
     <div className='information_in'>
-      <div className='information_in_title'>معلومات  المستلم </div>
+      <div className='information_in_title'>{LText.recipientInfo}</div>
       <div className='information_in_list'>
         <div className='in_list'>
           <div className='in_list_title'>
-            <span>*Name</span>
-            <p>اسمك</p>
-          </div>
-          <input type="text" placeholder='الاسم بالكامل' value={name} onChange={(e) => { setName(e.target.value) }} />
-        </div>
-        <div className='in_list'>
-          <div className='in_list_title'>
-            <span>*Email</span>
-            <p>البريد الإلكتروني</p>
-          </div>
-          <input name="email" type="text" placeholder='البريد الإلكتروني' value={email} onChange={(e) => { setEmail(e.target.value) }} />
-        </div>
-        <div className='in_list'>
-          <div className='in_list_title'>
-            <span>*966</span>
+            <span>{LText.yourName} <i>*</i></span>
             <p></p>
           </div>
-          <input type="text" placeholder='رقم الهاتف المحمول : 5xxxxxxxx' value={phone} onChange={(e) => { setPhone(e.target.value) }} />
+          <input type="text" placeholder={LText.fullName} value={name} onChange={(e) => { setName(e.target.value) }} />
         </div>
         <div className='in_list'>
           <div className='in_list_title'>
-            <span>*966</span>
+            <span>{LText.semail} <i>*</i></span>
             <p></p>
           </div>
-          <input type="text" placeholder='رقم الواتس اب: 5xxxxxxxx' value={whatsapp} onChange={(e) => { setWhatsapp(e.target.value) }} />
+          <input name="email" type="text" placeholder={LText.semail} value={email} onChange={(e) => { setEmail(e.target.value) }} />
         </div>
         <div className='in_list'>
           <div className='in_list_title'>
-            <span>*State</span>
-            <p>المحافظة</p>
+            <span>{LText.telephone} <i>*</i></span>
+            <p></p>
           </div>
-          <select name="state" nullmsg="الرجاء تحديد مقاطعتك" value={state} onChange={(e) => { setState(e.target.value); setCity('') }} >
+          <input type="text" placeholder={LText.telephone} value={phone} onChange={(e) => { setPhone(e.target.value) }} />
+        </div>
+        <div className='in_list'>
+          <div className='in_list_title'>
+            <span></span>
+            <p></p>
+          </div>
+          <input type="text" placeholder={LText.phonepl2} value={whatsapp} onChange={(e) => { setWhatsapp(e.target.value) }} />
+        </div>
+        <div className='in_list'>
+          <div className='in_list_title'>
+            <span>{LText.governor} <i>*</i></span>
+            <p></p>
+          </div>
+          <select name="state" nullmsg={LText.district} value={state} onChange={(e) => { setState(e.target.value); }} style={{ backgroundPosition: getDirection() === 'rtl' ? 'left .5rem center' : 'right .5rem center' }} >
             {
               addressList.map((item, index) => {
                 return (
@@ -1061,10 +241,10 @@ export function Information({ selectedVar }) {
         </div>
         <div className='in_list'>
           <div className='in_list_title'>
-            <span>*City</span>
-            <p>المدينة</p>
+            <span>{LText.city} <i>*</i></span>
+            <p></p>
           </div>
-          <select name="city" nullmsg="الرجاء تحديد مدينتك" value={city} onChange={(e) => { setCity(e.target.value) }}>
+          <select name="city" nullmsg={LText.selectCity} value={city} onChange={(e) => { setCity(e.target.value) }} style={{ backgroundPosition: getDirection() === 'rtl' ? 'left .5rem center' : 'right .5rem center' }}>
             {
               addressList.filter(i => i.value === state)[0].children.map((item, index) => {
                 return (
@@ -1076,36 +256,36 @@ export function Information({ selectedVar }) {
         </div>
         <div className='in_list'>
           <div className='in_list_title'>
-            <span>*Area</span>
-            <p>منطقة</p>
+            <span>{LText.zone} <i>*</i></span>
+            <p></p>
           </div>
-          <input type="text" placeholder='مثال: العليا  الرياض' value={area} onChange={(e) => { setArea(e.target.value) }} />
+          <input type="text" placeholder={LText.zonePle} value={area} onChange={(e) => { setArea(e.target.value) }} />
         </div>
         <div className='in_list'>
           <div className='in_list_title'>
-            <span>*Building</span>
-            <p>مبنى</p>
+            <span>{LText.building} <i>*</i></span>
+            <p></p>
           </div>
-          <input type="text" placeholder='مثال: فيلا 2 دور 3' value={building} onChange={(e) => { setBuilding(e.target.value) }} />
+          <input type="text" placeholder={LText.buildingPle} value={building} onChange={(e) => { setBuilding(e.target.value) }} />
         </div>
         <div className='in_list'>
           <div className='in_list_title'>
-            <span>*Street</span>
-            <p>الشارع</p>
+            <span>{LText.street} <i>*</i></span>
+            <p></p>
           </div>
-          <input type="text" placeholder='مثال: شارع الملك فهد' value={street} onChange={(e) => { setStreet(e.target.value) }} />
+          <input type="text" placeholder={LText.streetPle} value={street} onChange={(e) => { setStreet(e.target.value) }} />
         </div>
         <div className='in_list'>
           <div className='in_list_title'>
-            <span>*Nearest landmark</span>
-            <p>أقرب معلم معروف</p>
+            <span>{LText.closest} <i>*</i></span>
+            <p></p>
           </div>
-          <input type="text" placeholder='مثال: برج المملكة' value={nearest} onChange={(e) => { setNearest(e.target.value) }} />
+          <input type="text" placeholder={LText.closestPle} value={nearest} onChange={(e) => { setNearest(e.target.value) }} />
         </div>
         <div className='in_list'>
           <div className='in_list_title'>
-            <span>Message</span>
-            <p>ملاحظات</p>
+            <span>{LText.comments}</span>
+            <p></p>
           </div>
           <textarea type="text" placeholder='' value={message} onChange={(e) => { setMessage(e.target.value) }} />
         </div>
@@ -1115,7 +295,7 @@ export function Information({ selectedVar }) {
           <Text
             as="span"
             className="flex items-center gap-2"
-            style={{ marginLeft: '20px' }}
+            style={{ margin: '0 20px' }}
           >
             <Money
               withoutTrailingZeros
@@ -1124,33 +304,39 @@ export function Information({ selectedVar }) {
             />
           </Text>
           {
-            selectedVar.availableForSale ? <button className='inline-block rounded font-medium text-center w-full bg-primary text-contrast' onClick={() => {
-              SettleAccounts(
-                selectedVar,
-                {
-                  name: name,
-                  email: email,
-                  phone: phone,
-                  whatsapp: whatsapp,
-                  country: 'Saudi Arabia',
-                  state: state,
-                  city: city,
-                  area: area,
-                  building: building,
-                  street: street,
-                  nearest_land_mark: nearest,
-                  message: message,
-                },
-                setErrorText
-              )
-            }}>
-              <Text
-                as="span"
-                className="flex items-center justify-center gap-2 py-3 px-6"
-              >
-                <span>التحقق وتقديم الطلب</span>
-              </Text>
-            </button> : <button className='inline-block rounded font-medium text-center w-full border border-primary/10 bg-contrast text-primary'>{LText.sold}</button>
+            selectedVar.availableForSale ? <div className='submit_btn'>
+              {
+                isSubmit ? <div className='loading_box'>
+                  <img src="https://platform.antdiy.vip/static/image/hydrogen_loading.gif" />
+                </div> : null
+              }<button className='inline-block rounded font-medium text-center w-full bg-primary text-contrast' onClick={() => {
+                SettleAccounts(
+                  selectedVar,
+                  {
+                    name: name,
+                    email: email,
+                    phone: phone,
+                    whatsapp: whatsapp,
+                    country: LText.country,
+                    state: state,
+                    city: city,
+                    area: area,
+                    building: building,
+                    street: street,
+                    nearest_land_mark: nearest,
+                    message: message,
+                  },
+                  setErrorText,
+                  setIsSubmit
+                )
+              }}>
+                <Text
+                  as="span"
+                  className="flex items-center justify-center gap-2 py-3 px-6"
+                >
+                  <span>{LText.apply}</span>
+                </Text>
+              </button></div> : <button className='inline-block rounded font-medium text-center w-full border border-primary/10 bg-contrast text-primary'>{LText.sold}</button>
           }
         </div>
       </div>
@@ -1176,56 +362,62 @@ export function PaymentMethod() {
   return (
     <div>
       <div className='payment_method'>
-        <div className='information_in_title'>طريقة الدفع</div>
+        <div className='information_in_title'>{LText.method}</div>
         <div>
           <div className="payment_method_check">
             <div>
               <input type="radio" name="payment" defaultChecked="true" />
-              <p>الدفع عند الاستلام</p>
+              <p>{LText.recieving}</p>
             </div>
             <img src="https://platform.antdiy.vip/static/image/hydrogen_icon_delivery.svg" />
           </div>
-          <div className='description'>خفض رسوم المعاملة 30 ريال للدفع عبر الإنترنت.</div>
+          <div className='description'>{LText.onlinePayment}</div>
         </div>
       </div>
       <div className='order_tips'>
-        <span>شحن مجاني + الدفع عند الاستلام + موقع يستحق الوثق</span>
-        <p>نسعي إلى تقديم منتجات عالية الجودة وخدمة ممتازة لكم، ستحصل على إشعار عند توصيل المنتج. إذا لديك أي سؤال، يرجي النقر رمز whatsapp على الصفحة الرئيسية</p>
+        <span>{LText.Website}</span>
+        <p>{LText.homepage}</p>
       </div>
     </div>
   )
 }
 
-function SettleAccounts(selectedVar, params, setErrorText) {
+function SettleAccounts(selectedVar, params, setErrorText, setIsSubmit) {
   if (!params.name || !params.phone || !params.whatsapp || !params.state || !params.city || !params.area || !params.building || !params.street || !params.nearest_land_mark || !params.email) {
-    return setErrorText('الحقول لا يمكن أن تكون فارغة')
+    return setErrorText(LText.empty)
   }
   var emailRegExp = /^[a-zA-Z0-9]+([-_.][A-Za-zd]+)*@([a-zA-Z0-9]+[-.])+[A-Za-zd]{2,5}$/;
   if (!emailRegExp.test(params.email)) {
-    return setErrorText('الرجاء إدخال النموذج الصحيح')
+    return setErrorText(LText.correct)
   }
   // var regex = new RegExp(/^(009665|9665|\+9665|05|5)(5|0|3|6|4|9|1|8|7)([0-9]{7})$/);
   // console.log(regex.test('0501234567'))
   // if(params.phone && !(regex.test(params.phone))){
   if (params.phone.length < 4 || params.phone.length > 15) {
-    return setErrorText('أدخل رقم هاتف صالح')
+    return setErrorText(LText.validnum)
   }
   let line_items = [{
     product_id: setSplit(productData.id),
     quantity: 1,
     variant_id: setSplit(selectedVar.id),
   }]
+  let source_name = window.localStorage.getItem('sourceName')
   params.line_items = line_items
   params.count = 1
   params.shop = getShopAddress()
+  params.source = source_name ? source_name : null
+  setIsSubmit(true)
 
   fetch.post(`https://gateway.antdiy.vip/account-service/media_orders/create/pass`, params).then(res => {
     if (res && res.data) {
       if (res.data.success && res.data.data && res.data.data.oid) {
         window.open(`/thank_you?id=${res.data.data.oid}`, '_self')
       } else {
+        setIsSubmit(false)
         return setErrorText(res && res.data.msg)
       }
+    } else {
+      setIsSubmit(false)
     }
   })
 }

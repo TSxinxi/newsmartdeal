@@ -19,7 +19,7 @@ import {
 import { Await, useMatches } from '@remix-run/react';
 import { Suspense, useEffect } from 'react';
 import { useCartFetchers } from '~/hooks/useCartFetchers';
-import { openWhatsApp } from '~/lib/P_Variable';
+import { openWhatsApp, getLanguage } from '~/lib/P_Variable';
 
 export function Layout({ children, layout }) {
   return (
@@ -47,7 +47,7 @@ export function Layout({ children, layout }) {
 }
 
 function goWhatsApp() {
-  var whatsapp_url = `https://wa.me/${openWhatsApp().phone}?text= يرجى نقر الإرسال مباشرة، لا تحذف الرابط أدناه، ستحصل على  الإجابات الأكثر دقة من خدمة العملاء`;
+  var whatsapp_url = `https://wa.me/${openWhatsApp().phone}?text=${getLanguage().whatsAppText}`;
   window.open(whatsapp_url + window.location.href);
 }
 

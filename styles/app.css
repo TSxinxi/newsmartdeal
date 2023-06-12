@@ -68,7 +68,6 @@ shop-pay-button {
 
   html {
     scroll-padding-top: 10rem;
-    direction: rtl !important;
   }
 
   model-viewer::part(default-progress-mask) {
@@ -291,7 +290,7 @@ shop-pay-button {
     font-weight: 700;
   }
   .pricing{
-    font-size: 1.5rem;
+    font-size: 1.4rem;
     color: #666666;
     font-weight: 400;
   }
@@ -396,6 +395,9 @@ shop-pay-button {
     color: #FDFDFD;
     font-weight: 400;
     text-decoration: line-through;
+  }
+  .description_box img{
+    width: 100%;
   }
   .product_details{
     justify-content: center;
@@ -884,7 +886,6 @@ shop-pay-button {
     width: 100%;
     max-width: 640px;
     margin: 0 auto;
-    padding-right: .5rem;
     height: 50px;
     line-height: 50px;
     position: fixed;
@@ -902,6 +903,9 @@ shop-pay-button {
   }
   .settle_accounts_title .prev{
     cursor: pointer;
+  }
+  .settle_accounts_title .prev img{
+    width: 20px;
   }
   .settle_accounts .product_box{
     width: 100%;
@@ -974,6 +978,24 @@ shop-pay-button {
     10%  {opacity: 0.8;}
     30%  {opacity: 1;}
   }
+  .submit_btn{
+    flex: 1;
+    display: flex;
+    align-items: center;
+    position: relative;
+  }
+  .submit_btn .loading_box{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.6);
+  }
+  .submit_btn img{
+    width: 20px;
+  }
   .error_box{
     width: 100%;
     height: 100%;
@@ -981,7 +1003,7 @@ shop-pay-button {
     position: fixed;
     left: 0;
     top: 0;
-    z-index: 13;
+    z-index: 101;
   }
   .error_box span{
     width: auto;
@@ -1028,7 +1050,7 @@ shop-pay-button {
   .order_box .section__header img{
     width: 48px;
     height: 48px;
-    margin-left: 10px;
+    margin: 0 10px;
   }
   .order_box .section__header .header__heading h2{
     font-size: 20px;
@@ -1072,14 +1094,22 @@ shop-pay-button {
   .information_in .in_list{
     display: flex;
     align-items: center;
-    margin-bottom: 1rem;
+    padding: 8px 0;
   }
   .in_list .in_list_title{
     width: 20%;
-    font-size: 12px;
+    font-size: 1rem;
+    line-height: 1rem;
+  }
+  .in_list .in_list_title i{
+    font-style: normal;
+    color: #c70505;
+    font-weight: 600;
+    font-size: 1rem;
   }
   .in_list_title span{
-    color: #007d4a;
+    /* color: #007d4a; */
+    color: #333;
     font-weight: 600;
   }
   .in_list_title p{
@@ -1095,14 +1125,14 @@ shop-pay-button {
     padding: 0 0.75rem 0 0.75rem !important;
     height: calc(1.5em + 0.75rem + 10px);
     font-weight: 400;
-    line-height: 1.5;
+    line-height: calc(1.5em + 0.75rem + 10px);
     color: #495057;
     background-color: #fff;
     background-clip: padding-box;
     border: 1px solid #ced4da;
     border-radius: 0.25rem;
     transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
-    font-size: 12px;
+    font-size: 16px;
   }
   .payment_method{
     padding: 0 10px;
@@ -1134,7 +1164,7 @@ shop-pay-button {
     align-items: center;
   }
   .payment_method_check p{
-    margin-right: 10px;
+    margin: 0 10px;
   }
   .payment_method_check img{
     width: 50px;
@@ -1142,7 +1172,6 @@ shop-pay-button {
   .description{
     color: #999;
     padding-bottom: 8px;
-    padding-left: 35px;
     font-size: 12px;
   }
   select {

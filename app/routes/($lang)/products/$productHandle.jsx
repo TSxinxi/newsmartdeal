@@ -548,15 +548,18 @@ export default function Product() {
                 )} */}
               </div>
               <ProductForm />
-              {descriptionHtml && (
-                <div className='padding_12 borderf5'>
-                  <div
-                    className="prose dark:prose-invert info_color"
-                    style={{ overflow: 'hidden', margin: 'auto' }}
-                    dangerouslySetInnerHTML={{ __html: descriptionHtml }}
-                  />
-                </div>
-              )}
+              <div className='description_box'>
+                {descriptionHtml && (
+                  <div className='padding_12 borderf5'>
+                    <div
+                      className="prose dark:prose-invert info_color"
+                      style={{ overflow: 'hidden', margin: 'auto' }}
+                      dangerouslySetInnerHTML={{ __html: descriptionHtml }}
+                    />
+                  </div>
+                )}
+                <img className='padding_12' src={`https://platform.antdiy.vip/static/image/${LText.deliveryProcess}`} />
+              </div>
               {/* <div className="grid gap-4 py-4">
                 {descriptionHtml && (
                   <ProductDetail
@@ -583,117 +586,122 @@ export default function Product() {
           </div>
         </div>
         <div className='borderf5 comment_content'>
-          {commentHeader && (
-            <div className='comment_box'>
-              <div className='comment_box_title'>{LText.comTit}</div>
-              <div
-                className="dark:prose-invert comment_box_content"
-                dangerouslySetInnerHTML={{ __html: commentHeader }}
-                onClick={(e) => { clickComment(e, setFiltRat, product_id, sortBy, setComment) }}
-              />
-              <div className='jq_slow'>
-                <div className='write_review'>
-                  <div className='write_review_title'>{LText.addComment}</div>
-                  <div className='write_review_li'>
-                    <div className="write_review_name">{LText.rating}</div>
-                    <div className='star_score'>
-                      {
-                        ['', '', '', '', ''].map((item, index) => {
-                          return <div className='star_li'
-                            key={index}
-                            onMouseEnter={() => { setHhoverStar(index + 1) }}
-                            onMouseLeave={() => { setHhoverStar(starScore) }}
-                            onClick={() => { setStarScore(index + 1) }}
-                          ><img src={`https://platform.antdiy.vip/static/image/${hoverStar > index ? 'hydrogen_icon_star_quan' : 'hydrogen_icon_star_kongg'}.svg`} /> </div>
-                        })
-                      }
-                    </div>
-                  </div>
-                  <div className='write_review_li'>
-                    <div className="write_review_name">{LText.reviewTitle}</div>
-                    <input type="text" placeholder={LText.reviewTiPle} value={reviewTitle} onChange={(e) => { setReviewTitle(e.target.value) }} />
-                  </div>
-                  <div className='write_review_li'>
-                    <div className="write_review_name">{LText.review}</div>
-                    <textarea type="text" placeholder={LText.reviewPle} value={review} onChange={(e) => { setErrorText({ type: 1, content: e.target.value ? '' : LText.error }), setReview(e.target.value) }} />
+          <div className='comment_box'>
+            <div className='comment_box_title'>{LText.comTit}</div>
+            {commentHeader ? <div
+              className="dark:prose-invert comment_box_content"
+              dangerouslySetInnerHTML={{ __html: commentHeader }}
+              onClick={(e) => { clickComment(e, setFiltRat, product_id, sortBy, setComment) }}
+            /> : <div className="jdgm-rev-widg__header comment_box_content">
+              <div className="jdgm-rev-widg__summary">
+                <div className="jdgm-rev-widg__summary-text">{LText.noOpinion}</div>
+              </div>
+              <div className="jdgm-rev-widg__sort-wrapper">
+                <button className="add_comment" onClick={(e) => { clickComment(e, setFiltRat, product_id, sortBy, setComment) }}>{LText.addComment}</button>
+              </div>
+            </div>}
+            <div className='jq_slow'>
+              <div className='write_review'>
+                <div className='write_review_title'>{LText.addComment}</div>
+                <div className='write_review_li'>
+                  <div className="write_review_name">{LText.rating}</div>
+                  <div className='star_score'>
                     {
-                      errorText.type === 1 && errorText.content ? <div className='error_text'>{errorText.content}</div> : null
+                      ['', '', '', '', ''].map((item, index) => {
+                        return <div className='star_li'
+                          key={index}
+                          onMouseEnter={() => { setHhoverStar(index + 1) }}
+                          onMouseLeave={() => { setHhoverStar(starScore) }}
+                          onClick={() => { setStarScore(index + 1) }}
+                        ><img src={`https://platform.antdiy.vip/static/image/${hoverStar > index ? 'hydrogen_icon_star_quan' : 'hydrogen_icon_star_kongg'}.svg`} /> </div>
+                      })
                     }
-                  </div>
-                  <div className='write_review_li'>
-                    <div className="write_review_name">{LText.picture}</div>
-                    <div className="write_review_img">
-                      <div className='write_review_cont'>
-                        <span className='write_review_cont_icon'>
-                          <img src="https://platform.antdiy.vip/static/image/hydrogen_icon_upload.svg" />
-                        </span>
-                        <input type="file" name="media" multiple accept="image/gif,image/jpeg,image/jpg,image/png,image/webp" onChange={(e) => { changeImg(e, imgList, setImgList, imgKey, setImgKey) }} />
-                      </div>
-                      {
-                        imgList.map((item, index) => {
-                          return <div className='write_review_cont' key={index}>
-                            <img className='delete' onClick={() => { imgList.splice(index, 1); setImgList([...imgList]) }} src="https://platform.antdiy.vip/static/image/hydrogen_icon_delete.svg" />
-                            <img src={item.url} alt="" />
-                          </div>
-                        })
-                      }
-                    </div>
-                  </div>
-                  <div className='write_review_li'>
-                    <div className="write_review_name">
-                      <span>{LText.selectName}</span>
-                      <select className="write_review_select" value={reviewer_name_format} onChange={(e) => { setFrmat(e.target.value) }} >
-                        <option value="">John Smith</option>
-                        <option value="last_initial">John S.</option>
-                        <option value="all_initials">J.S.</option>
-                        <option value="anonymous">{LText.unknown}</option>
-                      </select>
-                      <span> )</span>
-                    </div>
-                    <input type="text" placeholder={LText.namePle} value={name} onChange={(e) => { setErrorText({ type: 2, content: e.target.value ? '' : LText.error }), setName(e.target.value) }} />
-                    {
-                      errorText.type === 2 && errorText.content ? <div className='error_text'>{errorText.content}</div> : null
-                    }
-                  </div>
-                  <div className='write_review_li'>
-                    <div className="write_review_name">{LText.emailN}</div>
-                    <input name="email" type="text" placeholder={LText.emailPle} value={email} onChange={(e) => { setErrorText({ type: 3, content: e.target.value ? '' : LText.error }), setEmail(e.target.value) }} />
-                    {
-                      errorText.type === 3 && errorText.content ? <div className='error_text'>{errorText.content}</div> : null
-                    }
-                  </div>
-                  <div className="write_review_btn">
-                    <button className='cancel' onClick={() => { WriteReview() }}>{LText.cancelRe}</button>
-                    <button className='submit' onClick={() => {
-                      submitReview(
-                        {
-                          url: getShopAddress(),
-                          shop_domain: getShopAddress(),
-                          platform: 'shopify',
-                          reviewer_name_format: reviewer_name_format,
-                          name: name,
-                          email: email,
-                          rating: starScore,
-                          title: reviewTitle,
-                          body: review,
-                          id: product_id,
-                        },
-                        imgList,
-                        setErrorText,
-                        setIsSuccess
-                      )
-                    }}>{LText.submitRe}</button>
                   </div>
                 </div>
+                <div className='write_review_li'>
+                  <div className="write_review_name">{LText.reviewTitle}</div>
+                  <input type="text" placeholder={LText.reviewTiPle} value={reviewTitle} onChange={(e) => { setReviewTitle(e.target.value) }} />
+                </div>
+                <div className='write_review_li'>
+                  <div className="write_review_name">{LText.review}</div>
+                  <textarea type="text" placeholder={LText.reviewPle} value={review} onChange={(e) => { setErrorText({ type: 1, content: e.target.value ? '' : LText.error }), setReview(e.target.value) }} />
+                  {
+                    errorText.type === 1 && errorText.content ? <div className='error_text'>{errorText.content}</div> : null
+                  }
+                </div>
+                <div className='write_review_li'>
+                  <div className="write_review_name">{LText.picture}</div>
+                  <div className="write_review_img">
+                    <div className='write_review_cont'>
+                      <span className='write_review_cont_icon'>
+                        <img src="https://platform.antdiy.vip/static/image/hydrogen_icon_upload.svg" />
+                      </span>
+                      <input type="file" name="media" multiple accept="image/gif,image/jpeg,image/jpg,image/png,image/webp" onChange={(e) => { changeImg(e, imgList, setImgList, imgKey, setImgKey) }} />
+                    </div>
+                    {
+                      imgList.map((item, index) => {
+                        return <div className='write_review_cont' key={index}>
+                          <img className='delete' onClick={() => { imgList.splice(index, 1); setImgList([...imgList]) }} src="https://platform.antdiy.vip/static/image/hydrogen_icon_delete.svg" />
+                          <img src={item.url} alt="" />
+                        </div>
+                      })
+                    }
+                  </div>
+                </div>
+                <div className='write_review_li'>
+                  <div className="write_review_name">
+                    <span>{LText.selectName}</span>
+                    <select className="write_review_select" value={reviewer_name_format} onChange={(e) => { setFrmat(e.target.value) }} >
+                      <option value="">John Smith</option>
+                      <option value="last_initial">John S.</option>
+                      <option value="all_initials">J.S.</option>
+                      <option value="anonymous">{LText.unknown}</option>
+                    </select>
+                    <span> )</span>
+                  </div>
+                  <input type="text" placeholder={LText.namePle} value={name} onChange={(e) => { setErrorText({ type: 2, content: e.target.value ? '' : LText.error }), setName(e.target.value) }} />
+                  {
+                    errorText.type === 2 && errorText.content ? <div className='error_text'>{errorText.content}</div> : null
+                  }
+                </div>
+                <div className='write_review_li'>
+                  <div className="write_review_name">{LText.emailN}</div>
+                  <input name="email" type="text" placeholder={LText.emailPle} value={email} onChange={(e) => { setErrorText({ type: 3, content: e.target.value ? '' : LText.error }), setEmail(e.target.value) }} />
+                  {
+                    errorText.type === 3 && errorText.content ? <div className='error_text'>{errorText.content}</div> : null
+                  }
+                </div>
+                <div className="write_review_btn">
+                  <button className='cancel' onClick={() => { WriteReview() }}>{LText.cancelRe}</button>
+                  <button className='submit' onClick={() => {
+                    submitReview(
+                      {
+                        url: getShopAddress(),
+                        shop_domain: getShopAddress(),
+                        platform: 'shopify',
+                        reviewer_name_format: reviewer_name_format,
+                        name: name,
+                        email: email,
+                        rating: starScore,
+                        title: reviewTitle,
+                        body: review,
+                        id: product_id,
+                      },
+                      imgList,
+                      setErrorText,
+                      setIsSuccess
+                    )
+                  }}>{LText.submitRe}</button>
+                </div>
               </div>
-              {
-                isSuccess ? <div className='review_submit'>
-                  <div className="review_submit_tit">{LText.subReview}</div>
-                  <div className="review_submit_content">{LText.subComtent}</div>
-                </div> : null
-              }
             </div>
-          )}
+            {
+              isSuccess ? <div className='review_submit'>
+                <div className="review_submit_tit">{LText.subReview}</div>
+                <div className="review_submit_content">{LText.subComtent}</div>
+              </div> : null
+            }
+          </div>
           {commentHtml && (
             <div className='comment_box'>
               <div className='comment_screen'>

@@ -2,7 +2,8 @@
 import { useEffect, useState } from 'react';
 import { Text } from '~/components';
 import fetch from '~/fetch/axios';
-import { getShopAddress } from '~/lib/P_Variable';
+import { getShopAddress, getLanguage } from '~/lib/P_Variable';
+const LText = getLanguage()
 
 export default function thank_you() {
   const [hasMounted, setHasMounted] = useState(false);
@@ -31,13 +32,13 @@ export default function thank_you() {
               create_at: odata.createdAt,
               order_id: setSplit(odata.id)
             }
-            fetch.post(`https://gateway.antdiy.vip/account-service/media_orders/set/pass`,params).then(()=>{})
+            fetch.post(`https://gateway.antdiy.vip/account-service/media_orders/set/pass`, params).then(() => { })
           }
         }
       })
     }
   }, []);
-  console.log(orderData)
+  // console.log(orderData)
 
   if (!hasMounted) {
     return null;
@@ -73,27 +74,27 @@ export function OrderBox({ orderData }) {
         <div className="section__header">
           <img src="https://platform.antdiy.vip/static/image/cloudstore_steps_finish.svg" />
           <div className="header__heading">
-            <span className="order_number">أوامر {orderData.name}</span>
-            <h2 className="header_title">شكراً لك !</h2>
+            <span className="order_number">{LText.orders} {orderData.name}</span>
+            <h2 className="header_title">{LText.thank}</h2>
           </div>
         </div>
         <div className='order_list'>
-          <div className='order_list_title'>تم تأكيد طلبك</div>
-          <div className='order_list_text'>سوف تتلقى قريبا رسالة إلكترونية مؤكدة تحتوي على رقم طلبك.</div>
+          <div className='order_list_title'>{LText.request}</div>
+          <div className='order_list_text'>{LText.receive}</div>
         </div>
         <div className='order_list'>
-          <div className='order_list_title'>تحديث الطلب</div>
-          <div className='order_list_text'>سوف تحصل على تحديث معلومات الشحن والتوزيع عن طريق البريد الإلكتروني.</div>
+          <div className='order_list_title'>{LText.updateOrder}</div>
+          <div className='order_list_text'>{LText.information}</div>
         </div>
         <div className='order_list'>
-          <div className='order_list_title'>معلومات العملاء</div>
+          <div className='order_list_title'>{LText.customer}</div>
           <div className='customer_info'>
-            <div className='info_li'>
-              <div className='info_li_title'>معلومات الاتصال</div>
+            {/* <div className='info_li'>
+              <div className='info_li_title'>{LText.contactInfo}</div>
               <div className='info_li_text'>{orderData.customer.email}</div>
             </div>
             <div className='info_li'>
-              <div className='info_li_title'>عنوان التسليم</div>
+              <div className='info_li_title'>{LText.delivery}</div>
               {orderData.customer ? <div className='info_li_text'>
                 <p>{orderData.shippingAddress.name}</p>
                 <p>{orderData.shippingAddress.phone}</p>
@@ -103,13 +104,13 @@ export function OrderBox({ orderData }) {
                 <p>{orderData.shippingAddress.address1}</p>
                 <p>{orderData.shippingAddress.address2}</p>
               </div> : null}
+            </div> */}
+            <div className='info_li'>
+              <div className='info_li_title'>{LText.payment}</div>
+              <div className='info_li_text'>{LText.payReceipt}</div>
             </div>
             <div className='info_li'>
-              <div className='info_li_title'>طريقة الدفع</div>
-              <div className='info_li_text'>الدفع عند الاستلام</div>
-            </div>
-            <div className='info_li'>
-              <div className='info_li_title'>فاتورة، عنوان</div>
+              <div className='info_li_title'>{LText.invoice}</div>
               {orderData.shippingAddress ? <div className='info_li_text'>
                 <p>{orderData.shippingAddress.name}</p>
                 <p>{orderData.shippingAddress.phone}</p>
@@ -122,12 +123,12 @@ export function OrderBox({ orderData }) {
             </div>
           </div>
         </div>
-        <button className='inline-block rounded font-medium text-center w-full bg-primary text-contrast' style={{ marginTop: '20px' }} onClick={() => { window.open(getShopAddress(), '_self') }}>
+        <button className='inline-block rounded font-medium text-center w-full bg-primary text-contrast' style={{ marginTop: '20px' }} onClick={() => {window.open('https://' + getShopAddress(), '_self') }}>
           <Text
             as="span"
             className="flex items-center justify-center gap-2 py-3 px-6"
           >
-            <span>مواصلة التسوق</span>
+            <span>{LText.keeyshop}</span>
           </Text>
         </button>
       </div>
