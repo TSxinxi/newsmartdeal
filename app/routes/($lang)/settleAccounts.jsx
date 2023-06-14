@@ -11,6 +11,7 @@ let productData = ''
 export default function settleAccounts() {
   const [hasMounted, setHasMounted] = useState(false);
   const [selectedVar, setSelectVar] = useState('');
+  const [isPreview, setIsPreview] = useState(false);
   useEffect(() => {
     setHasMounted(true);
     var canUseDOM = !!(typeof window !== "undefined" && typeof window.document !== "undefined" && typeof window.localStorage !== "undefined");
@@ -41,7 +42,7 @@ export default function settleAccounts() {
           <i></i>
         </div>
       </div>
-      <ProductBox selectedVar={selectedVar} />
+      <ProductBox selectedVar={selectedVar} isPreview={isPreview} setIsPreview={setIsPreview} />
       <div className='order_content'>
         <Variant selectedVar={selectedVar} setSelectVar={setSelectVar} />
         <Information selectedVar={selectedVar} />
@@ -51,10 +52,15 @@ export default function settleAccounts() {
   )
 }
 
-export function ProductBox({ selectedVar }) {
+export function ProductBox({ selectedVar, isPreview, setIsPreview }) {
   return (
     <div className='product_box shadow_box' >
-      <img src={selectedVar.image.url} />
+      {
+        isPreview ? <div className='fixed_img' onClick={() => { setIsPreview(false) }}>
+          <img src={selectedVar.image.url} />
+        </div> : null
+      }
+      <img className='thumbnail' src={selectedVar.image.url} onClick={() => { setIsPreview(true) }} />
       <div className='product_title'>
         <span>{selectedVar.product.title}</span>
         <span>{selectedVar.title}</span>
@@ -104,7 +110,7 @@ export function Variant({ selectedVar, setSelectVar }) {
   }, []);
 
   return (
-    <div className='variant_box padding_12'>
+    <div className='variant_box padding_16'>
       {options
         .filter((option) => option.values.length > 1)
         .map((option) => (
@@ -121,7 +127,7 @@ export function Variant({ selectedVar, setSelectVar }) {
                 }
               </select>
             ) : (
-              <div className='flex_center'>{option.values.map((item, index) => {
+              <div className='flex_center variant_li_sku'>{option.values.map((item, index) => {
                 return (
                   <div className={item.active ? 'active_sku bord_sku' : 'bord_sku'} key={index} onClick={() => { changeVariant(setSelectVar, setOptions, options, item.value, option.name) }}>{item.value}</div>
                 )
@@ -194,8 +200,8 @@ export function Information({ selectedVar }) {
   }
   return (
     <div className='information_in'>
-      <div className='information_in_title padding_12'>{LText.recipientInfo}</div>
-      <div className='information_in_list padding_12'>
+      <div className='information_in_title padding_16'>{LText.recipientInfo}</div>
+      <div className='information_in_list padding_16'>
         <div className='in_list'>
           <div className='in_list_title'>
             <span>{LText.yourName} <i>*</i></span>
@@ -244,15 +250,17 @@ export function Information({ selectedVar }) {
             <span>{LText.city} <i>*</i></span>
             <p></p>
           </div>
-          <select name="city" nullmsg={LText.selectCity} value={city} onChange={(e) => { setCity(e.target.value) }} style={{ backgroundPosition: getDirection() === 'rtl' ? 'left .5rem center' : 'right .5rem center' }}>
-            {
-              addressList.filter(i => i.value === state)[0].children.map((item, index) => {
-                return (
-                  <option value={item.value} key={index}>- - {item.value ? item.value + '/' : ''}{item.name}- -</option>
-                )
-              })
-            }
-          </select>
+          {
+            addressList.filter(i => i.value === state)[0].children ? <select name="city" nullmsg={LText.selectCity} value={city} onChange={(e) => { setCity(e.target.value) }} style={{ backgroundPosition: getDirection() === 'rtl' ? 'left .5rem center' : 'right .5rem center' }}>
+              {
+                addressList.filter(i => i.value === state)[0].children.map((item, index) => {
+                  return (
+                    <option value={item.value} key={index}>- - {item.value ? item.value + '/' : ''}{item.name}- -</option>
+                  )
+                })
+              }
+            </select> : <input type="text" placeholder={LText.city} value={city} onChange={(e) => { setCity(e.target.value) }} />
+          }
         </div>
         <div className='in_list'>
           <div className='in_list_title'>
@@ -360,7 +368,7 @@ function timer(setErrorText) {
 
 export function PaymentMethod() {
   return (
-    <div className='padding_12'>
+    <div className='padding_16'>
       <div className='payment_method'>
         <div className='information_in_title'>{LText.method}</div>
         <div>

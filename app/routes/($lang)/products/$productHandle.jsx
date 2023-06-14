@@ -514,19 +514,20 @@ export default function Product() {
             {
               siteObj ? <div className='site'>
                 <div style={{
-                  backgroundImage: 'url(https://app-resources.v2diy.com/pro/currency/img/currency-flags.png)',
-                  backgroundRepeat: 'no-repeat',
-                  float: 'left',
-                  width: '30px',
-                  height: '20px',
-                  borderRadius: '3px',
-                  backgroundPosition: siteObj.left + " " + siteObj.top,
-                  transform: 'scale(0.7)',
+                  // backgroundImage: 'url(https://app-resources.v2diy.com/pro/currency/img/currency-flags.png)',
+                  // backgroundRepeat: 'no-repeat',
+                  // float: 'left',
+                  // width: '30px',
+                  // height: '20px',
+                  // borderRadius: '3px',
+                  // backgroundPosition: siteObj.left + " " + siteObj.top,
+                  // transform: 'scale(0.7)',
                 }}></div>
+                <img src="https://platform.antdiy.vip/static/image/hydrogen_site_alb.svg" />
                 <span>{siteObj.value}</span>
               </div> : <div></div>
             }
-            <img src='https://platform.antdiy.vip/static/image/HULTOO_icon.png' />
+            <img src='https://platform.antdiy.vip/static/image/HULTOO_icon.svg' />
             <p onClick={() => { window.open('https://' + getShopAddress()) }}><img src='https://platform.antdiy.vip/static/image/hultoo_home.svg' /></p>
           </div>
         </div>
@@ -538,8 +539,8 @@ export default function Product() {
             className="w-screen md:w-full lg:col-span-2"
           />
           <div className="left_product sticky md:-mb-nav md:top-nav md:-translate-y-nav md:pt-nav hiddenScroll">
-            <section className="flex flex-col w-full max-w-xl gap-8 md:mx-auto md:max-w-sm md:px-0" style={{ color: '#141414E6' }}>
-              <div className="grid gap-2 padding_12">
+            <section className="flex flex-col w-full gap-2 md:mx-auto md:max-w-sm md:px-0" style={{ color: '#141414E6' }}>
+              <div className="grid gap-2 padding_16">
                 <Heading as="h1" className="whitespace-normal">
                   {title}
                 </Heading>
@@ -550,7 +551,7 @@ export default function Product() {
               <ProductForm />
               <div className='description_box'>
                 {descriptionHtml && (
-                  <div className='padding_12 borderf5'>
+                  <div className='padding_16 borderf5 description_html'>
                     <div
                       className="prose dark:prose-invert info_color"
                       style={{ overflow: 'hidden', margin: 'auto' }}
@@ -558,7 +559,7 @@ export default function Product() {
                     />
                   </div>
                 )}
-                <img className='padding_12' src={`https://platform.antdiy.vip/static/image/${LText.deliveryProcess}`} />
+                <img className='padding_16' src={`https://platform.antdiy.vip/static/image/${LText.deliveryProcess}`} />
               </div>
               {/* <div className="grid gap-4 py-4">
                 {descriptionHtml && (
@@ -748,6 +749,9 @@ export default function Product() {
           // </div>
           <div className='buy_button sticky_bottom'>
             <button className='buy_btn_style'>
+              <span className="light_bg"></span>
+              <span className="right_bg"></span>
+              {/* <img src="https://platform.antdiy.vip/static/image/hultoo_buybtn.png" /> */}
               {/* {isOutOfStock ? (
                 <Text className='py-3 px-6'>{LText.sold}</Text>//卖完了
               ) : ( */}
@@ -768,7 +772,13 @@ export default function Product() {
                   as="span"
                   className="btn_price_old"
                 />
+                // <span className='btn_price btn_price_old'>
+                //   <i>{selectedVariant?.compareAtPrice?.currencyCode} </i>{parseFloat(selectedVariant?.compareAtPrice?.amount)}
+                // </span>
               )}
+              {/* <span className='btn_price btn_price_new'>
+                <i>{selectedVariant?.price?.currencyCode} </i>{parseFloat(selectedVariant?.price?.amount)}
+              </span> */}
               <Money
                 withoutTrailingZeros
                 data={selectedVariant?.price}
@@ -789,7 +799,7 @@ function toTop() {
     $(window).scroll(function () {
       //检测滚走的高度
       var scrollT = $(document).scrollTop();
-      var offsetT = $(".prodect_section").offset().top;
+      var offsetT = $(".hiddenScroll").offset().top;
       if (scrollT >= offsetT) {
         $(".back").show()
       } else {
@@ -872,11 +882,11 @@ export function ProductForm() {
   };
 
   return (
-    <div className="grid gap-10 padding_12">
+    <div className="grid gap-10 padding_16">
       <div className="grid gap-4">
         <Text
           as="span"
-          className="flex items-baseline gap-2"
+          className="flex items-baseline gap-4"
         >
           <Money
             withoutTrailingZeros
@@ -889,7 +899,7 @@ export function ProductForm() {
               withoutTrailingZeros
               data={selectedVariant?.compareAtPrice}
               as="span"
-              className="opacity-50 strike pricing"
+              className="strike pricing"
             />
           )}
         </Text>
