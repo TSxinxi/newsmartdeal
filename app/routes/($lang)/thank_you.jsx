@@ -56,7 +56,7 @@ export function ProductBox({ product }) {
   if (product) {
     return (
       <div className='product_box thank_product_box' >
-        <img src={product.image.url} />
+        <img className='thumbnail' src={product.image.url} />
         <div className='product_title'>
           <span>{product.title}</span>
           <span>{product.variantTitle}</span>
