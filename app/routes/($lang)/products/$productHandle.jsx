@@ -749,19 +749,22 @@ export default function Product() {
           // </div>
           <div className='buy_button sticky_bottom'>
             <button className='buy_btn_style'>
-              <span className="light_bg"></span>
-              <span className="right_bg"></span>
               {/* <img src="https://platform.antdiy.vip/static/image/hultoo_buybtn.png" /> */}
               {/* {isOutOfStock ? (
                 <Text className='py-3 px-6'>{LText.sold}</Text>//卖完了
               ) : ( */}
-              <Text //立即购买
-                as="span"
-                className="flex items-center justify-center gap-2 py-3 px-6"
-                onClick={() => { goSettleAccounts() }}
-              >
-                <span>{LText.buy}</span>
-              </Text>
+              <div className='bg_color'>
+                <Text //立即购买
+                  as="span"
+                  className="flex items-center justify-center gap-2 py-3 px-6"
+                  onClick={() => { goSettleAccounts() }}
+                >
+                  <span>{LText.buy}</span>
+                </Text>
+                <span className="light_bg"></span>
+                <span className="right_bg"></span>
+              </div>
+              <img src="https://platform.antdiy.vip/static/image/hultoo_light.png" />
               {/* )} */}
             </button>
             <div className='buy_btn_price'>
