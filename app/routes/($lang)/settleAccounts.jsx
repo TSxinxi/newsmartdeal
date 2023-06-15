@@ -3,7 +3,7 @@ import { useRef, useMemo, useEffect, useState } from 'react';
 import { Money } from '@shopify/hydrogen';
 import { Text } from '~/components';
 import fetch from '~/fetch/axios';
-import { getShopAddress, getLanguage, getDirection } from '~/lib/P_Variable';
+import { getShopAddress, getLanguage, getDirection, getDomain } from '~/lib/P_Variable';
 const LText = getLanguage()
 const addressList = LText.addressList
 let productData = ''
@@ -416,7 +416,7 @@ function SettleAccounts(selectedVar, params, setErrorText, setIsSubmit) {
   params.source = source_name ? source_name : null
   setIsSubmit(true)
 
-  fetch.post(`https://gateway.antdiy.vip/account-service/media_orders/create/pass`, params).then(res => {
+  fetch.post(`${getDomain()}/account-service/media_orders/create/pass`, params).then(res => {
     if (res && res.data) {
       if (res.data.success && res.data.data && res.data.data.oid) {
         window.open(`/thank_you?id=${res.data.data.oid}`, '_self')

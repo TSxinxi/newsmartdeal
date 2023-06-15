@@ -8,6 +8,10 @@ export function getShopAddress() {
   return 'newsmartdeal.myshopify.com';
   // return 'modafallonei.myshopify.com';
 }
+export function getDomain() {
+  return 'https://gateway.antdiy.vip';
+  // return 'https://gateway.di79.com';
+}
 
 export function openWhatsApp() {
   const whatsApp = {

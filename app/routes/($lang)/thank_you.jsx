@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { Text } from '~/components';
 import fetch from '~/fetch/axios';
-import { getShopAddress, getLanguage } from '~/lib/P_Variable';
+import { getShopAddress, getLanguage, getDomain } from '~/lib/P_Variable';
 const LText = getLanguage()
 
 export default function thank_you() {
@@ -14,7 +14,7 @@ export default function thank_you() {
     var canUseDOM = !!(typeof window !== "undefined" && typeof window.document !== "undefined" && typeof window.location !== "undefined");
     if (canUseDOM && window.location) {
       let result = new URLSearchParams(window.location.search);
-      fetch.get(`https://gateway.antdiy.vip/account-service/media_orders/detail/pass?shop=${shop}&order_id=${result.get('id')}`).then(res => {
+      fetch.get(`${getDomain()}/account-service/media_orders/detail/pass?shop=${shop}&order_id=${result.get('id')}`).then(res => {
         if (res && res.data && res.data.success) {
           let odata = res.data.data ? JSON.parse(res.data.data) : {}
           setOrderData(odata)
@@ -32,7 +32,7 @@ export default function thank_you() {
               create_at: odata.createdAt,
               order_id: setSplit(odata.id)
             }
-            fetch.post(`https://gateway.antdiy.vip/account-service/media_orders/set/pass`, params).then(() => { })
+            fetch.post(`${getDomain()}/account-service/media_orders/set/pass`, params).then(() => { })
           }
         }
       })
@@ -123,7 +123,7 @@ export function OrderBox({ orderData }) {
             </div>
           </div>
         </div>
-        <button className='inline-block rounded font-medium text-center w-full bg-primary text-contrast' style={{ marginTop: '20px' }} onClick={() => {window.open('https://' + getShopAddress(), '_self') }}>
+        <button className='inline-block rounded font-medium text-center w-full bg-primary text-contrast' style={{ marginTop: '20px' }} onClick={() => { window.open('https://' + getShopAddress(), '_self') }}>
           <Text
             as="span"
             className="flex items-center justify-center gap-2 py-3 px-6"
