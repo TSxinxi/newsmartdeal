@@ -191,6 +191,7 @@ export function Information({ selectedVar }) {
   const [building, setBuilding] = useState('');
   const [street, setStreet] = useState('');
   const [nearest, setNearest] = useState('');
+  const [country, setCountry] = useState('');
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
   const [errorText, setErrorText] = useState('');
@@ -204,6 +205,18 @@ export function Information({ selectedVar }) {
       <div className='information_in_list padding_16'>
         <div className='in_list'>
           <div className='in_list_title'>
+            <span>الدولة / المنطقة(Country) <i>*</i></span>
+            <p></p>
+          </div>
+          <select name="state" nullmsg='الدولة / المنطقة(Country)' value={country} onChange={(e) => { setCountry(e.target.value); }} style={{ backgroundPosition: getDirection() === 'rtl' ? 'left .5rem center' : 'right .5rem center' }} >
+            <option value="">الدولة / المنطقة(Country)</option>
+            <option value="Kuwait">Kuwait</option>
+            <option value="Saudi Arabia">Saudi Arabia</option>
+            <option value="United Arab Emirates">United Arab Emirates</option>
+          </select>
+        </div>
+        <div className='in_list'>
+          <div className='in_list_title'>
             <span>{LText.yourName} <i>*</i></span>
             <p></p>
           </div>
@@ -211,26 +224,47 @@ export function Information({ selectedVar }) {
         </div>
         <div className='in_list'>
           <div className='in_list_title'>
-            <span>{LText.semail} <i>*</i></span>
-            <p></p>
-          </div>
-          <input name="email" type="text" placeholder={LText.semail} value={email} onChange={(e) => { setEmail(e.target.value) }} />
-        </div>
-        <div className='in_list'>
-          <div className='in_list_title'>
             <span>{LText.telephone} <i>*</i></span>
             <p></p>
           </div>
-          <input type="text" placeholder={LText.telephone} value={phone} onChange={(e) => { setPhone(e.target.value) }} />
+          <input type="text" placeholder={LText.phonepl1} value={phone} onChange={(e) => { setPhone(e.target.value) }} />
         </div>
-        <div className='in_list'>
+        <div className='in_list' style={{ paddingTop: '0' }}>
           <div className='in_list_title'>
             <span></span>
             <p></p>
           </div>
-          <input type="text" placeholder={LText.phonepl2} value={whatsapp} onChange={(e) => { setWhatsapp(e.target.value) }} />
+          <input type="text" placeholder={LText.phonepl2} value={whatsapp} onChange={(e) => { setWhatsapp(e.target.value) }} style={{ marginTop: '0' }} />
         </div>
         <div className='in_list'>
+          <div className='in_list_title'>
+            <span>العنوان التفصيلي(Address) <i>*</i></span>
+            <p></p>
+          </div>
+          <input type="text" placeholder="3القطعة/الشارع/المنزل: قطعة 5 شارع 2منزل" value={area} onChange={(e) => { setArea(e.target.value) }} />
+        </div>
+        <div className='in_list'>
+          <div className='in_list_title'>
+            <span>{LText.governor}(State) <i>*</i></span>
+            <p></p>
+          </div>
+          <input type="text" placeholder={LText.governor} value={state} onChange={(e) => { setState(e.target.value) }} />
+        </div>
+        <div className='in_list'>
+          <div className='in_list_title'>
+            <span>{LText.city}(city) <i>*</i></span>
+            <p></p>
+          </div>
+          <input type="text" placeholder={LText.city} value={city} onChange={(e) => { setCity(e.target.value) }} />
+        </div>
+        <div className='in_list'>
+          <div className='in_list_title'>
+            <span>{LText.semail}(Email) <i>*</i></span>
+            <p></p>
+          </div>
+          <input name="email" type="text" placeholder={LText.semailPle} value={email} onChange={(e) => { setEmail(e.target.value) }} />
+        </div>
+        {/* <div className='in_list'>
           <div className='in_list_title'>
             <span>{LText.governor} <i>*</i></span>
             <p></p>
@@ -289,13 +323,13 @@ export function Information({ selectedVar }) {
             <p></p>
           </div>
           <input type="text" placeholder={LText.closestPle} value={nearest} onChange={(e) => { setNearest(e.target.value) }} />
-        </div>
+        </div> */}
         <div className='in_list'>
           <div className='in_list_title'>
             <span>{LText.comments}</span>
             <p></p>
           </div>
-          <textarea type="text" placeholder='' value={message} onChange={(e) => { setMessage(e.target.value) }} />
+          <textarea type="text" placeholder={LText.commentsPle} value={message} onChange={(e) => { setMessage(e.target.value) }} />
         </div>
       </div>
       <div className='settle_accounts_foot'>
@@ -325,13 +359,13 @@ export function Information({ selectedVar }) {
                     email: email,
                     phone: phone,
                     whatsapp: whatsapp,
-                    country: LText.country,
+                    country: country,
                     state: state,
                     city: city,
                     area: area,
-                    building: building,
-                    street: street,
-                    nearest_land_mark: nearest,
+                    // building: building,
+                    // street: street,
+                    // nearest_land_mark: nearest,
                     message: message,
                   },
                   setErrorText,
@@ -391,7 +425,7 @@ export function PaymentMethod() {
 }
 
 function SettleAccounts(selectedVar, params, setErrorText, setIsSubmit) {
-  if (!params.name || !params.phone || !params.whatsapp || !params.state || !params.city || !params.area || !params.building || !params.street || !params.nearest_land_mark || !params.email) {
+  if (!params.country || !params.name || !params.phone || !params.state || !params.city || !params.area || !params.email) {
     return setErrorText(LText.empty)
   }
   var emailRegExp = /^[a-zA-Z0-9]+([-_.][A-Za-zd]+)*@([a-zA-Z0-9]+[-.])+[A-Za-zd]{2,5}$/;

@@ -3,7 +3,7 @@ import { useRef, useMemo, useEffect, useState } from 'react';
 import { Listbox } from '@headlessui/react';
 import { defer } from '@shopify/remix-oxygen';
 import fetch from '../../../fetch/axios';
-import { getShopAddress, openComment, getLanguage } from '~/lib/P_Variable';
+import { getShopAddress, openComment, getLanguage, getDirection } from '~/lib/P_Variable';
 import $ from 'jquery'
 import {
   useLoaderData,
@@ -747,7 +747,7 @@ export default function Product() {
           //     )}
           //   </button>
           // </div>
-          <div className='buy_button sticky_bottom'>
+          <div className='buy_button sticky_bottom' style={{ padding: getDirection() === 'rtl' ? '.5rem .5rem .5rem .8rem' : '.5rem .8rem .5rem .5rem' }}>
             <button className='buy_btn_style'>
               {/* <img src="https://platform.antdiy.vip/static/image/hultoo_buybtn.png" /> */}
               {/* {isOutOfStock ? (
@@ -906,9 +906,9 @@ export function ProductForm() {
             />
           )}
         </Text>
-        <div className='discount_box'>
+        <div className='discount_box' style={{ backgroundImage: `linear-gradient(${getDirection() === 'rtl' ? '135deg' : '315deg'}, #FFD9D9 0%, #FF3333 92%)` }}>
           <span>{LText.discountZone}</span>
-          <div className='label'>
+          <div className='label' style={getDirection() === 'rtl' ? { left: '8px' } : { right: '8px' }}>
             <p>80%</p>
             <p>OFF</p>
           </div>
