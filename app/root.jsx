@@ -1,4 +1,5 @@
-import {defer} from '@shopify/remix-oxygen';
+import { defer } from '@shopify/remix-oxygen';
+import { useEffect } from 'react';
 import {
   Links,
   Meta,
@@ -9,20 +10,20 @@ import {
   useLoaderData,
   useMatches,
 } from '@remix-run/react';
-import {ShopifySalesChannel, Seo} from '@shopify/hydrogen';
-import {Layout} from '~/components';
-import {GenericError} from './components/GenericError';
-import {NotFound} from './components/NotFound';
+import { ShopifySalesChannel, Seo } from '@shopify/hydrogen';
+import { Layout } from '~/components';
+import { GenericError } from './components/GenericError';
+import { NotFound } from './components/NotFound';
 
 import styles from './styles/app.css';
 import favicon from '../public/favicon.svg';
 
-import {DEFAULT_LOCALE, parseMenu} from './lib/utils';
+import { DEFAULT_LOCALE, parseMenu } from './lib/utils';
 import { getDirection } from '~/lib/P_Variable';
 import invariant from 'tiny-invariant';
-import {useAnalytics} from './hooks/useAnalytics';
+import { useAnalytics } from './hooks/useAnalytics';
 
-const seo = ({data, pathname}) => ({
+const seo = ({ data, pathname }) => ({
   title: data?.layout?.shop?.name,
   titleTemplate: '%s | Hydrogen Demo Store',
   description: data?.layout?.shop?.description,
@@ -36,7 +37,7 @@ export const handle = {
 
 export const links = () => {
   return [
-    {rel: 'stylesheet', href: styles},
+    { rel: 'stylesheet', href: styles },
     {
       rel: 'preconnect',
       href: 'https://cdn.shopify.com',
@@ -45,7 +46,7 @@ export const links = () => {
       rel: 'preconnect',
       href: 'https://shop.app',
     },
-    {rel: 'icon', href: '//cdn.shopify.com/s/files/1/0617/7793/6534/files/logo.png?crop=center&height=32&v=1676515760&width=32'},
+    { rel: 'icon', href: '//modamias.com/cdn/shop/files/3111.png?crop=center&height=32&v=1682331063&width=32' },
   ];
 };
 
@@ -54,7 +55,7 @@ export const meta = () => ({
   viewport: 'width=device-width,initial-scale=1',
 });
 
-export async function loader({context}) {
+export async function loader({ context }) {
   const [cartId, layout] = await Promise.all([
     context.session.get('cartId'),
     getLayoutData(context),
@@ -80,9 +81,38 @@ export default function App() {
 
   var canUseDOM = !!(typeof window !== "undefined" && typeof window.document !== "undefined" && typeof window.localStorage !== "undefined");
   if (canUseDOM) {
-    if(getReferer() && getReferer().split('.com')[0].indexOf(window.location.host.split('.com')[0]) === -1 && (!localStorage.getItem('refererName') || (localStorage.getItem('refererName') && localStorage.getItem('refererName') !== getReferer()))){
+    if (getReferer() && getReferer().split('.com')[0].indexOf(window.location.host.split('.com')[0]) === -1 && (!localStorage.getItem('refererName') || (localStorage.getItem('refererName') && localStorage.getItem('refererName') !== getReferer()))) {
       localStorage.setItem('refererName', getReferer())
     }
+    useEffect(() => {
+      (function (h, o, t, j, a, r) {
+        h.hj = h.hj || function () { (h.hj.q = h.hj.q || []).push(arguments) };
+        h._hjSettings = { hjid: 3527157, hjsv: 6 };
+        a = o.getElementsByTagName('head')[0];
+        r = o.createElement('script'); r.async = 1;
+        r.src = t + h._hjSettings.hjid + j + h._hjSettings.hjsv;
+        a.appendChild(r);
+      })(window, document, 'https://static.hotjar.com/c/hotjar-', '.js?sv=');
+
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag('js', new Date());
+      gtag('config', 'G-X12GDSEKQ1');
+
+      !function (f, b, e, v, n, t, s) {
+        if (f.fbq) return; n = f.fbq = function () {
+          n.callMethod ?
+            n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+        };
+        if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0';
+        n.queue = []; t = b.createElement(e); t.async = !0;
+        t.src = v; s = b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t, s)
+      }(window, document, 'script',
+        'https://connect.facebook.net/en_US/fbevents.js');
+      fbq('init', '895173741588158');
+      fbq('track', 'PageView');
+    }, []);
   }
   return (
     <html lang={locale.language} style={{ direction: getDirection() }}>
@@ -90,6 +120,8 @@ export default function App() {
         <Seo />
         <Meta />
         <Links />
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-X12GDSEKQ1"></script>
+        <noscript><img height="1" width="1" style={{ display: "none" }} src="https://www.facebook.com/tr?id=895173741588158&ev=PageView&noscript=1" /></noscript>
       </head>
       <body>
         <Layout
@@ -135,7 +167,7 @@ export function CatchBoundary() {
             <NotFound type={caught.data?.pageType} />
           ) : (
             <GenericError
-              error={{message: `${caught.status} ${caught.data}`}}
+              error={{ message: `${caught.status} ${caught.data}` }}
             />
           )}
         </Layout>
@@ -145,7 +177,7 @@ export function CatchBoundary() {
   );
 }
 
-export function ErrorBoundary({error}) {
+export function ErrorBoundary({ error }) {
   const [root] = useMatches();
   const locale = root?.data?.selectedLocale ?? DEFAULT_LOCALE;
 
@@ -206,7 +238,7 @@ const LAYOUT_QUERY = `#graphql
   }
 `;
 
-async function getLayoutData({storefront}) {
+async function getLayoutData({ storefront }) {
   const HEADER_MENU_HANDLE = 'main-menu';
   const FOOTER_MENU_HANDLE = 'footer';
 
@@ -228,7 +260,7 @@ async function getLayoutData({storefront}) {
           - /blog/news/blog-post -> /news/blog-post
           - /collections/all -> /products
       */
-  const customPrefixes = {BLOG: '', CATALOG: 'products'};
+  const customPrefixes = { BLOG: '', CATALOG: 'products' };
 
   const headerMenu = data?.headerMenu
     ? parseMenu(data.headerMenu, customPrefixes)
@@ -238,7 +270,7 @@ async function getLayoutData({storefront}) {
     ? parseMenu(data.footerMenu, customPrefixes)
     : undefined;
 
-  return {shop: data.shop, headerMenu, footerMenu};
+  return { shop: data.shop, headerMenu, footerMenu };
 }
 
 const CART_QUERY = `#graphql
@@ -355,10 +387,10 @@ const CART_QUERY = `#graphql
   }
 `;
 
-export async function getCart({storefront}, cartId) {
+export async function getCart({ storefront }, cartId) {
   invariant(storefront, 'missing storefront client in cart query');
 
-  const {cart} = await storefront.query(CART_QUERY, {
+  const { cart } = await storefront.query(CART_QUERY, {
     variables: {
       cartId,
       country: storefront.i18n.country,
