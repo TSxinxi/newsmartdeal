@@ -46,7 +46,7 @@ export const links = () => {
       rel: 'preconnect',
       href: 'https://shop.app',
     },
-    { rel: 'icon', href: '//modamias.com/cdn/shop/files/3111.png?crop=center&height=32&v=1682331063&width=32' },
+    { rel: 'icon', href: '//cdn.shopify.com/s/files/1/0617/7793/6534/files/logo.png?crop=center&height=32&v=1676515760&width=32' },
   ];
 };
 
@@ -87,7 +87,7 @@ export default function App() {
     useEffect(() => {
       (function (h, o, t, j, a, r) {
         h.hj = h.hj || function () { (h.hj.q = h.hj.q || []).push(arguments) };
-        h._hjSettings = { hjid: 3527157, hjsv: 6 };
+        h._hjSettings = { hjid: 3539576, hjsv: 6 };
         a = o.getElementsByTagName('head')[0];
         r = o.createElement('script'); r.async = 1;
         r.src = t + h._hjSettings.hjid + j + h._hjSettings.hjsv;
@@ -97,12 +97,12 @@ export default function App() {
       window.dataLayer = window.dataLayer || [];
       function gtag() { dataLayer.push(arguments); }
       gtag('js', new Date());
-      gtag('config', 'G-X12GDSEKQ1');
+      gtag('config', 'G-8SEZ0JBVS4');
 
       !function (f, b, e, v, n, t, s) {
         if (f.fbq) return; n = f.fbq = function () {
           n.callMethod ?
-            n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+          n.callMethod.apply(n, arguments) : n.queue.push(arguments)
         };
         if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0';
         n.queue = []; t = b.createElement(e); t.async = !0;
@@ -110,7 +110,7 @@ export default function App() {
         s.parentNode.insertBefore(t, s)
       }(window, document, 'script',
         'https://connect.facebook.net/en_US/fbevents.js');
-      fbq('init', '895173741588158');
+      fbq('init', '784050860018815');
       fbq('track', 'PageView');
     }, []);
   }
@@ -120,8 +120,8 @@ export default function App() {
         <Seo />
         <Meta />
         <Links />
-        <script async src="https://www.googletagmanager.com/gtag/js?id=G-X12GDSEKQ1"></script>
-        <noscript><img height="1" width="1" style={{ display: "none" }} src="https://www.facebook.com/tr?id=895173741588158&ev=PageView&noscript=1" /></noscript>
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-8SEZ0JBVS4"></script>
+        <noscript><img height="1" width="1" style={{ display: "none" }} src="https://www.facebook.com/tr?id=784050860018815&ev=PageView&noscript=1" /></noscript>
       </head>
       <body>
         <Layout
