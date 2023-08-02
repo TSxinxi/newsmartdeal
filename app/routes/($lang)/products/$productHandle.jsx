@@ -3,7 +3,7 @@ import { useRef, useMemo, useEffect, useState } from 'react';
 import { Listbox } from '@headlessui/react';
 import { defer } from '@shopify/remix-oxygen';
 import fetch from '../../../fetch/axios';
-import { getShopAddress, openComment, getLanguage, getDirection } from '~/lib/P_Variable';
+import { getShopAddress, openComment, getLanguage, getDirection, getDomain } from '~/lib/P_Variable';
 import $ from 'jquery'
 import {
   useLoaderData,
@@ -28,7 +28,6 @@ import {
 } from '~/components';
 import invariant from 'tiny-invariant';
 import clsx from 'clsx';
-import { allCurrency } from "../../../lib/currencyList";
 import { MEDIA_FRAGMENT, PRODUCT_CARD_FRAGMENT } from '~/data/fragments';
 const LText = getLanguage()
 
@@ -51,6 +50,7 @@ const seo = ({ data }) => {
 };
 let productData = ''
 let productVariants = []
+let currencyCode = ''
 
 export const handle = {
   seo,
@@ -210,6 +210,7 @@ function GetCommentHeader() {
 
           if (averageWrapper) {
             averageWrapper.innerHTML = `<button class='add_comment'>${LText.addComment}</button>`
+            averageWrapper.style.display = 'none'
           }
           if (averageText) {
             if (averageText.innerHTML === 'Be the first to write a review') {
@@ -224,7 +225,7 @@ function GetCommentHeader() {
           if (averageNumStr) {
             let averageNum = averageNumStr.getAttribute("aria-label").match(/\d+(\.\d+)?/g)[0]
             if (averageNum) {
-              if (LText.type === 'SA') {
+              if (LText.type === 'SAR') {
                 averageNumStr.innerHTML = averageNum + averageNumStr.innerHTML + ` من 5`
               } else {
                 averageNumStr.style.direction = 'initial'
@@ -455,9 +456,8 @@ export default function Product() {
   const isOutOfStock = !selectedVariant?.availableForSale;
   const strProductId = product.id.lastIndexOf("/");
   let product_id = strProductId ? product.id.slice(strProductId + 1) : '';
-  let currencyCode = selectedVariant?.price?.currencyCode
-  const siteObj = currencyCode && allCurrency[currencyCode] ? allCurrency[currencyCode] : null
 
+  const [hasMounted, setHasMounted] = useState(false);
   const [commentHtml, setComment] = useState('');
   const [commentHeader, setCommentHeader] = useState('');
   const [reviewTitle, setReviewTitle] = useState('');
@@ -473,19 +473,45 @@ export default function Product() {
   const [reviewer_name_format, setFrmat] = useState('');
   const [sortBy, setSortBy] = useState('created_at');
   const [filtRat, setFiltRat] = useState('');
+  const [currency, setCurrency] = useState('');
 
-  var canUseDOM = !!(typeof window !== "undefined" && typeof window.document !== "undefined" && typeof window.localStorage !== "undefined");
-  if (canUseDOM) {
-    let result = new URLSearchParams(window.location.search);
-    let param = result.get('source');
-    if (localStorage.getItem('refererName')) {
-      localStorage.setItem('sourceProductId', product.id)
-    }
-    if (param) {
-      window.localStorage.setItem('sourceName', param)
-      window.localStorage.setItem('sourceProductId', product.id)
-    }
-    useEffect(() => {
+  useEffect(() => {
+    setHasMounted(true);
+    if (canUseDOM) {
+      // fetch.get(`https://www.cloudflare.com/cdn-cgi/trace`).then((res) => {
+      //   if (res && res.data) {
+      //     const obj = {}
+      //     var arr = res.data.trim().split('\n')
+      //     for (var i = 0; i < arr.length; i++) {
+      //       var key = arr[i].split("=")
+      //       obj[key[0]] = key[1]
+      //     }
+      //     //UAE 阿联酋
+      //     console.log(obj)
+      //   }
+      // })
+      let href = window.location.href
+      if (href && href.indexOf('-huf') > -1) {
+        currencyCode = 'HUF'
+        localStorage.setItem('currencyCode', currencyCode)
+        setCurrency(currencyCode)
+      } else if (href && href.indexOf('-aed') > -1) {
+        currencyCode = 'AED'
+        localStorage.setItem('currencyCode', currencyCode)
+        setCurrency(currencyCode)
+      } else {
+        localStorage.removeItem('currencyCode')
+        setCurrency(selectedVariant?.price?.currencyCode)
+      }
+      let result = new URLSearchParams(window.location.search);
+      let param = result.get('source');
+      if (localStorage.getItem('refererName')) {
+        localStorage.setItem('sourceProductId', product.id)
+      }
+      if (param) {
+        window.localStorage.setItem('sourceName', param)
+        window.localStorage.setItem('sourceProductId', product.id)
+      }
       if (product_id && openComment()) {
         // 评论
         GetJudge(product_id, 1, sortBy).then(res => {
@@ -500,8 +526,11 @@ export default function Product() {
           }
         })
       }
-      toTop()
-    }, []);
+    }
+    toTop()
+  }, []);
+  if (!hasMounted) {
+    return null;
   }
   productData = product
   productVariants = product.variants.nodes
@@ -511,24 +540,25 @@ export default function Product() {
       <Section padding="x" className="px-0 prodect_section">
         <div className='top_height'>
           <div className='product_top top_height'>
-            {
-              siteObj ? <div className='site'>
-                <div style={{
-                  // backgroundImage: 'url(https://app-resources.v2diy.com/pro/currency/img/currency-flags.png)',
-                  // backgroundRepeat: 'no-repeat',
-                  // float: 'left',
-                  // width: '30px',
-                  // height: '20px',
-                  // borderRadius: '3px',
-                  // backgroundPosition: siteObj.left + " " + siteObj.top,
-                  // transform: 'scale(0.7)',
-                }}></div>
-                <img src="https://platform.antdiy.vip/static/image/hydrogen_site_alb.svg" />
-                <span>{siteObj.value}</span>
-              </div> : <div></div>
-            }
-            <img src='https://platform.antdiy.vip/static/image/HULTOO_icon.svg' />
-            <p onClick={() => { window.open('https://' + getShopAddress()) }}><img src='https://platform.antdiy.vip/static/image/hultoo_home.svg' /></p>
+
+            <div className='site'>
+              <div style={{
+                // backgroundImage: 'url(https://app-resources.v2diy.com/pro/currency/img/currency-flags.png)',
+                // backgroundRepeat: 'no-repeat',
+                // float: 'left',
+                // width: '30px',
+                // height: '20px',
+                // borderRadius: '3px',
+                // backgroundPosition: siteObj.left + " " + siteObj.top,
+                // transform: 'scale(0.7)',
+              }}></div>
+              <img src={`https://platform.antdiy.vip/static/image/${currencyCode === 'AED' ? 'UAE-alianqiu' : 'hydrogen_site_alb'}.svg`} />
+              <span>{currencyCode || 'SAR'}</span>
+            </div>
+
+            <img className='logo' src={`https://platform.antdiy.vip/static/image/HULTOO_icon.svg`} />
+            {/* <p onClick={() => { window.open('https://' + getShopAddress()) }}><img src="https://platform.antdiy.vip/static/image/hultoo_home.svg" /></p> */}
+            <p></p>
           </div>
         </div>
         <div className="product_details items-start md:gap-6 md:grid-cols-2">
@@ -539,8 +569,8 @@ export default function Product() {
             className="w-screen md:w-full lg:col-span-2"
           />
           <div className="left_product sticky md:-mb-nav md:top-nav md:-translate-y-nav md:pt-nav hiddenScroll">
-            <section className="flex flex-col w-full gap-2 md:mx-auto md:max-w-sm md:px-0" style={{ color: '#141414E6' }}>
-              <div className="grid gap-2 padding_16">
+            <section className="flex flex-col w-full md:mx-auto md:max-w-sm md:px-0" style={{ color: '#141414E6' }}>
+              <div className="grid gap-2 padding16">
                 <Heading as="h1" className="whitespace-normal">
                   {title}
                 </Heading>
@@ -549,18 +579,14 @@ export default function Product() {
                 )} */}
               </div>
               <ProductForm />
-              <div className='description_box'>
-                {descriptionHtml && (
-                  <div className='padding_16 borderf5 description_html'>
-                    <div
-                      className="prose dark:prose-invert info_color"
-                      style={{ overflow: 'hidden', margin: 'auto' }}
-                      dangerouslySetInnerHTML={{ __html: descriptionHtml }}
-                    />
-                  </div>
-                )}
-                <img className='padding_16' src={`https://platform.antdiy.vip/static/image/${LText.deliveryProcess}`} />
-              </div>
+              {descriptionHtml && (
+                <div
+                  className="padding16 borderf5 dark:prose-invert description_box"
+                  style={{ overflow: 'hidden' }}
+                  dangerouslySetInnerHTML={{ __html: descriptionHtml }}
+                />
+              )}
+              <img className='padding16' src={`https://platform.antdiy.vip/static/image/${LText.deliveryProcess}`} />
               {/* <div className="grid gap-4 py-4">
                 {descriptionHtml && (
                   <ProductDetail
@@ -586,126 +612,127 @@ export default function Product() {
             </section>
           </div>
         </div>
-        <div className='borderf5 comment_content'>
-          <div className='comment_box'>
-            <div className='comment_box_title'>{LText.comTit}</div>
-            {commentHeader ? <div
-              className="dark:prose-invert comment_box_content"
-              dangerouslySetInnerHTML={{ __html: commentHeader }}
-              onClick={(e) => { clickComment(e, setFiltRat, product_id, sortBy, setComment) }}
-            /> : <div className="jdgm-rev-widg__header comment_box_content">
-              <div className="jdgm-rev-widg__summary">
-                <div className="jdgm-rev-widg__summary-text">{LText.noOpinion}</div>
-              </div>
-              <div className="jdgm-rev-widg__sort-wrapper">
-                <button className="add_comment" onClick={(e) => { clickComment(e, setFiltRat, product_id, sortBy, setComment) }}>{LText.addComment}</button>
-              </div>
-            </div>}
-            <div className='jq_slow'>
-              <div className='write_review'>
-                <div className='write_review_title'>{LText.addComment}</div>
-                <div className='write_review_li'>
-                  <div className="write_review_name">{LText.rating}</div>
-                  <div className='star_score'>
-                    {
-                      ['', '', '', '', ''].map((item, index) => {
-                        return <div className='star_li'
-                          key={index}
-                          onMouseEnter={() => { setHhoverStar(index + 1) }}
-                          onMouseLeave={() => { setHhoverStar(starScore) }}
-                          onClick={() => { setStarScore(index + 1) }}
-                        ><img src={`https://platform.antdiy.vip/static/image/${hoverStar > index ? 'hydrogen_icon_star_quan' : 'hydrogen_icon_star_kongg'}.svg`} /> </div>
-                      })
-                    }
-                  </div>
-                </div>
-                <div className='write_review_li'>
-                  <div className="write_review_name">{LText.reviewTitle}</div>
-                  <input type="text" placeholder={LText.reviewTiPle} value={reviewTitle} onChange={(e) => { setReviewTitle(e.target.value) }} />
-                </div>
-                <div className='write_review_li'>
-                  <div className="write_review_name">{LText.review}</div>
-                  <textarea type="text" placeholder={LText.reviewPle} value={review} onChange={(e) => { setErrorText({ type: 1, content: e.target.value ? '' : LText.error }), setReview(e.target.value) }} />
-                  {
-                    errorText.type === 1 && errorText.content ? <div className='error_text'>{errorText.content}</div> : null
-                  }
-                </div>
-                <div className='write_review_li'>
-                  <div className="write_review_name">{LText.picture}</div>
-                  <div className="write_review_img">
-                    <div className='write_review_cont'>
-                      <span className='write_review_cont_icon'>
-                        <img src="https://platform.antdiy.vip/static/image/hydrogen_icon_upload.svg" />
-                      </span>
-                      <input type="file" name="media" multiple accept="image/gif,image/jpeg,image/jpg,image/png,image/webp" onChange={(e) => { changeImg(e, imgList, setImgList, imgKey, setImgKey) }} />
-                    </div>
-                    {
-                      imgList.map((item, index) => {
-                        return <div className='write_review_cont' key={index}>
-                          <img className='delete' onClick={() => { imgList.splice(index, 1); setImgList([...imgList]) }} src="https://platform.antdiy.vip/static/image/hydrogen_icon_delete.svg" />
-                          <img src={item.url} alt="" />
-                        </div>
-                      })
-                    }
-                  </div>
-                </div>
-                <div className='write_review_li'>
-                  <div className="write_review_name">
-                    <span>{LText.selectName}</span>
-                    <select className="write_review_select" value={reviewer_name_format} onChange={(e) => { setFrmat(e.target.value) }} >
-                      <option value="">John Smith</option>
-                      <option value="last_initial">John S.</option>
-                      <option value="all_initials">J.S.</option>
-                      <option value="anonymous">{LText.unknown}</option>
-                    </select>
-                    <span> )</span>
-                  </div>
-                  <input type="text" placeholder={LText.namePle} value={name} onChange={(e) => { setErrorText({ type: 2, content: e.target.value ? '' : LText.error }), setName(e.target.value) }} />
-                  {
-                    errorText.type === 2 && errorText.content ? <div className='error_text'>{errorText.content}</div> : null
-                  }
-                </div>
-                <div className='write_review_li'>
-                  <div className="write_review_name">{LText.emailN}</div>
-                  <input name="email" type="text" placeholder={LText.emailPle} value={email} onChange={(e) => { setErrorText({ type: 3, content: e.target.value ? '' : LText.error }), setEmail(e.target.value) }} />
-                  {
-                    errorText.type === 3 && errorText.content ? <div className='error_text'>{errorText.content}</div> : null
-                  }
-                </div>
-                <div className="write_review_btn">
-                  <button className='cancel' onClick={() => { WriteReview() }}>{LText.cancelRe}</button>
-                  <button className='submit' onClick={() => {
-                    submitReview(
-                      {
-                        url: getShopAddress(),
-                        shop_domain: getShopAddress(),
-                        platform: 'shopify',
-                        reviewer_name_format: reviewer_name_format,
-                        name: name,
-                        email: email,
-                        rating: starScore,
-                        title: reviewTitle,
-                        body: review,
-                        id: product_id,
-                      },
-                      imgList,
-                      setErrorText,
-                      setIsSuccess
-                    )
-                  }}>{LText.submitRe}</button>
-                </div>
-              </div>
-            </div>
-            {
-              isSuccess ? <div className='review_submit'>
-                <div className="review_submit_tit">{LText.subReview}</div>
-                <div className="review_submit_content">{LText.subComtent}</div>
-              </div> : null
-            }
-          </div>
-          {commentHtml && (
+        {
+          openComment() ? <div className='comment_product borderf5'>
             <div className='comment_box'>
-              <div className='comment_screen'>
+              <div className='comment_box_title'>{LText.comTit}</div>
+              {commentHeader ? <div
+                className="dark:prose-invert comment_box_content"
+                dangerouslySetInnerHTML={{ __html: commentHeader }}
+                onClick={(e) => { clickComment(e, setFiltRat, product_id, sortBy, setComment) }}
+              /> : <div className="jdgm-rev-widg__header comment_box_content">
+                <div className="jdgm-rev-widg__summary">
+                  <div className="jdgm-rev-widg__summary-text">{LText.noOpinion}</div>
+                </div>
+                <div className="jdgm-rev-widg__sort-wrapper">
+                  <button className="add_comment" onClick={(e) => { clickComment(e, setFiltRat, product_id, sortBy, setComment) }}>{LText.writeReview}</button>
+                </div>
+              </div>}
+              <div className='jq_slow'>
+                <div className='write_review'>
+                  <div className='write_review_title'>{LText.addComment}</div>
+                  <div className='write_review_li'>
+                    <div className="write_review_name">{LText.rating}</div>
+                    <div className='star_score'>
+                      {
+                        ['', '', '', '', ''].map((item, index) => {
+                          return <div className='star_li'
+                            key={index}
+                            onMouseEnter={() => { setHhoverStar(index + 1) }}
+                            onMouseLeave={() => { setHhoverStar(starScore) }}
+                            onClick={() => { setStarScore(index + 1) }}
+                          ><img src={`https://platform.antdiy.vip/static/image/${hoverStar > index ? 'hydrogen_icon_star_quan' : 'hydrogen_icon_star_kongg'}.svg`} /> </div>
+                        })
+                      }
+                    </div>
+                  </div>
+                  <div className='write_review_li'>
+                    <div className="write_review_name">{LText.reviewTitle}</div>
+                    <input type="text" placeholder={LText.reviewTiPle} value={reviewTitle} onChange={(e) => { setReviewTitle(e.target.value) }} />
+                  </div>
+                  <div className='write_review_li'>
+                    <div className="write_review_name">{LText.review}</div>
+                    <textarea type="text" placeholder={LText.reviewPle} value={review} onChange={(e) => { setErrorText({ type: 1, content: e.target.value ? '' : LText.error }), setReview(e.target.value) }} />
+                    {
+                      errorText.type === 1 && errorText.content ? <div className='error_text'>{errorText.content}</div> : null
+                    }
+                  </div>
+                  <div className='write_review_li'>
+                    <div className="write_review_name">{LText.picture}</div>
+                    <div className="write_review_img">
+                      <div className='write_review_cont'>
+                        <span className='write_review_cont_icon'>
+                          <img src="https://platform.antdiy.vip/static/image/hydrogen_icon_upload.svg" />
+                        </span>
+                        <input type="file" name="media" multiple accept="image/gif,image/jpeg,image/jpg,image/png,image/webp" onChange={(e) => { changeImg(e, imgList, setImgList, imgKey, setImgKey) }} />
+                      </div>
+                      {
+                        imgList.map((item, index) => {
+                          return <div className='write_review_cont' key={index}>
+                            <img className='delete' onClick={() => { imgList.splice(index, 1); setImgList([...imgList]) }} src="https://platform.antdiy.vip/static/image/hydrogen_icon_delete.svg" />
+                            <img src={item.url} alt="" />
+                          </div>
+                        })
+                      }
+                    </div>
+                  </div>
+                  <div className='write_review_li'>
+                    <div className="write_review_name">
+                      <span>{LText.selectName}</span>
+                      <select className="write_review_select" value={reviewer_name_format} onChange={(e) => { setFrmat(e.target.value) }} >
+                        <option value="">John Smith</option>
+                        <option value="last_initial">John S.</option>
+                        <option value="all_initials">J.S.</option>
+                        <option value="anonymous">{LText.unknown}</option>
+                      </select>
+                      <span> )</span>
+                    </div>
+                    <input type="text" placeholder={LText.namePle} value={name} onChange={(e) => { setErrorText({ type: 2, content: e.target.value ? '' : LText.error }), setName(e.target.value) }} />
+                    {
+                      errorText.type === 2 && errorText.content ? <div className='error_text'>{errorText.content}</div> : null
+                    }
+                  </div>
+                  <div className='write_review_li'>
+                    <div className="write_review_name">{LText.emailN}</div>
+                    <input name="email" type="text" placeholder={LText.emailPle} value={email} onChange={(e) => { setErrorText({ type: 3, content: e.target.value ? '' : LText.error }), setEmail(e.target.value) }} />
+                    {
+                      errorText.type === 3 && errorText.content ? <div className='error_text'>{errorText.content}</div> : null
+                    }
+                  </div>
+                  <div className="write_review_btn">
+                    <button className='cancel' onClick={() => { WriteReview() }}>{LText.cancelRe}</button>
+                    <button className='submit' onClick={() => {
+                      submitReview(
+                        {
+                          url: getShopAddress(),
+                          shop_domain: getShopAddress(),
+                          platform: 'shopify',
+                          reviewer_name_format: reviewer_name_format,
+                          name: name,
+                          email: email,
+                          rating: starScore,
+                          title: reviewTitle,
+                          body: review,
+                          id: product_id,
+                        },
+                        imgList,
+                        setErrorText,
+                        setIsSuccess
+                      )
+                    }}>{LText.submitRe}</button>
+                  </div>
+                </div>
+              </div>
+              {
+                isSuccess ? <div className='review_submit'>
+                  <div className="review_submit_tit">{LText.subReview}</div>
+                  <div className="review_submit_content">{LText.subComtent}</div>
+                </div> : null
+              }
+            </div>
+            {commentHtml && (
+              <div className='comment_box'>
+                {/* <div className='comment_screen'>
                 <select value={sortBy} onChange={(e) => { setScreen(e.target.value, product_id, setComment, setSortBy, filtRat) }} >
                   <option value="created_at">{LText.screenCreate}</option>
                   <option value="desc">{LText.screenDesc}</option>
@@ -715,15 +742,16 @@ export default function Product() {
                   <option value="videos_first">{LText.screenVideo}</option>
                   <option value="most_helpful">{LText.screenMost}</option>
                 </select>
+              </div> */}
+                <div
+                  className="dark:prose-invert comment_list"
+                  onClick={(e) => { changePage(e, product_id, setComment, sortBy, filtRat) }}
+                  dangerouslySetInnerHTML={{ __html: commentHtml }}
+                />
               </div>
-              <div
-                className="dark:prose-invert comment_list"
-                onClick={(e) => { changePage(e, product_id, setComment, sortBy, filtRat) }}
-                dangerouslySetInnerHTML={{ __html: commentHtml }}
-              />
-            </div>
-          )}
-        </div>
+            )}
+          </div> : null
+        }
         <div className="article_nav">
           {
             LText.acticleList.map((item, index) => {
@@ -740,6 +768,7 @@ export default function Product() {
           //       <Text //立即购买
           //         as="span"
           //         className="flex items-center justify-center gap-2 py-3 px-6"
+          //         style={{ maxWidth: 'initial' }}
           //         onClick={() => { goSettleAccounts() }}
           //       >
           //         <span>{LText.buy}</span>
@@ -769,25 +798,13 @@ export default function Product() {
             </button>
             <div className='buy_btn_price'>
               {isOnSale && (
-                <Money
-                  withoutTrailingZeros
-                  data={selectedVariant?.compareAtPrice}
-                  as="span"
-                  className="btn_price_old"
-                />
-                // <span className='btn_price btn_price_old'>
-                //   <i>{selectedVariant?.compareAtPrice?.currencyCode} </i>{parseFloat(selectedVariant?.compareAtPrice?.amount)}
-                // </span>
+                <span className='btn_price btn_price_old'>
+                  <i>{currency} </i>{parseFloat(selectedVariant?.compareAtPrice?.amount)}
+                </span>
               )}
-              {/* <span className='btn_price btn_price_new'>
-                <i>{selectedVariant?.price?.currencyCode} </i>{parseFloat(selectedVariant?.price?.amount)}
-              </span> */}
-              <Money
-                withoutTrailingZeros
-                data={selectedVariant?.price}
-                as="span"
-                className='btn_price_new'
-              />
+              <span className='btn_price btn_price_new'>
+                <i>{currency} </i>{parseFloat(selectedVariant?.price?.amount)}
+              </span>
             </div>
           </div>
         )}
@@ -821,12 +838,26 @@ function toTop() {
 function goSettleAccounts() {
   // const firstVariant = productData.variants.nodes[0];
   // const selectedVariant = productData.selectedVariant ?? firstVariant;
+  // if (currencyCode) {
+  //   selectedVariant.price.currencyCode = currencyCode
+  // }
   // localStorage.removeItem('selectedVariant')
   // localStorage.setItem('selectedVariant', JSON.stringify(selectedVariant))
-
   localStorage.removeItem('productVariant')
   localStorage.setItem('productVariant', JSON.stringify(productData))
-  window.open(`/settleAccounts`, '_self')
+
+  let source_name = window.localStorage.getItem('sourceName')
+  if (source_name) {
+    let params = {
+      source: source_name,
+      url: window.location.href,
+    }
+    fetch.post(`${getDomain()}/account-service/media_orders/cart_creat/pass`, params).then(() => {
+      window.open(`/settleAccounts?id=${productData.id}`, '_self')
+    })
+  } else {
+    window.open(`/settleAccounts?id=${productData.id}`, '_self')
+  }
 }
 
 export function ProductForm() {
@@ -883,27 +914,41 @@ export function ProductForm() {
     ...analytics.products[0],
     quantity: 1,
   };
+  const [currency, setCurrency] = useState('');
+  useEffect(() => {
+    if (currencyCode) {
+      setCurrency(currencyCode)
+    } else {
+      setCurrency(selectedVariant?.price?.currencyCode)
+    }
+  }, []);
 
   return (
-    <div className="grid gap-10 padding_16">
+    <div className="grid gap-10 pricex_box padding16">
       <div className="grid gap-4">
         <Text
           as="span"
-          className="flex items-baseline gap-4"
+          className="flex items-baseline"
         >
-          <Money
+          {/* <Money
             withoutTrailingZeros
             data={selectedVariant?.price}
             as="span"
-            className='new_price'
-          />
+            className='fontS'
+          /> */}
+          <span className='current_price current_price_new'>
+            <i>{currency} </i>{parseFloat(selectedVariant?.price?.amount)}
+          </span>
           {isOnSale && (
-            <Money
-              withoutTrailingZeros
-              data={selectedVariant?.compareAtPrice}
-              as="span"
-              className="strike pricing"
-            />
+            // <Money
+            //   withoutTrailingZeros
+            //   data={selectedVariant?.compareAtPrice}
+            //   as="span"
+            //   className="opacity-50 strike"
+            // />
+            <span className='current_price current_price_old'>
+              <i>{currency} </i>{parseFloat(selectedVariant?.compareAtPrice?.amount)}
+            </span>
           )}
         </Text>
         <div className='discount_box' style={{ backgroundImage: `linear-gradient(${getDirection() === 'rtl' ? '135deg' : '315deg'}, #FFD9D9 0%, #FF3333 92%)` }}>
@@ -996,7 +1041,7 @@ function ProductOptions({ options, searchParamsWithDefaults }) {
         .map((option) => (
           <div
             key={option.name}
-            className="flex flex-col flex-wrap mb-4 gap-y-2 last:mb-0"
+            className="flex flex-col flex-wrap gap-y-2 last:mb-0"
           >
             <Heading as="legend" size="lead" className="min-w-[4rem]">
               {option.name}
@@ -1247,7 +1292,7 @@ const PRODUCT_QUERY = `#graphql
       selectedVariant: variantBySelectedOptions(selectedOptions: $selectedOptions) {
         ...ProductVariantFragment
       }
-      media(first: 7) {
+      media(first: 250) {
         nodes {
           ...Media
         }

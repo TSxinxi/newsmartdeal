@@ -58,7 +58,7 @@ export function ProductGallery({ media, product, className }) {
         </div>
         <div className="swiper-pagination"></div>
       </div>
-      <img className='advertisement' src='https://platform.antdiy.vip/static/image/hultoo_guanggao.png' />
+      {/* <img className='advertisement' src='https://platform.antdiy.vip/static/image/hultoo_guanggao.png' /> */}
       {/* 占位 */}
     </div>
   );

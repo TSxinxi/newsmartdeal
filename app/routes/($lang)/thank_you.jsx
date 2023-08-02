@@ -53,14 +53,16 @@ export default function thank_you() {
 }
 
 export function ProductBox({ product }) {
+  // let selectedVariant = JSON.parse(window.localStorage.getItem('selectedVariant'))
+  // let currency = selectedVariant.price.currencyCode
   if (product) {
     return (
       <div className='product_box thank_product_box' >
-        <img className='thumbnail' src={product.image.url} />
+        <img src={product.image.url} />
         <div className='product_title'>
           <span>{product.title}</span>
           <span>{product.variantTitle}</span>
-          <span>{product.originalTotalSet.presentmentMoney.amount}{product.originalTotalSet.presentmentMoney.currencyCode}</span>
+          <span>{LText.type} {parseFloat(product?.originalTotalSet?.presentmentMoney?.amount)}</span>
         </div>
       </div >
     );
@@ -123,14 +125,14 @@ export function OrderBox({ orderData }) {
             </div>
           </div>
         </div>
-        <button className='inline-block rounded font-medium text-center w-full bg-primary text-contrast' style={{ marginTop: '20px' }} onClick={() => { window.open('https://' + getShopAddress(), '_self') }}>
+        {/* <button className='inline-block rounded font-medium text-center w-full bg-primary text-contrast' style={{ marginTop: '20px' }} onClick={() => { window.open('https://' + getShopAddress(), '_self') }}>
           <Text
             as="span"
             className="flex items-center justify-center gap-2 py-3 px-6"
           >
             <span>{LText.keeyshop}</span>
           </Text>
-        </button>
+        </button> */}
       </div>
     );
   }
