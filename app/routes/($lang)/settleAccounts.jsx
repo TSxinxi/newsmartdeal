@@ -123,7 +123,7 @@ export function Variant({ selectedVar, setSelectVar }) {
         .map((option) => (
           <div key={option.name} className='variant_li'>
             <div className='title'>{option.name}</div>
-            {option.values.length > 7 ? (
+            {/* {option.values.length > 7 ? (
               <select value={option.values.filter(i => i.active)[0].value} onChange={(e) => { changeVariant(setSelectVar, setOptions, options, e.target.value, option.name) }} >
                 {
                   option.values.map((item, index) => {
@@ -133,13 +133,13 @@ export function Variant({ selectedVar, setSelectVar }) {
                   })
                 }
               </select>
-            ) : (
+            ) : ( */}
               <div className='flex_center variant_li_sku'>{option.values.map((item, index) => {
                 return (
                   <div className={item.active ? 'active_sku bord_sku' : 'bord_sku'} key={index} onClick={() => { changeVariant(setSelectVar, setOptions, options, item.value, option.name) }}>{item.value}</div>
                 )
               })}</div>
-            )}
+            {/* )} */}
           </div>
         ))}
     </div >
