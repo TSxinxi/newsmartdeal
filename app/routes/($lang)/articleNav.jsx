@@ -16,7 +16,7 @@ export default function articleNav() {
   return <div className='settle_accounts'>
     <div className='settle_accounts_title shadow_box'>
       <div>
-        <span onClick={() => { window.history.back() }} className='prev'>{'〈'}</span>
+        <span onClick={() => { window.history.back() }} className='prev'><img src="https://platform.antdiy.vip/static/image/xiangzuo.svg" /></span>
         <span>{name}</span>
         <i></i>
       </div>
