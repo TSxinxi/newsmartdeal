@@ -222,7 +222,7 @@ export default function articleNav() {
             <p><img src="https://cdn.shopify.com/s/files/1/0663/5749/4006/files/Payment_480x480.png?v=1663236229" alt="" /></p>
             <p>1. مع PayPal ، يمكنك إرسال المدفوعات بسرعة وأمان عبر الإنترنت.<br /><br />2. من خلال PayPal ، يمكنك الدفع ببطاقة الائتمان أو بطاقة الخصم أو رصيد الحساب المصرفي.<br /><br />3. بمجرد تقديم طلبك ، ستتم إعادة توجيهك إلى موقع PayPal حيث يمكنك إجراء الدفع.</p>
           </div> : id == 3 ? <div>
-            <div class="rte">
+            <div className="rte">
               <p>الأحكام والشروط</p>
               <p><span>نبسب ؛ نبسب ؛ موجود داخل نبسب ؛ تخضع أي حقوق أخرى مرتبطة بالموقع &amp; nbsp ؛ لقانون حقوق النشر والعلامات التجارية. لا يجوز لك إعادة الإنتاج للاستخدام العام أو التجاري بدون إذن كتابي صريح من&nbsp;</span><span></span><strong><a href="https://zostyles.co/">أ<span>&nbsp;</span></a><a href="https://zostyles.co/"><span>&nbsp;</span></a><a href="https://hultoo.com/" title="">Hultoo</a><a href="https://zostyles.co/"></a></strong><span>نبسب ؛. إذا كنت ترغب في إعادة إنتاج المحتوى الذي يظهر على موقعنا أو تخزينه أو نقله أو استخدامه بأي شكل من الأشكال ، فيرجى الاتصال بنا عبر البريد الإلكتروني: <a href="https://hultoo.com/">hultoo.com</a></span></p>
               <ol start="10"></ol>
