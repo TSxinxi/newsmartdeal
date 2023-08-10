@@ -16,12 +16,31 @@ import {
   CartLoading,
   Link,
 } from '~/components';
+import fetch from '~/fetch/axios';
 import { Await, useMatches } from '@remix-run/react';
-import { Suspense, useEffect } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useCartFetchers } from '~/hooks/useCartFetchers';
-import { openWhatsApp, getLanguage } from '~/lib/P_Variable';
+import { openWhatsApp, getLanguage, getDomain } from '~/lib/P_Variable';
 
 export function Layout({ children, layout }) {
+  const [hasMounted, setHasMounted] = useState(false);
+  const [phone, setPhone] = useState('');
+
+  useEffect(() => {
+    setHasMounted(true);
+    if (openWhatsApp().isOpen) {
+      fetch.get(`${getDomain()}/shopify-service/whatsup/pass/get_phone?shop=hultoo.com`).then(res => {
+        if (res && res.data && res.data.success) {
+          setPhone(res.data.data.phone)
+        }
+      })
+    }
+  }, []);
+
+  if (!hasMounted) {
+    return null;
+  }
+
   return (
     <>
       <div className="flex flex-col min-h-screen" style={{ color: '#141414E6' }}>
@@ -37,8 +56,8 @@ export function Layout({ children, layout }) {
         <main role="main" id="mainContent" className="flex-grow">
           {children}
         </main>
-        {openWhatsApp().isOpen ? <div className="stick_service">
-          <img src="https://platform.antdiy.vip/static/image/hydrogen_icon_whatsapp.svg" alt="" onClick={() => { goWhatsApp() }} />
+        {phone ? <div className="stick_service">
+          <img src="https://platform.antdiy.vip/static/image/hydrogen_icon_whatsapp.svg" alt="" onClick={() => { goWhatsApp(phone) }} />
         </div> : null}
       </div>
       {/* <Footer menu={layout?.footerMenu} /> */}
@@ -46,8 +65,8 @@ export function Layout({ children, layout }) {
   );
 }
 
-function goWhatsApp() {
-  var whatsapp_url = `https://wa.me/${openWhatsApp().phone}?text=${getLanguage().whatsAppText}`;
+function goWhatsApp(phone) {
+  var whatsapp_url = `https://wa.me/${phone}?text=${getLanguage().whatsAppText}`;
   window.open(whatsapp_url + window.location.href);
 }
 
