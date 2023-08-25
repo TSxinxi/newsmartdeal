@@ -5,6 +5,7 @@ import { Text } from '~/components';
 import fetch from '~/fetch/axios';
 import { getShopAddress, getLanguage, getDirection, getDomain } from '~/lib/P_Variable';
 import { aedData } from "~/lib/AED";
+import { kwdData } from "~/lib/KWD";
 const LText = getLanguage()
 const addressList = LText.addressList
 let productData = ''
@@ -134,11 +135,11 @@ export function Variant({ selectedVar, setSelectVar }) {
                 }
               </select>
             ) : ( */}
-              <div className='flex_center variant_li_sku'>{option.values.map((item, index) => {
-                return (
-                  <div className={item.active ? 'active_sku bord_sku' : 'bord_sku'} key={index} onClick={() => { changeVariant(setSelectVar, setOptions, options, item.value, option.name) }}>{item.value}</div>
-                )
-              })}</div>
+            <div className='flex_center variant_li_sku'>{option.values.map((item, index) => {
+              return (
+                <div className={item.active ? 'active_sku bord_sku' : 'bord_sku'} key={index} onClick={() => { changeVariant(setSelectVar, setOptions, options, item.value, option.name) }}>{item.value}</div>
+              )
+            })}</div>
             {/* )} */}
           </div>
         ))}
@@ -233,6 +234,9 @@ export function Information({ selectedVar }) {
   useEffect(() => {
     if (LText.type === 'AED' && aedData) {
       setAllAddress(aedData)
+    }
+    if (LText.type === 'KWD' && kwdData) {
+      setAllAddress(kwdData)
     }
   }, []);
 

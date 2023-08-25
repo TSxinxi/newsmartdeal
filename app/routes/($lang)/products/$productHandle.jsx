@@ -499,6 +499,10 @@ export default function Product() {
         currencyCode = 'AED'
         localStorage.setItem('currencyCode', currencyCode)
         setCurrency(currencyCode)
+      } else if (href && href.indexOf('-kwd') > -1) {
+        currencyCode = 'KWD'
+        localStorage.setItem('currencyCode', currencyCode)
+        setCurrency(currencyCode)
       } else {
         localStorage.removeItem('currencyCode')
         setCurrency(selectedVariant?.price?.currencyCode)
@@ -552,7 +556,7 @@ export default function Product() {
                 // backgroundPosition: siteObj.left + " " + siteObj.top,
                 // transform: 'scale(0.7)',
               }}></div>
-              <img src={`https://platform.antdiy.vip/static/image/${currencyCode === 'AED' ? 'UAE-alianqiu' : 'hydrogen_site_alb'}.svg`} />
+              <img src={`https://platform.antdiy.vip/static/image/${currencyCode === 'KWD' ? 'KWD_icon' : currencyCode === 'AED' ? 'UAE-alianqiu' : 'hydrogen_site_alb'}.svg`} />
               <span>{currencyCode || 'SAR'}</span>
             </div>
 

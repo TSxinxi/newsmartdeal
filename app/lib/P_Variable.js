@@ -8,6 +8,9 @@ if (canUseDOM) {
   if (href && href.indexOf('-aed') > -1) {
     currencyCode = 'AED'
   }
+  if (href && href.indexOf('-kwd') > -1) {
+    currencyCode = 'KWD'
+  }
   if (localStorage.getItem('currencyCode')) {
     currencyCode = localStorage.getItem('currencyCode')
   }
@@ -5466,8 +5469,14 @@ export function getLanguage() {
     }
   }
   if (LType == 'AED') {
+    // 阿联酋
     language.SAR.type = 'AED'
     language.SAR.country = 'United Arab Emirates'
+    return language.SAR
+  } else if (LType == 'KWD') {
+    // 科威特
+    language.SAR.type = 'KWD'
+    language.SAR.country = 'Kuwait'
     return language.SAR
   } else {
     return language[LType];
