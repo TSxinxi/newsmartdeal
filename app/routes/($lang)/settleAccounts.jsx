@@ -610,6 +610,7 @@ function SettleAccounts(selectedVar, params, setErrorText, setIsSubmit) {
     params.area = params.area + ' ' + params.building
   }
   params.tags = LText.type
+  params.route = 2
   setIsSubmit(true)
 
   fetch.post(`${getDomain()}/account-service/media_orders/create/pass`, params).then(res => {
