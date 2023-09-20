@@ -20,7 +20,7 @@ import fetch from '~/fetch/axios';
 import { Await, useMatches } from '@remix-run/react';
 import { Suspense, useEffect, useState } from 'react';
 import { useCartFetchers } from '~/hooks/useCartFetchers';
-import { openWhatsApp, getLanguage, getDomain } from '~/lib/P_Variable';
+import { openWhatsApp, getLanguage, getDomain, getShopAddress } from '~/lib/P_Variable';
 
 export function Layout({ children, layout }) {
   const [hasMounted, setHasMounted] = useState(false);
@@ -29,7 +29,7 @@ export function Layout({ children, layout }) {
   useEffect(() => {
     setHasMounted(true);
     if (openWhatsApp().isOpen) {
-      fetch.get(`${getDomain()}/shopify-service/whatsup/pass/get_phone?shop=hultoo.com`).then(res => {
+      fetch.get(`${getDomain()}/shopify-service/whatsup/pass/get_phone?shop=${getShopAddress()}`).then(res => {
         if (res && res.data && res.data.success) {
           setPhone(res.data.data.phone)
         }
