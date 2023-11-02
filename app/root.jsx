@@ -101,7 +101,7 @@ export default function App() {
         replaysSessionSampleRate: 0.1, // This sets the sample rate at 10%. You may want to change it to 100% while in development and then sample at a lower rate in production.
         replaysOnErrorSampleRate: 1.0, // If you're not already sampling the entire session, change the sample rate to 100% when sampling sessions where errors occur.
       });
-    
+
       (function (h, o, t, j, a, r) {
         h.hj = h.hj || function () { (h.hj.q = h.hj.q || []).push(arguments) };
         h._hjSettings = { hjid: 3539576, hjsv: 6 };
@@ -119,7 +119,7 @@ export default function App() {
       !function (f, b, e, v, n, t, s) {
         if (f.fbq) return; n = f.fbq = function () {
           n.callMethod ?
-          n.callMethod.apply(n, arguments) : n.queue.push(arguments)
+            n.callMethod.apply(n, arguments) : n.queue.push(arguments)
         };
         if (!f._fbq) f._fbq = n; n.push = n; n.loaded = !0; n.version = '2.0';
         n.queue = []; t = b.createElement(e); t.async = !0;
@@ -129,6 +129,25 @@ export default function App() {
         'https://connect.facebook.net/en_US/fbevents.js');
       fbq('init', '784050860018815');
       fbq('track', 'PageView');
+
+      !(function (c, b, d, a) {
+        c[a] || (c[a] = {}); c[a].config =
+        {
+          pid: "gr6w69wpuh@db34193c9e236f8",
+          appType: "web",
+          imgUrl: "https://arms-retcode.aliyuncs.com/r.png?",
+          sendResource: true,
+          enableLinkTrace: true,
+          behavior: true,
+          enableSPA: true,
+          useFmp: true,
+          enableConsole: true
+        };
+        let newScript = document.createElement("script")
+        newScript.src = d
+        newScript.setAttribute("crossorigin", "")
+        document.body.insertBefore(newScript, document.body.firstChild);
+      })(window, document, "https://sdk.rum.aliyuncs.com/v1/bl.js", "__bl");
     }, []);
   }
   return (
