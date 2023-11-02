@@ -165,7 +165,8 @@ function GetJudge(product_id, page, sortBy, rating) {
                 })
               }
               if (commentTime && commentTime.getAttribute("data-content")) {
-                commentTime.innerHTML = new Date(commentTime.getAttribute("data-content")).toLocaleDateString()
+                // commentTime.innerHTML = new Date(commentTime.getAttribute("data-content")).toLocaleDateString()
+                commentTime.innerHTML = commentTime.getAttribute("data-content").slice(0, 10)
               }
               if (commentIcon) {
                 let img = '<img src="https://platform.antdiy.vip/static/image/userIcon.svg" alt="" />'
@@ -252,6 +253,8 @@ function GetCommentHeader() {
           return urlDivHead.innerHTML
         }
       }
+    }).catch(function (error) {
+    }).finally(() => {
     }))
 }
 // 筛选下拉框

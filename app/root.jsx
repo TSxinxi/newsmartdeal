@@ -74,22 +74,6 @@ export async function loader({ context }) {
 }
 
 export default function App() {
-  Sentry.init({
-    dsn: "https://9a30969e59209d4eafb20dea41c8edc3@o4506097284677632.ingest.sentry.io/4506097501339648",
-    integrations: [
-      new Sentry.BrowserTracing({
-        // Set 'tracePropagationTargets' to control for which URLs distributed tracing should be enabled
-        tracePropagationTargets: ["localhost", /^https:\/\/page.hultoo.com\.io\/api/],
-      }),
-      new Sentry.Replay(),
-    ],
-    // Performance Monitoring
-    tracesSampleRate: 1.0, // Capture 100% of the transactions
-    // Session Replay
-    replaysSessionSampleRate: 0.1, // This sets the sample rate at 10%. You may want to change it to 100% while in development and then sample at a lower rate in production.
-    replaysOnErrorSampleRate: 1.0, // If you're not already sampling the entire session, change the sample rate to 100% when sampling sessions where errors occur.
-  });
-
   const data = useLoaderData();
   const locale = data.selectedLocale ?? DEFAULT_LOCALE;
   const hasUserConsent = true;
@@ -102,6 +86,22 @@ export default function App() {
       localStorage.setItem('refererName', getReferer())
     }
     useEffect(() => {
+      Sentry.init({
+        dsn: "https://9a30969e59209d4eafb20dea41c8edc3@o4506097284677632.ingest.sentry.io/4506097501339648",
+        integrations: [
+          new Sentry.BrowserTracing({
+            // Set 'tracePropagationTargets' to control for which URLs distributed tracing should be enabled
+            tracePropagationTargets: ["localhost", /^https:\/\/page.hultoo.com\.io\/api/],
+          }),
+          new Sentry.Replay(),
+        ],
+        // Performance Monitoring
+        tracesSampleRate: 1.0, // Capture 100% of the transactions
+        // Session Replay
+        replaysSessionSampleRate: 0.1, // This sets the sample rate at 10%. You may want to change it to 100% while in development and then sample at a lower rate in production.
+        replaysOnErrorSampleRate: 1.0, // If you're not already sampling the entire session, change the sample rate to 100% when sampling sessions where errors occur.
+      });
+    
       (function (h, o, t, j, a, r) {
         h.hj = h.hj || function () { (h.hj.q = h.hj.q || []).push(arguments) };
         h._hjSettings = { hjid: 3539576, hjsv: 6 };
