@@ -1060,6 +1060,8 @@ export function getLanguage() {
       writeReview: 'اكتب مراجعة',
       address: 'العنوان بالضبط',
       postalCode: 'الرمز البريدي',
+      quantityText: 'كمية',
+      errorQuantity: 'الرجاء إدخال كمية المنتج',
       addressList: [
         {
           name: '（المحافظة）إختر',
@@ -2254,6 +2256,8 @@ export function getLanguage() {
       address: "Utca",
       postalCode: 'Irányítószám',
       orderError: 'Sikertelen vásárlás',
+      quantityText: 'Mennyiség',
+      errorQuantity: 'Kérjük, adja meg a termék mennyiségét',
       addressList: {
         "Megye": "",
         "Bács-Kiskun": {
