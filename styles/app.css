@@ -1053,11 +1053,55 @@ shop-pay-button {
     position: inherit !important;
     margin-top: 0 !important;
   }
-  .settle_accounts .product_box>img{
+  /* .settle_accounts .product_box>img{
     width: 88px;
     height: 88px;
     transition: all .5s;
     cursor: pointer;
+  } */
+  .settle_accounts .product_box .product_img{
+    min-width: 88px;
+    width: 88px;
+    height: 88px;
+    transition: all .5s;
+    cursor: pointer;
+    position: relative;
+    border-radius: 6px;
+  }
+
+  .settle_accounts .product_box .product_img .product_count {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #656161;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    text-align: center;
+    line-height: 20px;
+    color: #fff;
+    font-size: 12px;
+  }
+
+  .settle_accounts .product_box .product_img img {
+    width: 100%;
+    height: 100%;
+  }
+  .quantity_li {
+    display: flex;
+    align-items: center;
+    border: 1px solid #004754;
+    width: fit-content;
+  }
+  .quantity_li button {
+    font-size: 20px;
+    line-height: 1.5rem;
+    padding: 0.5rem 0.75rem;
+  }
+  .quantity_li input {
+    border: 0;
+    width: 40px;
+    padding: 0.5rem 0.2rem;
   }
   .product_box .product_title{
     margin: 0 8px;
@@ -1091,6 +1135,9 @@ shop-pay-button {
     display: flex;
     align-items: center;
     position: relative;
+  }
+  .out_of_btn {
+    background: #E7E7E7 !important;
   }
   .submit_btn .loading_box{
     position: absolute;
