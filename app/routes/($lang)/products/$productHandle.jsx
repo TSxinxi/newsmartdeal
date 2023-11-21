@@ -583,7 +583,7 @@ export default function Product() {
 
             <img className='logo' src={`https://platform.antdiy.vip/static/image/HULTOO${LText.type === 'RON' ? '2' : ''}_icon.svg`} />
             {
-              LText.type === 'RON' ? <p onClick={() => { window.open(`https://9c56371cb1c7-741607326157122750.ngrok-free.app/}`) }}><img src="https://platform.antdiy.vip/static/image/zoopetcc_home.svg" /></p> : <p></p>
+              LText.type === 'RON' ? <p onClick={() => { window.open(`https://9c56371cb1c7-741607326157122750.ngrok-free.app`) }}><img src="https://platform.antdiy.vip/static/image/zoopetcc_home.svg" /></p> : <p></p>
             }
             {/* <p></p> */}
           </div>
