@@ -3,7 +3,7 @@ import { useRef, useMemo, useEffect, useState } from 'react';
 import { Listbox } from '@headlessui/react';
 import { defer } from '@shopify/remix-oxygen';
 import fetch from '../../../fetch/axios';
-import { getShopAddress, openComment, getLanguage, getDirection, getDomain } from '~/lib/P_Variable';
+import { getShopAddress, getLanguage, getDirection, getDomain } from '~/lib/P_Variable';
 import $ from 'jquery'
 import {
   useLoaderData,
@@ -462,6 +462,7 @@ export default function Product() {
 
   const [hasMounted, setHasMounted] = useState(false);
   const [commentHtml, setComment] = useState('');
+  const [isOpenComment, setIsOpenComment] = useState(true);
   const [commentHeader, setCommentHeader] = useState('');
   const [reviewTitle, setReviewTitle] = useState('');
   const [review, setReview] = useState('');
@@ -477,6 +478,7 @@ export default function Product() {
   const [sortBy, setSortBy] = useState('created_at');
   const [filtRat, setFiltRat] = useState('');
   const [currency, setCurrency] = useState('');
+  const [openJudgeme, setOpenJudgeme] = useState(false);
 
   useEffect(() => {
     setHasMounted(true);
@@ -506,6 +508,10 @@ export default function Product() {
         currencyCode = 'KWD'
         localStorage.setItem('currencyCode', currencyCode)
         setCurrency(currencyCode)
+      } else if (href && href.indexOf('-ron') > -1) {
+        currencyCode = 'RON'
+        localStorage.setItem('currencyCode', currencyCode)
+        setCurrency(currencyCode)
       } else {
         localStorage.removeItem('currencyCode')
         setCurrency(selectedVariant?.price?.currencyCode)
@@ -519,17 +525,29 @@ export default function Product() {
         window.localStorage.setItem('sourceName', param)
         window.localStorage.setItem('sourceProductId', product.id)
       }
-      if (product_id && openComment()) {
-        // 评论
-        GetJudge(product_id, 1, sortBy).then(res => {
-          if (res) {
-            setComment(res)
-          }
-        })
-        // 评论头部
-        GetCommentHeader().then(res => {
-          if (res) {
-            setCommentHeader(res)
+
+      if (product_id) {
+        // 是否打开评论
+        fetch.get(`${getDomain()}/account-service/site_plug/pass/get_plug_state?store=${getShopAddress()}&site_code=${currencyCode || 'ron'}`).then(res => {
+          if (res.data && res.data.data && res.data.data.length > 0) {
+            let judgemeData = res.data.data.filter(i => i.plug_name == 'judgeme')[0]
+            if (judgemeData && judgemeData.plug_state == 1) {
+              setOpenJudgeme(true)
+              // 评论
+              GetJudge(product_id, 1, sortBy).then(res => {
+                if (res) {
+                  setComment(res)
+                } else {
+                  setIsOpenComment(false)
+                }
+              })
+              // 评论头部
+              GetCommentHeader().then(res => {
+                if (res) {
+                  setCommentHeader(res)
+                }
+              })
+            }
           }
         })
       }
@@ -559,13 +577,15 @@ export default function Product() {
                 // backgroundPosition: siteObj.left + " " + siteObj.top,
                 // transform: 'scale(0.7)',
               }}></div>
-              <img src={`https://platform.antdiy.vip/static/image/${currencyCode === 'KWD' ? 'KWD_icon' : currencyCode === 'AED' ? 'UAE-alianqiu' : 'hydrogen_site_alb'}.svg`} />
+              <img src={`https://platform.antdiy.vip/static/image/${LText.type === 'RON' ? 'croiala_icon' : currencyCode === 'KWD' ? 'KWD_icon' : currencyCode === 'AED' ? 'UAE-alianqiu' : 'hydrogen_site_alb'}.svg`} />
               <span>{currencyCode || 'SAR'}</span>
             </div>
 
-            <img className='logo' src={`https://platform.antdiy.vip/static/image/HULTOO_icon.svg`} />
-            {/* <p onClick={() => { window.open('https://' + getShopAddress()) }}><img src="https://platform.antdiy.vip/static/image/hultoo_home.svg" /></p> */}
-            <p></p>
+            <img className='logo' src={`https://platform.antdiy.vip/static/image/HULTOO${LText.type === 'RON' ? '2' : ''}_icon.svg`} />
+            {
+              LText.type === 'RON' ? <p onClick={() => { window.open(`https://9c56371cb1c7-741607326157122750.ngrok-free.app/}`) }}><img src="https://platform.antdiy.vip/static/image/zoopetcc_home.svg" /></p> : <p></p>
+            }
+            {/* <p></p> */}
           </div>
         </div>
         <div className="product_details items-start md:gap-6 md:grid-cols-2">
@@ -620,7 +640,7 @@ export default function Product() {
           </div>
         </div>
         {
-          openComment() ? <div className='comment_product borderf5'>
+          openJudgeme && isOpenComment ? <div className='comment_product borderf5'>
             <div className='comment_box'>
               <div className='comment_box_title'>{LText.comTit}</div>
               {commentHeader ? <div
@@ -759,13 +779,15 @@ export default function Product() {
             )}
           </div> : null
         }
-        <div className="article_nav">
-          {
-            LText.acticleList.map((item, index) => {
-              return <a href={`/articleNav?id=${index}&name=${item}`} key={index}>{item}</a>
-            })
-          }
-        </div>
+        {
+          LText.type === 'RON' ? <div style={{ paddingBottom: '70px' }}></div> : <div className="article_nav">
+            {
+              LText.acticleList.map((item, index) => {
+                return <a href={`/articleNav?id=${index}&name=${item}`} key={index}>{item}</a>
+              })
+            }
+          </div>
+        }
         {selectedVariant && (
           // <div className="grid items-stretch gap-4 sticky_bottom">
           //   <button className={`inline-block rounded font-medium text-center w-full ${isOutOfStock ? 'border border-primary/10 bg-contrast text-primary' : 'bg-primary text-contrast'}`}>
@@ -783,7 +805,23 @@ export default function Product() {
           //     )}
           //   </button>
           // </div>
-          <div className='buy_button sticky_bottom' style={{ padding: getDirection() === 'rtl' ? '.5rem .5rem .5rem .8rem' : '.5rem .8rem .5rem .5rem' }}>
+
+          LText.type === 'RON' ? <div className='settle_accounts_foot'>
+            <div>
+              <div className='submit_btn'>
+                <button className='inline-block rounded font-medium text-center w-full bg-primary text-contrast paddingT5'>
+                  <Text //立即购买
+                    as="span"
+                    className="flex items-center justify-center gap-2 py-3 px-6 buy_text"
+                    style={{ maxWidth: 'initial' }}
+                    onClick={() => { goSettleAccounts() }}
+                  >
+                    <span>{LText.buy}</span>
+                  </Text>
+                </button>
+              </div>
+            </div>
+          </div> : <div className='buy_button sticky_bottom' style={{ padding: getDirection() === 'rtl' ? '.5rem .5rem .5rem .8rem' : '.5rem .8rem .5rem .5rem' }}>
             <button className='buy_btn_style'>
               {/* <img src="https://platform.antdiy.vip/static/image/hultoo_buybtn.png" /> */}
               {/* {isOutOfStock ? (

@@ -20,6 +20,11 @@ export function ProductGallery({ media, product, className }) {
       setImgUrl(media && media.length > 0 ? media[0].image : '')
     }
     var swiper = new Swiper('.swiper-container', {
+      loop: true,
+      autoplay: {
+        disableOnInteraction: false,
+        delay: 3000,
+      },
       pagination: {
         el: '.swiper-pagination',
         type: 'fraction',

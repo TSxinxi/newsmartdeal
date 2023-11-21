@@ -1,5 +1,5 @@
 import { defer } from '@shopify/remix-oxygen';
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import {
   Links,
   Meta,
@@ -77,6 +77,7 @@ export default function App() {
   const data = useLoaderData();
   const locale = data.selectedLocale ?? DEFAULT_LOCALE;
   const hasUserConsent = true;
+  const [direction, setDirection] = useState('rtl');
 
   useAnalytics(hasUserConsent, locale);
 
@@ -148,10 +149,12 @@ export default function App() {
         newScript.setAttribute("crossorigin", "")
         document.body.insertBefore(newScript, document.body.firstChild);
       })(window, document, "https://sdk.rum.aliyuncs.com/v1/bl.js", "__bl");
+
+      setDirection(getDirection())
     }, []);
   }
   return (
-    <html lang={locale.language} style={{ direction: getDirection() }}>
+    <html lang={locale.language} style={{ direction: direction }}>
       <head>
         <Seo />
         <Meta />

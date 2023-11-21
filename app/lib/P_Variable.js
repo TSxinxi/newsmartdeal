@@ -11,6 +11,9 @@ if (canUseDOM) {
   if (href && href.indexOf('-kwd') > -1) {
     currencyCode = 'KWD'
   }
+  if (href && href.indexOf('-ron') > -1) {
+    currencyCode = 'RON'
+  }
   if (localStorage.getItem('currencyCode')) {
     currencyCode = localStorage.getItem('currencyCode')
   }
@@ -39,7 +42,8 @@ export function openComment() {
 }
 
 export function getDirection() {
-  return 'rtl';
+  return currencyCode === 'RON' ? 'initial' : 'rtl';
+  // return 'rtl';
   // return 'initial';
 }
 
@@ -1897,7 +1901,7 @@ export function getLanguage() {
       buy: 'Cumpărați cu Ramburs la Livrare',
       comTit: 'Opinii clienți',
       write: 'anulează evaluarea',
-      sold: 'vândut',
+      sold: 'epuizat',
       addComment: 'Scrieți o recenzie',
       rating: 'Notă de evaluare',
       reviewTitle: 'Titlul recenziei',
@@ -1956,7 +1960,7 @@ export function getLanguage() {
       telephone: 'Telefon',
 
       district: 'Vă rugăm să selectați districtul dvs.',
-      city: 'Localitate',
+      city: 'Oraș',
       selectCity: 'Vă rugăm să vă selectați orașul',
       zone: 'Regiune',
       zonePle: 'Exemplu: Olaya, Riyadh',
@@ -1983,9 +1987,15 @@ export function getLanguage() {
       address: 'Adresa exacta',
       postalCode: 'Cod postal',
       orderError: 'Achiziție eșuată',
+      chooseMore: 'mai alege unul',
+      noSelect: 'Vă rugăm să selectați specificațiile produsului',
+      policyList: ['Certificare UE', 'Plata la livrare', 'Retur în 30 de zile', 'Transport gratuit'],
+      divisionText: 'Detalii',
+      quantityText: 'cantitate',
+      errorQuantity: 'Vă rugăm să introduceți cantitatea produsului',
       addressList: [
         {
-          "name": "Județ",
+          "name": "Vă rugăm să selectați Județ",
           "value": ""
         },
         {
