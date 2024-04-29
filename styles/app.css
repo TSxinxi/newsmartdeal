@@ -209,8 +209,8 @@ shop-pay-button {
     width: 100%;
   }
   .sticky_img {
-    background: #004754;
-    padding: 10px;
+    /* background: #004754;
+    padding: 10px; */
     margin-bottom: 14px;
   }
   .sticky_img .swimlane{
@@ -455,6 +455,30 @@ shop-pay-button {
       font-size: 1.5rem;
     }
   }
+  .settle_accounts_foot .buy_btn_price{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    line-height: normal;
+    margin: 0 20px;
+  }
+  .settle_accounts_foot .buy_btn_price i{
+    font-style: normal;
+  }
+  .settle_accounts_foot .buy_btn_price .btn_price_new{
+    font-size: 1.2rem;
+    color: #141414E6;
+    /* text-shadow: 0 1px 2px rgba(0,0,0,0.50); */
+    font-weight: 700;
+    color: #ff2020;
+    text-shadow: none;
+  }
+  .settle_accounts_foot .buy_btn_price .btn_price_old{
+    font-size: 1rem;
+    color: #959595;
+    font-weight: 400;
+    text-decoration: line-through;
+  }
   /* @media (max-width: 500px) {
     .buy_btn_style .whitespace-pre-wrap{
       font-size: 1rem;
@@ -466,6 +490,42 @@ shop-pay-button {
       font-size: .8rem;
     }
   } */
+  .service {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: .5rem;
+    row-gap: .5rem;
+    column-gap: 1.5rem
+  }
+  .service .service_li{
+    display: flex;
+    align-items: center;
+    gap: 3px;
+  }
+  .service .service_icon{
+    width: 16px;
+  }
+  .service .service_li span{
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .service .service_li span img{
+    width: 24px;
+  }
+  .division_box{
+    height: 37px;
+    text-align: center;
+    line-height: 37px;
+    font-weight: bold;
+    color: #fff;
+    margin: 1.5rem 0 1rem 0;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-image: url('https://platform.antdiy.vip/static/image/cod_detail_bg.png');
+    text-shadow: 2px 2px 5px rgba(163, 145, 108, 52);
+  }
   .variant_img{
     width: 8rem !important;
     height: 8rem;
@@ -552,9 +612,6 @@ shop-pay-button {
     border-bottom: 1px solid #000000;
     border-right: 1px solid #000000;
     padding: 10px;
-  }
-  .description_box{
-    padding-top: 20px;
   }
   .description_box p,
   .description_box img{
@@ -691,7 +748,7 @@ shop-pay-button {
     margin: 0 10px;
   }
   .pricex_box{
-    margin: 2rem 0;
+    margin: .5rem 0;
   }
   .current_price i{
     font-style: normal;

@@ -563,7 +563,7 @@ export default function Product() {
   return (
     <>
       <Section padding="x" className="px-0 prodect_section">
-        <div className='top_height'>
+        {/* <div className='top_height'>
           <div className='product_top top_height'>
 
             <div className='site'>
@@ -585,9 +585,8 @@ export default function Product() {
             {
               LText.type === 'RON' ? <p onClick={() => { window.open(`https://9c56371cb1c7-741607326157122750.ngrok-free.app`) }}><img src="https://platform.antdiy.vip/static/image/zoopetcc_home.svg" /></p> : <p></p>
             }
-            {/* <p></p> */}
           </div>
-        </div>
+        </div> */}
         <div className="product_details items-start md:gap-6 md:grid-cols-2">
           {/* 详情页右侧 */}
           <ProductGallery
@@ -597,7 +596,7 @@ export default function Product() {
           />
           <div className="left_product sticky md:-mb-nav md:top-nav md:-translate-y-nav md:pt-nav hiddenScroll">
             <section className="flex flex-col w-full md:mx-auto md:max-w-sm md:px-0" style={{ color: '#141414E6' }}>
-              <div className="grid gap-2 padding16">
+              <div className="grid gap-2">
                 <Heading as="h1" className="whitespace-normal">
                   {title}
                 </Heading>
@@ -608,7 +607,7 @@ export default function Product() {
               <ProductForm />
               {descriptionHtml && (
                 <div
-                  className="padding16 borderf5 dark:prose-invert description_box"
+                  className="dark:prose-invert description_box"
                   style={{ overflow: 'hidden' }}
                   dangerouslySetInnerHTML={{ __html: descriptionHtml }}
                 />
@@ -780,13 +779,7 @@ export default function Product() {
           </div> : null
         }
         {
-          LText.type === 'RON' ? <div style={{ paddingBottom: '70px' }}></div> : <div className="article_nav">
-            {
-              LText.acticleList.map((item, index) => {
-                return <a href={`/articleNav?id=${index}&name=${item}`} key={index}>{item}</a>
-              })
-            }
-          </div>
+          <div style={{ paddingBottom: '70px' }}></div>
         }
         {selectedVariant && (
           // <div className="grid items-stretch gap-4 sticky_bottom">
@@ -806,8 +799,18 @@ export default function Product() {
           //   </button>
           // </div>
 
-          LText.type === 'RON' ? <div className='settle_accounts_foot'>
+          <div className='settle_accounts_foot'>
             <div>
+              <div className='buy_btn_price'>
+                <span className='btn_price btn_price_new'>
+                  <i>{currency} </i>{parseFloat(selectedVariant?.price?.amount)}
+                </span>
+                {isOnSale && (
+                  <span className='btn_price btn_price_old'>
+                    <i>{currency} </i>{parseFloat(selectedVariant?.compareAtPrice?.amount)}
+                  </span>
+                )}
+              </div>
               <div className='submit_btn'>
                 <button className='inline-block rounded font-medium text-center w-full bg-primary text-contrast paddingT5'>
                   <Text //立即购买
@@ -820,36 +823,6 @@ export default function Product() {
                   </Text>
                 </button>
               </div>
-            </div>
-          </div> : <div className='buy_button sticky_bottom' style={{ padding: getDirection() === 'rtl' ? '.5rem .5rem .5rem .8rem' : '.5rem .8rem .5rem .5rem' }}>
-            <button className='buy_btn_style'>
-              {/* <img src="https://platform.antdiy.vip/static/image/hultoo_buybtn.png" /> */}
-              {/* {isOutOfStock ? (
-                <Text className='py-3 px-6'>{LText.sold}</Text>//卖完了
-              ) : ( */}
-              <div className='bg_color'>
-                <Text //立即购买
-                  as="span"
-                  className="flex items-center justify-center gap-2 py-3 px-6"
-                  onClick={() => { goSettleAccounts() }}
-                >
-                  <span>{LText.buy}</span>
-                </Text>
-                <span className="light_bg"></span>
-                <span className="right_bg"></span>
-              </div>
-              <img src="https://platform.antdiy.vip/static/image/hultoo_light.png" />
-              {/* )} */}
-            </button>
-            <div className='buy_btn_price'>
-              {isOnSale && (
-                <span className='btn_price btn_price_old'>
-                  <i>{currency} </i>{parseFloat(selectedVariant?.compareAtPrice?.amount)}
-                </span>
-              )}
-              <span className='btn_price btn_price_new'>
-                <i>{currency} </i>{parseFloat(selectedVariant?.price?.amount)}
-              </span>
             </div>
           </div>
         )}
@@ -969,7 +942,7 @@ export function ProductForm() {
   }, []);
 
   return (
-    <div className="grid gap-10 pricex_box padding16">
+    <div className="grid pricex_box">
       <div className="grid gap-4">
         <Text
           as="span"
@@ -996,7 +969,7 @@ export function ProductForm() {
             </span>
           )}
         </Text>
-        <div className='discount_box' style={{ backgroundImage: `linear-gradient(${getDirection() === 'rtl' ? '135deg' : '315deg'}, #FFD9D9 0%, #FF3333 92%)` }}>
+        {/* <div className='discount_box' style={{ backgroundImage: `linear-gradient(${getDirection() === 'rtl' ? '135deg' : '315deg'}, #FFD9D9 0%, #FF3333 92%)` }}>
           <span>{LText.discountZone}</span>
           <div className='label' style={getDirection() === 'rtl' ? { left: '8px' } : { right: '8px' }}>
             <p>80%</p>
@@ -1020,7 +993,7 @@ export function ProductForm() {
               <span>{LText.deliver}</span>
             </p>
           </div>
-        </div>
+        </div> */}
         {/* <ProductOptions
           options={product.options}
           searchParamsWithDefaults={searchParamsWithDefaults}
@@ -1072,6 +1045,19 @@ export function ProductForm() {
           </div>
         )} */}
       </div>
+      <div className='service'>
+        {
+          LText.policyList && LText.policyList.length > 0 ? LText.policyList.map((item, index) => {
+            return <div className='service_li' key={index}>
+              <img className='service_icon' src="https://platform.antdiy.vip/static/image/cod_success.svg" alt="" />
+              {
+                index === 0 ? <span>{item}<img src="https://platform.antdiy.vip/static/image/CErenzheng.svg" alt="" /></span> : <span>{item}</span>
+              }
+            </div>
+          }) : null
+        }
+      </div>
+      <div className='division_box'>{LText.divisionText}</div>
     </div>
   );
 }

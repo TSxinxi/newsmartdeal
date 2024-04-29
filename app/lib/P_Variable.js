@@ -141,6 +141,8 @@ export function getLanguage() {
       correct: 'Please enter the correct form',
       validnum: 'Enter a valid phone number',
       orderError: 'Failed purchase',
+      policyList: ['EU Certification', 'Cash on Delivery', '30 Day Returns', 'Free Shipping'],
+      divisionText: 'Details',
       addressList: [
         {
           name: '(province) select',
@@ -1060,6 +1062,8 @@ export function getLanguage() {
       correct: 'الرجاء إدخال النموذج الصحيح',
       validnum: 'أدخل رقم هاتف صالح',
       orderError: 'الشراء الفاشل',
+      policyList: ['شهادة الاتحاد الأوروبي', 'الدفع عند الاستلام', 'الإرجاع خلال 30 يومًا', 'الشحن المجاني'],
+      divisionText: 'تفاصيل',
       noOpinion: 'لا رأي',
       writeReview: 'اكتب مراجعة',
       address: 'العنوان بالضبط',
@@ -2266,6 +2270,8 @@ export function getLanguage() {
       address: "Utca",
       postalCode: 'Irányítószám',
       orderError: 'Sikertelen vásárlás',
+      policyList: ["EU-tanúsítvány", "utánvét", "30 napos visszaküldés", "ingyenes szállítás"],
+      divisionText: 'Részletek',
       quantityText: 'Mennyiség',
       errorQuantity: 'Kérjük, adja meg a termék mennyiségét',
       addressList: {
