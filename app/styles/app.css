@@ -1230,8 +1230,8 @@ select{
     width: 100%;
   }
 .sticky_img {
-    /* background: #004754;
-    padding: 10px; */
+    background: #004754;
+    padding: 10px;
     margin-bottom: 14px;
   }
 .sticky_img .swimlane{
@@ -1376,6 +1376,68 @@ select{
 .borderf5{
     border-top: 10px solid #F5F5F5;
   }
+.buy_button{
+    background: #004754;
+    padding: .5rem .5rem .5rem .8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+.buy_btn_style{
+    text-align: right;
+    text-shadow: 1px 1px 3px rgba(4,33,39,0.85);
+    flex: 1;
+    height: 57px;
+    line-height: 57px;
+    padding: 0 10px;
+    position: relative;
+    overflow: hidden;
+
+    background: #00C7EF;
+    border-radius: 30px;
+    box-shadow: 10px 10px 5px #fff inset, -10px -10px 5px #788a8d inset, 3px 3px 5px #0A2226;
+  }
+.buy_btn_style img{
+    position: absolute;
+    left: -16px;
+    top: -4px;
+    width: 100%;
+    height: 100%;
+  }
+.buy_btn_style .bg_color{
+    width: calc(100% - 8px);
+    height: calc(100% - 8px);
+    position: absolute;
+    top: 2px;
+    left: 4px;
+    border-radius: 30px;
+    background: rgba(0, 71, 84, .66);
+  }
+.buy_btn_style .light_bg{
+    position: absolute;
+    width: calc(100% - 5px);
+    height: calc(100% - 6px);
+    left: 4px;
+    top: 0;
+    border-radius: 30px;
+    background-image: linear-gradient(rgba(255,241,160,.3), rgba(255,249,206,.8));
+    box-shadow: 4px -4px 10px rgba(255,255,255,.5) inset;
+    opacity: .4;
+  }
+.buy_btn_style .right_bg{
+    position: absolute;
+    width: 76%;
+    height: calc(100% - 6px);
+    right: 1px;
+    top: 0;
+    border-radius: 30px;
+    border-bottom-left-radius: 0;
+    border-top-left-radius: 60px;
+    background: rgba(0, 71, 84, .66);
+    box-shadow: -4px -4px 10px rgba(255,255,255,.5) inset;
+    opacity: .7;
+  }
 .buy_btn_style .whitespace-pre-wrap{
     position: absolute;
     width: 100%;
@@ -1418,30 +1480,6 @@ select{
       font-size: 1.5rem;
     }
   }
-.settle_accounts_foot .buy_btn_price{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    line-height: normal;
-    margin: 0 20px;
-  }
-.settle_accounts_foot .buy_btn_price i{
-    font-style: normal;
-  }
-.settle_accounts_foot .buy_btn_price .btn_price_new{
-    font-size: 1.2rem;
-    color: rgba(20,20,20,0.90196);
-    /* text-shadow: 0 1px 2px rgba(0,0,0,0.50); */
-    font-weight: 700;
-    color: #ff2020;
-    text-shadow: none;
-  }
-.settle_accounts_foot .buy_btn_price .btn_price_old{
-    font-size: 1rem;
-    color: #959595;
-    font-weight: 400;
-    text-decoration: line-through;
-  }
 /* @media (max-width: 500px) {
     .buy_btn_style .whitespace-pre-wrap{
       font-size: 1rem;
@@ -1453,43 +1491,6 @@ select{
       font-size: .8rem;
     }
   } */
-.service {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    margin-top: .5rem;
-    row-gap: .5rem;
-    -moz-column-gap: 1.5rem;
-         column-gap: 1.5rem
-  }
-.service .service_li{
-    display: flex;
-    align-items: center;
-    gap: 3px;
-  }
-.service .service_icon{
-    width: 16px;
-  }
-.service .service_li span{
-    display: flex;
-    align-items: center;
-    gap: 5px;
-  }
-.service .service_li span img{
-    width: 24px;
-  }
-.division_box{
-    height: 37px;
-    text-align: center;
-    line-height: 37px;
-    font-weight: bold;
-    color: #fff;
-    margin: 1.5rem 0 1rem 0;
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-image: url('https://platform.antdiy.vip/static/image/cod_detail_bg.png');
-    text-shadow: 2px 2px 5px rgba(163, 145, 108, 52);
-  }
 .product_details{
     justify-content: center;
   }
@@ -1527,9 +1528,26 @@ select{
         } */
       }
     }
+.article_nav{
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: 20px 20px 70px;
+    background: #004754;
+    gap: 20px;
+  }
+.article_nav a{
+    font-size: 16px;
+    color: rgba(255,255,255,0.80);
+    text-align: right;
+    font-weight: 400;
+  }
 /* .article_nav a:nth-child(3){
     color: #ffffff;
   } */
+.article_nav a:hover{
+    color: #ffffff;
+  }
 .article_box{
     display: flex;
     flex-direction: column;
@@ -1551,6 +1569,9 @@ select{
     border-bottom: 1px solid #000000;
     border-right: 1px solid #000000;
     padding: 10px;
+  }
+.description_box{
+    padding-top: 20px;
   }
 .description_box p,
   .description_box img{
@@ -1693,7 +1714,7 @@ select{
     margin: 0 10px;
   }
 .pricex_box{
-    margin: .5rem 0;
+    margin: 2rem 0;
   }
 .current_price i{
     font-style: normal;
@@ -2887,6 +2908,9 @@ select {
 }
 .justify-items-start{
   justify-items: start;
+}
+.gap-10{
+  gap: 2.5rem;
 }
 .gap-2{
   gap: 0.5rem;
