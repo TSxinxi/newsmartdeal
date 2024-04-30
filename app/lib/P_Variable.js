@@ -29,13 +29,13 @@ if (canUseDOM) {
 
 export function getShopAddress() {
   // return 'uniquehzts.myshopify.com';
-  // return 'newsmartdeal.myshopify.com';
+  return 'newsmartdeal.myshopify.com';
   // return 'modafallonei.myshopify.com';
-  return 'homebeautylife.myshopify.com';
+  // return 'homebeautylife.myshopify.com';
 }
 export function getDomain() {
-  // return 'https://gateway.antdiy.vip';
-  return 'https://gateway.di79.com';
+  return 'https://gateway.antdiy.vip';
+  // return 'https://gateway.di79.com';
 }
 
 export function openWhatsApp() {
