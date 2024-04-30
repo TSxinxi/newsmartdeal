@@ -38,6 +38,7 @@
     "swiper": "^5.4.5",
     "tiny-invariant": "^1.2.0",
     "typographic-base": "^1.0.4",
+    "uuid": "^9.0.1",
     "xmlhttprequest": "^1.8.0"
   },
   "devDependencies": {
