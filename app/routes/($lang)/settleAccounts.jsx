@@ -423,6 +423,13 @@ export function Information({ selectedVar, quantity }) {
               </div>
               <input type="text" placeholder={LText.address} value={area} onChange={(e) => { setArea(e.target.value) }} />
             </div>
+            <div className='in_list'>
+              <div className='in_list_title'>
+                <span>{LText.postalCode} <i></i></span>
+                <p></p>
+              </div>
+              <input type="text" placeholder={LText.postalCode} value={postcode} onChange={(e) => { setPostcode(e.target.value) }} />
+            </div>
           </>
         }
         <div className='in_list'>
@@ -488,7 +495,7 @@ export function Information({ selectedVar, quantity }) {
                     phone: phone,
                     // whatsapp: whatsapp,
                     country: LText.country,
-                    country_code: LText.type,
+                    country_code: LText.type == 'zł' ? 'PLN' : LText.type,
                     state: state,
                     city: city,
                     area: area,
@@ -593,9 +600,19 @@ export function PaymentMethod() {
 
 function SettleAccounts(quantity, selectedVar, params, setErrorText, setIsSubmit) {
   if (!quantity || quantity < 1) {
+    sendGtag({
+      event_name: "clickPay",
+      event_label: "no_pass",
+      event_value: JSON.stringify(params),
+    });
     return setErrorText(LText.errorQuantity)
   }
   if (!params.name || !params.phone || !params.state || !params.city || !params.area) {
+    sendGtag({
+      event_name: "clickPay",
+      event_label: "no_pass",
+      event_value: JSON.stringify(params),
+    });
     return setErrorText(LText.empty)
   }
   if (LText.type === 'HUF' && !params.building) {
@@ -641,11 +658,20 @@ function SettleAccounts(quantity, selectedVar, params, setErrorText, setIsSubmit
     quantity: quantity,
     variant_id: setSplit(selectedVar.id),
   }]
+  sendGtag({
+    event_name: "clickPay",
+    event_label: "pass",
+    event_value: JSON.stringify(params),
+  });
 
   setIsSubmit(true)
   fetch.post(`${getDomain()}/account-service/media_orders/create/async/pass`, params).then(res => {
     if (res && res.data) {
       if (res.data.success && res.data?.data?.order?.id) {
+        sendGtag({
+          event_name: "PlaceOrder",
+          event_value: res.data?.data?.order?.id,
+        });
         window.open(`/thank_you?id=${res.data?.data?.order?.id}`, '_self')
       } else {
         setIsSubmit(false)
@@ -664,4 +690,18 @@ function setSplit(data) {
   } else {
     return data
   }
+}
+function sendGtag(data) {
+  console.log(data)
+  return
+  let obj = {
+    time_stamp: new Date().getTime() + "",
+    cl: localStorage.getItem('currencyCode') || "",
+    procudt_id: productData.id || "",
+    user_ID: 'uid' || "",
+    UA: navigator.userAgent,
+    url: location.href,
+  };
+  const params = { ...data, ...obj };
+  fetch.get(`https://www.xgoodspic.com/`, { params }).then(() => {});
 }

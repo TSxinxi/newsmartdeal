@@ -43,7 +43,7 @@ export function Layout({ children, layout }) {
 
   return (
     <>
-      <div className={getLanguage().type === 'RON' ? "flex flex-col min-h-screen ron_box" : "flex flex-col min-h-screen"} style={{ color: '#141414E6' }}>
+      <div className={getLanguage().type === 'RON' || getLanguage().type === 'zł' || getLanguage().type === 'EUR' ? "flex flex-col min-h-screen ron_box" : "flex flex-col min-h-screen"} style={{ color: '#141414E6' }}>
         {/* <div className="">
           <a href="#mainContent" className="sr-only">
             Skip to content

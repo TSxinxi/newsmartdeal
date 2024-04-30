@@ -1,6 +1,8 @@
 var canUseDOM = !!(typeof window !== "undefined" && typeof window.document !== "undefined" && typeof window.localStorage !== "undefined");
 var currencyCode = ''
 if (canUseDOM) {
+  let result = new URLSearchParams(window.location.search);
+  let site = result.get('site')
   let href = window.location.href
   if (href && href.indexOf('-huf') > -1) {
     currencyCode = 'HUF'
@@ -14,6 +16,12 @@ if (canUseDOM) {
   if (href && href.indexOf('-ron') > -1) {
     currencyCode = 'RON'
   }
+  if (site === 'POL') {
+    currencyCode = 'zł'
+  }
+  if (site === 'EUR') {
+    currencyCode = 'EUR'
+  }
   if (localStorage.getItem('currencyCode')) {
     currencyCode = localStorage.getItem('currencyCode')
   }
@@ -21,12 +29,13 @@ if (canUseDOM) {
 
 export function getShopAddress() {
   // return 'uniquehzts.myshopify.com';
-  return 'newsmartdeal.myshopify.com';
+  // return 'newsmartdeal.myshopify.com';
   // return 'modafallonei.myshopify.com';
+  return 'homebeautylife.myshopify.com';
 }
 export function getDomain() {
-  return 'https://gateway.antdiy.vip';
-  // return 'https://gateway.di79.com';
+  // return 'https://gateway.antdiy.vip';
+  return 'https://gateway.di79.com';
 }
 
 export function openWhatsApp() {
@@ -42,7 +51,7 @@ export function openComment() {
 }
 
 export function getDirection() {
-  return currencyCode === 'RON' ? 'initial' : 'rtl';
+  return currencyCode === 'RON' || currencyCode === 'zł' || currencyCode === 'EUR' ? 'initial' : 'rtl';
   // return 'rtl';
   // return 'initial';
 }
@@ -5486,7 +5495,221 @@ export function getLanguage() {
           "Zebecke": {}
         }
       },
-    }
+    },
+    // 波兰
+    zł: {
+      type: "zł",
+      country: "Polska",
+      currency: "PLN",
+      country_code: 'PL',
+      deliveryProcess: 'deliveryProcess9.png',
+      whatsAppText: "Proszę kliknąć bezpośrednio przycisk wysyłania, nie usuwać poniższego linku, najdokładniejsze odpowiedzi otrzymasz od naszego działu obsługi klienta",
+      notFoundTit: 'Ta strona została utracona',
+      notFoundText: 'Strona, której szukasz, nie została znaleziona.',
+      buy: "Zapłać Przy Odbiorze",
+      comTit: 'Opinie klientów',
+      write: 'usuń ocenę',
+      sold: 'obecnie brak na stanie',
+      addComment: "Napisz komentarz",
+      rating: 'ocena oceny',
+      reviewTitle: 'Tytuł recenzji',
+      reviewTiPle: "Wpisz tytuł swojej recenzji",
+      review: 'recenzja',
+      reviewPle: "Wpisz tutaj swoją recenzję",
+      error: 'To pole jest wymagane.',
+      picture: "zdjęcie/wideo (opcjonalnie)",
+      selectName: 'Nazwa (zwykle)',
+      namePle: '(wpisz nazwę (publiczną)',
+      emailN: 'e-mail',
+      emailPle: "Wpisz swój adres e-mail (prywatny)",
+      cancelRe: 'Anuluj ocenę',
+      submitRe: 'Prześlij recenzję',
+      screenCreate: 'najpierw najnowsze',
+      screenDesc: 'Najwyżej oceniane',
+      screenAsc: 'najniżej oceniany',
+      screenWith: 'Tylko obrazy',
+      screenPic: 'Najpierw zdjęcia',
+      screenVideo: 'Najpierw filmy',
+      screenMost: 'Najbardziej przydatny',
+      subReview: 'Recenzja wysłana',
+      subComtent: 'Dziękuję! Aby zobaczyć swoją recenzję, odśwież stronę za kilka chwil.',
+
+      commentResult: "Nie ma jeszcze żadnych recenzji",
+      based1: 'w oparciu o',
+      based2: 'oceny',
+      seeAll: 'zobacz wszystkie recenzje',
+      image5: 'Przepraszamy, do sprawdzenia możemy zaakceptować tylko 5 zdjęć.',
+      rightEmail: "Proszę podać poprawny adres e-mail",
+      unknown: 'nieznany',
+      acticleList: ['Metody płatności', 'Dostawa', 'O nas', 'Warunki', 'Zwroty i wymiany', 'Polityka prywatności', 'Skontaktuj się z nami'],
+      discountZone: 'strefa rabatów biznesowych',
+      free7: 'Bezpłatna wymiana i zwrot pieniędzy w ciągu siedmiu dni',
+      deliver: 'Dostawa gratis',
+      paying: 'Płatność gotówką przy odbiorze',
+      orders: "zamówienia",
+      thank: 'dziękuję!',
+      request: 'Twoja prośba została potwierdzona',
+      receive: 'Wkrótce otrzymasz e-mail z potwierdzeniem zawierającym numer zamówienia',
+      updateOrder: 'Aktualizuj zamówienie',
+      information: "Otrzymasz aktualne informacje o wysyłce i dystrybucji e-mailem.",
+      customer: 'informacje o kliencie',
+      contactInfo: 'dane kontaktowe',
+      delivery: "adres dostawy",
+      payment: 'Metoda płatności',
+      payReceipt: "Płatność przy odbiorze",
+      invoice: "Faktura",
+      keeyshop: 'Kontynuuj zakupy',
+      confirRequest: 'Potwierdź żądanie',
+      recipientInfo: 'Informacje o Odbiorcy',
+      yourName: 'Imię i nazwisko',
+      fullName: 'Imię i nazwisko',
+      semail: 'E-mail',
+      governor: "Województwo",
+      telephone: "Numer telefonu",
+
+      district: "Proszę wybrać swoją dzielnicę",
+      city: "Gmina",
+      selectCity: 'Proszę wybrać swoje miasto',
+      zone: 'Region',
+      zonePle: 'Przykład: Olaya, Riyad',
+      building: "Budynek",
+      buildingPle: 'przykład: willa 2 piętro 3',
+      street: 'ulica',
+      streetPle: 'Przykład: King Fahd Street',
+      closest: "Najbliższy punkt orientacyjny",
+      closestPle: 'Przykład: Wieża Królestwa',
+      phonepl1: 'numer telefonu komórkowego: 5xxxxxxx',
+      phonepl2: "Numer WhatsApp: 5xxxxxxxx",
+      comments: 'Wiadomość',
+      apply: 'DOKOŃCZ ZAMÓWIENIE',
+      method: 'Metoda płatności',
+      recieving: 'Płatność przy odbiorze',
+      onlinePayment: "30 riali obniżonej opłaty transakcyjnej za płatność online.",
+      Website: 'Darmowa wysyłka + płatność przy odbiorze + zaufana strona internetowa',
+      homepage: 'Staramy się zapewnić Państwu produkty wysokiej jakości i doskonałą obsługę, zostaniecie Państwo powiadomieni o wysyłce produktu. Jeśli masz jakieś pytania, kliknij ikonę Whatsapp na stronie głównej',
+      empty: "pola nie mogą być puste",
+      correct: "Proszę wprowadzić poprawny formularz",
+      validnum: 'Wprowadź prawidłowy numer telefonu',
+      noOpinion: "Nie mam zdania",
+      writeReview: 'Napisz recenzję',
+      address: "Adres wysyłki",
+      addressPle: "Dokładna ulica, numer domu, numer pokoju",
+      postalCode: 'Kod pocztowy',
+      orderError: 'Nieudany zakup',
+      chooseMore: 'wybierz jeszcze jeden',
+      noSelect: 'Proszę wybrać specyfikację produktu',
+      policyList: ['Certyfikat UE', 'Płatność przy odbiorze', 'Zwrot w ciągu 30 dni', 'Darmowa dostawa'],
+      divisionText: 'Detale',
+      quantityText: 'Kwota',
+      errorQuantity: 'Proszę podać ilość produktu',
+    },
+    // 希腊
+    EUR: {
+      type: "EUR",
+      country: "Greece",
+      currency: "EUR",
+      country_code: 'GR',
+      deliveryProcess: 'deliveryProcess10.png',
+      whatsAppText: "Παρακαλώ κάντε κλικ στο κουμπί αποστολής απευθείας, μην διαγράψετε τον παρακάτω σύνδεσμο, θα λάβετε τις πιο ακριβείς απαντήσεις από την εξυπηρέτηση πελατών μας",
+      notFoundTit: "Αυτή η σελίδα έχει χαθεί",
+      notFoundText: 'Η σελίδα που ψάχνετε δεν βρέθηκε.',
+      buy: "Πληρωμή κατά την παράδοση",
+      comTit: 'Απόψεις πελατών',
+      write: "αφαίρεση βαθμολογίας",
+      sold: "επί του παρόντος εκτός αποθέματος",
+      addComment: "Γράψε ένα σχόλιο",
+      rating: 'βαθμολόγηση αξιολόγησης',
+      reviewTitle: 'Τίτλος κριτικής',
+      reviewTiPle: "Εισαγάγετε τον τίτλο της κριτικής σας",
+      review: 'κριτική',
+      reviewPle: "Εισαγάγετε την κριτική σας εδώ",
+      error: 'Αυτό το πεδίο είναι υποχρεωτικό.',
+      picture: "φωτογραφία/βίντεο (προαιρετικό)",
+      selectName: 'Όνομα (συνήθως)',
+      namePle: '(εισάγετε (δημόσιο) όνομα',
+      emailN: 'email',
+      emailPle: "Εισαγάγετε τη διεύθυνση email σας (ιδιωτική)",
+      cancelRe: 'Ακύρωση αξιολόγησης',
+      submitRe: 'Υποβολή κριτικής',
+      screenCreate: "πρώτα τα τελευταία",
+      screenDesc: 'Κορυφαία βαθμολογία',
+      screenAsc: "χαμηλότερη βαθμολογία",
+      screenWith: "Μόνο εικόνες",
+      screenPic: "Πρώτα οι εικόνες",
+      screenVideo: "Πρώτα τα βίντεο",
+      screenMost: "Πιο χρήσιμο",
+      subReview: 'Η κριτική εστάλη',
+      subComtent: 'Ευχαριστώ! Για να δείτε την κριτική σας, ανανεώστε τη σελίδα σε λίγα λεπτά.',
+
+      commentResult: "Δεν υπάρχουν ακόμη κριτικές",
+      based1: 'βασισμένο σε',
+      based2: "αξιολογήσεις",
+      seeAll: 'δείτε όλες τις κριτικές',
+      image5: 'Συγγνώμη, μπορούμε να δεχτούμε μόνο 5 φωτογραφίες για έλεγχο.',
+      rightEmail: "Παρακαλώ εισάγετε μια έγκυρη διεύθυνση email",
+      unknown: "άγνωστο",
+      acticleList: ['Τρόποι πληρωμής', 'Αποστολή', 'Σχετικά με εμάς', 'Όροι και Προϋποθέσεις', 'Επιστροφές και Ανταλλαγές', 'Πολιτική Απορρήτου', 'Επικοινωνήστε μαζί μας'],
+      discountZone: "business discount zone",
+      free7: "Δωρεάν ανταλλαγή και επιστροφή χρημάτων εντός επτά ημερών",
+      deliver: "Δωρεάν παράδοση",
+      paying: "Πληρωμή με μετρητά κατά την παράδοση",
+      orders: "παραγγελίες",
+      thank: 'ευχαριστώ!',
+      request: "Το αίτημά σας επιβεβαιώθηκε",
+      receive: "Σύντομα θα λάβετε ένα email επιβεβαίωσης που θα περιέχει τον αριθμό της παραγγελίας σας",
+      updateOrder: 'Ενημέρωση παραγγελίας',
+      information: "Θα λάβετε τις τρέχουσες πληροφορίες αποστολής και διανομής μέσω e-mail.",
+      customer: "πληροφορίες πελατών",
+      contactInfo: 'στοιχεία επικοινωνίας',
+      delivery: "διεύθυνση παράδοσης",
+      payment: "Τρόπος πληρωμής",
+      payReceipt: "Πληρωμή κατά την παράδοση",
+      invoice: "Τιμολόγιο",
+      keeyshop: 'Συνεχίστε τις αγορές',
+      confirRequest: 'Επιβεβαίωση αιτήματος',
+      recipientInfo: 'Στοιχεία παραλήπτη',
+      yourName: 'Όνομα και επώνυμο',
+      fullName: 'Όνομα και επώνυμο',
+      semail: 'Email',
+      governor: "Επαρχία",
+      telephone: "Αριθμός τηλεφώνου",
+
+      district: "Παρακαλώ επιλέξτε την περιοχή σας",
+      city: "Δήμος",
+      selectCity: 'Παρακαλώ επιλέξτε την πόλη σας',
+      zone: "Περιοχή",
+      zonePle: 'Παράδειγμα: Olaya, Riyad',
+      building: "Κτίριο",
+      buildingPle: 'παράδειγμα: βίλα 2ος όροφος 3',
+      street: 'οδός',
+      streetPle: 'Παράδειγμα: Οδός King Fahd',
+      closest: "Κοντινότερο ορόσημο",
+      closestPle: 'Παράδειγμα: Kingdom Tower',
+      phonepl1: 'αριθμός κινητού τηλεφώνου: 5xxxxxxx',
+      phonepl2: "Αριθμός Whatsapp: 5xxxxxxx",
+      comments: 'Μήνυμα',
+      apply: "ΤΕΛΟΣ ΠΑΡΑΓΓΕΛΙΑΣ",
+      method: "Τρόπος πληρωμής",
+      recieving: "Πληρωμή κατά την παράδοση",
+      onlinePayment: "Μειωμένη χρέωση συναλλαγής 30 ριάλ για ηλεκτρονική πληρωμή.",
+      Website: "Δωρεάν αποστολή + αντικαταβολή + αξιόπιστος ιστότοπος",
+      homepage: "Προσπαθούμε να σας παρέχουμε προϊόντα υψηλής ποιότητας και άριστη εξυπηρέτηση, θα ειδοποιηθείτε όταν το προϊόν έχει αποσταλεί. Εάν έχετε οποιεσδήποτε ερωτήσεις, κάντε κλικ στο εικονίδιο Whatsapp στην αρχική σελίδα",
+      empty: "τα πεδία δεν μπορούν να είναι άδεια",
+      correct: "Παρακαλώ εισάγετε μια έγκυρη φόρμα",
+      validnum: 'Εισαγάγετε έναν έγκυρο αριθμό τηλεφώνου',
+      noOpinion: "Δεν έχω άποψη",
+      writeReview: 'Γράψε μια κριτική',
+      address: "Διεύθυνση αποστολής",
+      addressPle: "Ακριβής οδός, αριθμός σπιτιού, αριθμός δωματίου",
+      postalCode: "Ταχυδρομικός κώδικας",
+      orderError: 'Η αγορά απέτυχε',
+      chooseMore: 'επιλέξτε ένα ακόμη',
+      noSelect: 'Παρακαλώ επιλέξτε τις προδιαγραφές προϊόντος',
+      policyList: ['Πιστοποιητικό ΕΕ', 'Αντικαταβολή', 'Επιστροφή εντός 30 ημερών', 'Δωρεάν παράδοση'],
+      divisionText: 'Λεπτομέρειες',
+      quantityText: 'Ποσό',
+      errorQuantity: 'Παρακαλώ εισάγετε την ποσότητα του προϊόντος',
+    },
   }
   if (LType == 'AED') {
     // 阿联酋
