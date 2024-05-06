@@ -570,7 +570,9 @@ export default function Product() {
   }
   productData = product
   productVariants = product.variants.nodes
-  sendGtag({ event_name: "PageView" });
+  if (productData) {
+    sendGtag({ event_name: "PageView" });
+  }
 
   return (
     <>
@@ -866,17 +868,16 @@ function toTop() {
 }
 
 function sendGtag(data) {
-  return
   let obj = {
     time_stamp: new Date().getTime() + "",
     cl: currencyCode || "",
     procudt_id: productData.id || "",
-    user_ID: 'uid' || "",
+    user_ID: localStorage.getItem("uid") || "",
     UA: navigator.userAgent,
     url: location.href,
   };
   const params = { ...data, ...obj };
-  fetch.get(`https://www.xgoodspic.com/`, { params }).then(() => {});
+  fetch.get(`https://www.xgoodspic.com/`, { params }).then(() => { });
 }
 
 function goSettleAccounts() {

@@ -23,6 +23,13 @@ import { getDirection } from '~/lib/P_Variable';
 import invariant from 'tiny-invariant';
 import { useAnalytics } from './hooks/useAnalytics';
 import * as Sentry from "@sentry/react";
+import fetch from '~/fetch/axios';
+import { v4 as uuidv4 } from "uuid";
+import * as rrweb from "rrweb";
+
+let uid = ''
+let events = []
+let copyEvents = []
 
 const seo = ({ data, pathname }) => ({
   title: data?.layout?.shop?.name,
@@ -131,26 +138,33 @@ export default function App() {
       fbq('init', '784050860018815');
       fbq('track', 'PageView');
 
-      !(function (c, b, d, a) {
-        c[a] || (c[a] = {}); c[a].config =
-        {
-          pid: "gr6w69wpuh@db34193c9e236f8",
-          appType: "web",
-          imgUrl: "https://arms-retcode.aliyuncs.com/r.png?",
-          sendResource: true,
-          enableLinkTrace: true,
-          behavior: true,
-          enableSPA: true,
-          useFmp: true,
-          enableConsole: true
-        };
-        let newScript = document.createElement("script")
-        newScript.src = d
-        newScript.setAttribute("crossorigin", "")
-        document.body.insertBefore(newScript, document.body.firstChild);
-      })(window, document, "https://sdk.rum.aliyuncs.com/v1/bl.js", "__bl");
+      // !(function (c, b, d, a) {
+      //   c[a] || (c[a] = {}); c[a].config =
+      //   {
+      //     pid: "gr6w69wpuh@db34193c9e236f8",
+      //     appType: "web",
+      //     imgUrl: "https://arms-retcode.aliyuncs.com/r.png?",
+      //     sendResource: true,
+      //     enableLinkTrace: true,
+      //     behavior: true,
+      //     enableSPA: true,
+      //     useFmp: true,
+      //     enableConsole: true
+      //   };
+      //   let newScript = document.createElement("script")
+      //   newScript.src = d
+      //   newScript.setAttribute("crossorigin", "")
+      //   document.body.insertBefore(newScript, document.body.firstChild);
+      // })(window, document, "https://sdk.rum.aliyuncs.com/v1/bl.js", "__bl");
 
       setDirection(getDirection())
+
+      uid = localStorage.getItem("uid")
+      if (!uid) {
+        uid = uuidv4();
+        localStorage.setItem("uid", uid);
+      }
+      startRecording()
     }, []);
   }
   return (
@@ -174,6 +188,30 @@ export default function App() {
       </body>
     </html>
   );
+}
+
+function startRecording() {
+  rrweb.record({
+    emit(event) {
+      // 将 event 存入 events 数组中
+      events.push(event);
+    },
+  });
+  // 每 10 秒调用一次保存录制数据的方法
+  setInterval(() => {
+    saveEvents();
+  }, 10000);
+}
+
+function saveEvents() {
+  let timeList = copyEvents.map((i) => {
+    return i.timestamp;
+  });
+  let filterList = events.filter(
+    (item) => timeList.indexOf(item.timestamp) === -1
+  );
+  copyEvents = copyEvents.concat(filterList);
+  fetch.post(`https://cod.xgoodspic.com/record/rrweb/${location.host}/${uid}`, filterList).then(() => { });
 }
 
 function getReferer() {
